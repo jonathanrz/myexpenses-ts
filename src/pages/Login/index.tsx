@@ -1,5 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import { useFormik } from "formik";
+import axios from "axios";
+import Cookie from "js-cookie";
+import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Box from "@material-ui/core/Box";
@@ -8,6 +12,10 @@ import Container from "@material-ui/core/Container";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import FormikTextField from "../../components/formik/FormikTextField";
+
+const instance = axios.create({
+  baseURL: process.env.REACT_APP_MYEXPENSES_TS_API,
+});
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -30,12 +38,35 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Login() {
+  const [signed, setSigned] = useState(false);
+  const [error, setError] = useState();
   const classes = useStyles();
 
   const formik = useFormik({
-    initialValues: { username: "", password: "" },
-    onSubmit: console.log,
+    initialValues: { email: "", password: "" },
+    onSubmit: (values) => {
+      setError(undefined);
+
+      instance
+        .post("users/signin", values)
+        .then(({ data }) => {
+          Cookie.set("user", JSON.stringify(data));
+          setSigned(true);
+        })
+        .catch((e) => setError(e.message));
+    },
   });
+
+  if (signed) {
+    return (
+      <Redirect
+        to={{
+          pathname: "/",
+          state: { from: "/login" },
+        }}
+      />
+    );
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -48,8 +79,8 @@ function Login() {
         </Typography>
         <form className={classes.form} onSubmit={formik.handleSubmit}>
           <FormikTextField
-            name="name"
-            label="Name"
+            name="email"
+            label="Email"
             formik={formik}
             autoComplete="email"
             autoFocus
@@ -73,6 +104,7 @@ function Login() {
             Sign in
           </Button>
         </form>
+        {error && <Alert severity="error">{error}</Alert>}
       </Box>
     </Container>
   );

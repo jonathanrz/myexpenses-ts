@@ -6,11 +6,10 @@ import {
   useLocation,
   Redirect,
 } from "react-router-dom";
+import Cookie from "js-cookie";
 
 import HomePage from "./pages/Home";
 import LoginPage from "./pages/Login";
-
-let isAuthenticated = false;
 
 function NoMatch() {
   let location = useLocation();
@@ -31,6 +30,8 @@ interface PrivateRouteProps {
 }
 
 function PrivateRoute({ children, exact, path }: PrivateRouteProps) {
+  const isAuthenticated = Cookie.get("user") !== undefined;
+
   return (
     <Route
       exact={exact}
