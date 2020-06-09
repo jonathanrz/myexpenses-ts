@@ -16,6 +16,9 @@ interface FormikTextFieldProps {
   label: string;
   formik: Formik;
   type?: string;
+  autoComplete?: string;
+  autoFocus?: boolean;
+  required?: boolean;
 }
 
 function FormikTextField({
@@ -30,9 +33,12 @@ function FormikTextField({
       <TextField
         id={name}
         label={label}
+        margin="normal"
+        fullWidth
         onChange={formik.handleChange}
         value={formik.values[name]}
         error={hasError}
+        variant="outlined"
         {...props}
       />
       {hasError ? <Alert severity="error">{formik.errors[name]}</Alert> : null}
