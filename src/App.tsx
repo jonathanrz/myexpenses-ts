@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import Cookie from "js-cookie";
 
+import AccountsPage from "./pages/Accounts";
 import HomePage from "./pages/Home";
 import LoginPage from "./pages/Login";
 
@@ -61,6 +62,9 @@ function App() {
         </Route>
         <PrivateRoute exact path="/">
           <HomePage />
+        </PrivateRoute>
+        <PrivateRoute exact path="/accounts">
+          <AccountsPage />
         </PrivateRoute>
         <Route path="*">
           <NoMatch />

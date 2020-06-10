@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Drawer from "@material-ui/core/Drawer";
@@ -9,16 +10,19 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import DashboardIcon from "@material-ui/icons/Dashboard";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalanceWallet";
+import CreditCardIcon from "@material-ui/icons/CreditCard";
+import DateRangeIcon from "@material-ui/icons/DateRange";
+import StorefrontIcon from "@material-ui/icons/Storefront";
+import CategoryIcon from "@material-ui/icons/Category";
+import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-  },
-  toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
   },
   appBar: {
     marginLeft: drawerWidth,
@@ -51,6 +55,10 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
   },
+  drawerLink: {
+    color: theme.palette.text.primary,
+    textDecoration: "none",
+  },
   paper: {
     padding: theme.spacing(2),
     display: "flex",
@@ -64,13 +72,30 @@ interface PrivatePageProps {
   title: string;
 }
 
+interface DrawerLinkProps {
+  Icon: ReactNode;
+  pathname: string;
+  text: string;
+}
+
 function PrivatePage({ children, title }: PrivatePageProps) {
   const classes = useStyles();
+
+  function DrawerLink({ pathname, Icon, text }: DrawerLinkProps) {
+    return (
+      <Link to={{ pathname }} className={classes.drawerLink}>
+        <ListItem>
+          <ListItemIcon>{Icon}</ListItemIcon>
+          <ListItemText primary={text} />
+        </ListItem>
+      </Link>
+    );
+  }
 
   return (
     <div className={classes.root}>
       <AppBar position="absolute" className={classes.appBar}>
-        <Toolbar className={classes.toolbar}>
+        <Toolbar>
           <Typography
             component="h1"
             variant="h6"
@@ -90,12 +115,37 @@ function PrivatePage({ children, title }: PrivatePageProps) {
         open
       >
         <List>
-          <ListItem button>
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary="Dashboard" />
-          </ListItem>
+          <DrawerLink
+            pathname="/accounts"
+            text="Accounts"
+            Icon={<AccountBalanceIcon />}
+          />
+          <DrawerLink
+            pathname="/credit_cards"
+            text="Credit Card"
+            Icon={<CreditCardIcon />}
+          />
+          <DrawerLink pathname="/bills" text="Bills" Icon={<DateRangeIcon />} />
+          <DrawerLink
+            pathname="/places"
+            text="Places"
+            Icon={<StorefrontIcon />}
+          />
+          <DrawerLink
+            pathname="/categories"
+            text="Categories"
+            Icon={<CategoryIcon />}
+          />
+          <DrawerLink
+            pathname="/receipts"
+            text="Receipts"
+            Icon={<AttachMoneyIcon />}
+          />
+          <DrawerLink
+            pathname="/expenses"
+            text="Expenses"
+            Icon={<ShoppingCartIcon />}
+          />
         </List>
       </Drawer>
       <main className={classes.content}>
