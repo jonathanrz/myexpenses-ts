@@ -38,7 +38,6 @@ function FormikTextField({
         onChange={formik.handleChange}
         value={formik.values[name]}
         error={hasError}
-        variant="outlined"
         {...props}
       />
       {hasError ? <Alert severity="error">{formik.errors[name]}</Alert> : null}

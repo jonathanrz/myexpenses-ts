@@ -3,6 +3,7 @@ import numbro from "numbro";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
+import Typography from "@material-ui/core/Typography";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -12,6 +13,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import useAxios from "../../hooks/useAxios";
 import useAsync from "../../hooks/useAsync";
+import Form from "./Form";
 
 interface Account {
   id: string;
@@ -36,8 +38,6 @@ function Accounts() {
   if (data.pending) return <CircularProgress />;
   if (data.error) return <Alert severity="error">{data.error}</Alert>;
 
-  console.log({ data });
-
   return (
     <TableContainer component={Paper} className={classes.container}>
       <Table>
@@ -58,6 +58,14 @@ function Accounts() {
               </TableCell>
             </TableRow>
           ))}
+          <TableRow>
+            <TableCell colSpan={2}>
+              <Typography component="h1" variant="h5">
+                New Account
+              </Typography>
+              <Form axios={axios} />
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </TableContainer>
