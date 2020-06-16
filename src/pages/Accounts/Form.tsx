@@ -4,29 +4,44 @@ import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import FormikTextField from "../../components/formik/FormikTextField";
+import { Account } from "./model";
 
 interface AccountFormProps {
   axios: AxiosInstance;
+  account?: Account;
 }
 
 const useStyles = makeStyles({
   form: {
     display: "grid",
     gridGap: "1rem",
+    margin: "0 auto 1rem",
     maxWidth: "350px",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "space-between",
   },
 });
 
-function AccountForm({ axios }: AccountFormProps) {
+function AccountForm({
+  account = { id: "", name: "", balance: 0 },
+  axios,
+}: AccountFormProps) {
   const classes = useStyles();
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      balance: 0,
+      name: account.name,
+      balance: account.balance,
     },
     onSubmit: (values) => {
-      axios.post("/accounts", { account: values }).then(console.log);
+      if (account.id) {
+        return axios
+          .patch(`/accounts/${account.id}`, { account: values })
+          .then(console.log);
+      }
+      return axios.post("/accounts", { account: values }).then(console.log);
     },
   });
 
@@ -45,9 +60,12 @@ function AccountForm({ axios }: AccountFormProps) {
         formik={formik}
         required
       />
-      <Button color="secondary" type="submit" variant="contained">
-        Create
-      </Button>
+      <div className={classes.buttonContainer}>
+        {account.id ? <Button variant="contained">Cancel</Button> : <div />}
+        <Button color="secondary" type="submit" variant="contained">
+          Create
+        </Button>
+      </div>
     </form>
   );
 }

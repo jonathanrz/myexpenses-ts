@@ -1,5 +1,4 @@
 import React from "react";
-import numbro from "numbro";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
@@ -14,12 +13,8 @@ import Paper from "@material-ui/core/Paper";
 import useAxios from "../../hooks/useAxios";
 import useAsync from "../../hooks/useAsync";
 import Form from "./Form";
-
-interface Account {
-  id: string;
-  name: string;
-  balance: number;
-}
+import AccountRow from "./AccountRow";
+import { Account } from "./model";
 
 const useStyles = makeStyles({
   container: {
@@ -51,20 +46,12 @@ function Accounts() {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell align="right">Balance</TableCell>
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
             {data.result.map((account: Account) => (
-              <TableRow key={account.id}>
-                <TableCell component="th" scope="row">
-                  {account.name}
-                </TableCell>
-                <TableCell align="right">
-                  {numbro(account.balance / 100).formatCurrency({
-                    mantissa: 2,
-                  })}
-                </TableCell>
-              </TableRow>
+              <AccountRow key={account.id} account={account} axios={axios} />
             ))}
           </TableBody>
         </Table>
