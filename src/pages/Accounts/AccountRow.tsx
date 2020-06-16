@@ -11,16 +11,25 @@ import { Account } from "./model";
 interface AccountRowProps {
   account: Account;
   axios: AxiosInstance;
+  onAccountSaved: () => void;
 }
 
-function AccountRow({ account, axios }: AccountRowProps) {
+function AccountRow({ account, axios, onAccountSaved }: AccountRowProps) {
   const [edit, setEdit] = useState(false);
 
   if (edit) {
     return (
       <TableRow>
         <TableCell colSpan={3}>
-          <Form axios={axios} account={account} />
+          <Form
+            axios={axios}
+            account={account}
+            onAccountSaved={() => {
+              setEdit(false);
+              onAccountSaved();
+            }}
+            onCancel={() => setEdit(false)}
+          />
         </TableCell>
       </TableRow>
     );

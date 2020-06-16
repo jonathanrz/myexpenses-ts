@@ -18,9 +18,9 @@ import { Account } from "./model";
 
 const useStyles = makeStyles({
   container: {
+    gridTemplateColumns: "450px 350px",
     display: "grid",
-    gridGap: "1rem",
-    maxWidth: 450,
+    gridGap: "2rem",
   },
   formContainer: {
     padding: "1rem",
@@ -31,12 +31,14 @@ function Accounts() {
   const classes = useStyles();
 
   const axios = useAxios();
-  const data = useAsync(() => {
+  const dataAsync = useAsync(() => {
     return axios.get("accounts").then(({ data }) => data.data);
   });
 
-  if (data.pending) return <CircularProgress />;
-  if (data.error) return <Alert severity="error">{data.error}</Alert>;
+  if (dataAsync.pending) return <CircularProgress />;
+  if (dataAsync.error) return <Alert severity="error">{dataAsync.error}</Alert>;
+
+  const onAccountSaved = () => dataAsync.execute();
 
   return (
     <div className={classes.container}>
@@ -50,8 +52,13 @@ function Accounts() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.result.map((account: Account) => (
-              <AccountRow key={account.id} account={account} axios={axios} />
+            {dataAsync.result.map((account: Account) => (
+              <AccountRow
+                key={account.id}
+                account={account}
+                axios={axios}
+                onAccountSaved={onAccountSaved}
+              />
             ))}
           </TableBody>
         </Table>
@@ -60,7 +67,7 @@ function Accounts() {
         <Typography component="h1" variant="h5">
           New Account
         </Typography>
-        <Form axios={axios} />
+        <Form axios={axios} onAccountSaved={onAccountSaved} />
       </Paper>
     </div>
   );
