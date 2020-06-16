@@ -23,7 +23,12 @@ interface Account {
 
 const useStyles = makeStyles({
   container: {
-    maxWidth: 650,
+    display: "grid",
+    gridGap: "1rem",
+    maxWidth: 450,
+  },
+  formContainer: {
+    padding: "1rem",
   },
 });
 
@@ -39,36 +44,38 @@ function Accounts() {
   if (data.error) return <Alert severity="error">{data.error}</Alert>;
 
   return (
-    <TableContainer component={Paper} className={classes.container}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell align="right">Balance</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.result.map((account: Account) => (
-            <TableRow key={account.id}>
-              <TableCell component="th" scope="row">
-                {account.name}
-              </TableCell>
-              <TableCell align="right">
-                {numbro(account.balance / 100).formatCurrency({ mantissa: 2 })}
-              </TableCell>
+    <div className={classes.container}>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell align="right">Balance</TableCell>
             </TableRow>
-          ))}
-          <TableRow>
-            <TableCell colSpan={2}>
-              <Typography component="h1" variant="h5">
-                New Account
-              </Typography>
-              <Form axios={axios} />
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {data.result.map((account: Account) => (
+              <TableRow key={account.id}>
+                <TableCell component="th" scope="row">
+                  {account.name}
+                </TableCell>
+                <TableCell align="right">
+                  {numbro(account.balance / 100).formatCurrency({
+                    mantissa: 2,
+                  })}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Paper className={classes.formContainer}>
+        <Typography component="h1" variant="h5">
+          New Account
+        </Typography>
+        <Form axios={axios} />
+      </Paper>
+    </div>
   );
 }
 

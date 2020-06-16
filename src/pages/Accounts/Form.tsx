@@ -13,6 +13,7 @@ const useStyles = makeStyles({
   form: {
     display: "grid",
     gridGap: "1rem",
+    maxWidth: "350px",
   },
 });
 
