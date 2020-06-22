@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import FormikCurrencyField from "../../components/formik/FormikCurrencyField";
 import FormikTextField from "../../components/formik/FormikTextField";
 import { Account } from "./model";
 
@@ -63,7 +64,7 @@ function AccountForm({
         autoFocus
         required
       />
-      <FormikTextField
+      <FormikCurrencyField
         name="balance"
         label="Balance"
         formik={formik}
