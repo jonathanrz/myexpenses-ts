@@ -18,7 +18,7 @@ import { Account } from "./model";
 
 const useStyles = makeStyles({
   container: {
-    gridTemplateColumns: "450px 350px",
+    gridTemplateColumns: "550px 350px",
     display: "grid",
     gridGap: "2rem",
   },
@@ -40,6 +40,12 @@ function Accounts() {
 
   const onAccountSaved = () => dataAsync.execute();
 
+  function deleteAccount(id: string) {
+    if (window.confirm("Delete?")) {
+      axios.delete(`accounts/${id}`).then(() => dataAsync.execute());
+    }
+  }
+
   return (
     <div className={classes.container}>
       <TableContainer component={Paper}>
@@ -58,6 +64,7 @@ function Accounts() {
                 account={account}
                 axios={axios}
                 onAccountSaved={onAccountSaved}
+                deleteAccount={deleteAccount}
               />
             ))}
           </TableBody>

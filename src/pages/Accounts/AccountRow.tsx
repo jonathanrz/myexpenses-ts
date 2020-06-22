@@ -4,6 +4,7 @@ import { AxiosInstance } from "axios";
 import IconButton from "@material-ui/core/IconButton";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
+import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Form from "./Form";
 import { Account } from "./model";
@@ -12,9 +13,15 @@ interface AccountRowProps {
   account: Account;
   axios: AxiosInstance;
   onAccountSaved: () => void;
+  deleteAccount: (id: string) => void;
 }
 
-function AccountRow({ account, axios, onAccountSaved }: AccountRowProps) {
+function AccountRow({
+  account,
+  axios,
+  onAccountSaved,
+  deleteAccount,
+}: AccountRowProps) {
   const [edit, setEdit] = useState(false);
 
   if (edit) {
@@ -46,8 +53,14 @@ function AccountRow({ account, axios, onAccountSaved }: AccountRowProps) {
         })}
       </TableCell>
       <TableCell align="right">
-        <IconButton component="span" onClick={() => setEdit(!edit)}>
+        <IconButton component="button" onClick={() => setEdit(!edit)}>
           <EditIcon />
+        </IconButton>
+        <IconButton
+          component="button"
+          onClick={() => deleteAccount(account.id)}
+        >
+          <DeleteIcon />
         </IconButton>
       </TableCell>
     </TableRow>
