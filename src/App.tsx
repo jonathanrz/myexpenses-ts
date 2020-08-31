@@ -9,6 +9,7 @@ import {
 import Cookie from "js-cookie";
 
 import AccountsPage from "./pages/Accounts";
+import CreditCardsPage from "./pages/CreditCards";
 import HomePage from "./pages/Home";
 import LoginPage from "./pages/Login";
 
@@ -65,6 +66,9 @@ function App() {
         </PrivateRoute>
         <PrivateRoute exact path="/accounts">
           <AccountsPage />
+        </PrivateRoute>
+        <PrivateRoute exact path="/credit_cards">
+          <CreditCardsPage />
         </PrivateRoute>
         <Route path="*">
           <NoMatch />
