@@ -5,11 +5,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormikTextField from "../../components/formik/FormikTextField";
+import FormikSelectField from "../../components/formik/FormikSelectField";
+import { State } from "../../hooks/model";
+import { Account } from "../Accounts/model";
 import { CreditCard } from "./model";
 
 interface CreditCardFormProps {
   axios: AxiosInstance;
   creditCard?: CreditCard;
+  accountsAsync: State<Array<Account>>;
   onCreditCardSaved: () => void;
   onCancel?: () => void;
 }
@@ -30,6 +34,7 @@ const useStyles = makeStyles({
 function CreditCardForm({
   creditCard = { id: "", name: "" },
   axios,
+  accountsAsync,
   onCreditCardSaved,
   onCancel,
 }: CreditCardFormProps) {
@@ -38,15 +43,16 @@ function CreditCardForm({
   const formik = useFormik({
     initialValues: {
       name: creditCard.name,
+      account_id: creditCard.account ? creditCard.account.id : "",
     },
     onSubmit: (values) => {
       if (creditCard.id) {
         return axios
-          .patch(`/credit_cards/${creditCard.id}`, { creditCard: values })
+          .patch(`/credit_cards/${creditCard.id}`, { credit_card: values })
           .then(() => onCreditCardSaved());
       }
       return axios
-        .post("/credit_cards", { account: values })
+        .post("/credit_cards", { credit_card: values })
         .then(() => onCreditCardSaved());
     },
   });
@@ -60,6 +66,21 @@ function CreditCardForm({
         label="Name"
         formik={formik}
         autoFocus
+        required
+      />
+      <FormikSelectField
+        name="account_id"
+        label="Account"
+        options={
+          accountsAsync.result
+            ? accountsAsync.result.map((account: Account) => ({
+                label: account.name,
+                value: account.id,
+              }))
+            : []
+        }
+        formik={formik}
+        fullWidth
         required
       />
       <div className={classes.buttonContainer}>

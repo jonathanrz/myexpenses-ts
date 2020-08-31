@@ -1,13 +1,5 @@
 import { useRef, useEffect, useCallback, useState, useMemo } from "react";
-
-type Unpromise<T extends Promise<any>> = T extends Promise<infer U> ? U : never;
-
-interface State<T> {
-  error: any;
-  result: T | undefined;
-  standby: boolean;
-  pending: boolean;
-}
+import { State, Unpromise } from "./model";
 
 function useAsync<T extends (...args: any) => Promise<any>>(
   asyncFunction: T,
