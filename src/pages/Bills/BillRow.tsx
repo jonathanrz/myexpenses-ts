@@ -7,21 +7,16 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Currency from "../../helpers/currency";
 import Form from "./Form";
-import { Account } from "./model";
+import { Bill } from "./model";
 
-interface AccountRowProps {
-  account: Account;
+interface BillRowProps {
+  bill: Bill;
   axios: AxiosInstance;
-  onAccountSaved: () => void;
-  deleteAccount: (id: string) => void;
+  onBillSaved: () => void;
+  deleteBill: (id: string) => void;
 }
 
-function AccountRow({
-  account,
-  axios,
-  onAccountSaved,
-  deleteAccount,
-}: AccountRowProps) {
+function BillRow({ bill, axios, onBillSaved, deleteBill }: BillRowProps) {
   const [edit, setEdit] = useState(false);
 
   if (edit) {
@@ -30,10 +25,10 @@ function AccountRow({
         <TableCell colSpan={3}>
           <Form
             axios={axios}
-            account={account}
-            onAccountSaved={() => {
+            bill={bill}
+            onBillSaved={() => {
               setEdit(false);
-              onAccountSaved();
+              onBillSaved();
             }}
             onCancel={() => setEdit(false)}
           />
@@ -45,17 +40,25 @@ function AccountRow({
   return (
     <TableRow>
       <TableCell component="th" scope="row">
-        {account.name}
+        {bill.name}
       </TableCell>
-      <TableCell align="right">{Currency.format(account.balance)}</TableCell>
+      <TableCell component="th" scope="row">
+        {bill.due_day}
+      </TableCell>
+      <TableCell component="th" scope="row">
+        {bill.init_date.format("DD/MM/yyyy")}
+      </TableCell>
+      <TableCell component="th" scope="row">
+        {bill.end_date.format("DD/MM/yyyy")}
+      </TableCell>
+      <TableCell component="th" scope="row">
+        {Currency.format(bill.value)}
+      </TableCell>
       <TableCell align="right">
         <IconButton component="button" onClick={() => setEdit(!edit)}>
           <EditIcon />
         </IconButton>
-        <IconButton
-          component="button"
-          onClick={() => deleteAccount(account.id)}
-        >
+        <IconButton component="button" onClick={() => deleteBill(bill.id)}>
           <DeleteIcon />
         </IconButton>
       </TableCell>
@@ -63,4 +66,4 @@ function AccountRow({
   );
 }
 
-export default AccountRow;
+export default BillRow;
