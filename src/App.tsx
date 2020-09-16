@@ -11,6 +11,7 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import AccountsPage from "./pages/Accounts";
 import BillsPage from "./pages/Bills";
+import CategoriesPage from "./pages/Categories";
 import CreditCardsPage from "./pages/CreditCards";
 import PlacesPage from "./pages/Places";
 import HomePage from "./pages/Home";
@@ -73,6 +74,9 @@ function App() {
           </PrivateRoute>
           <PrivateRoute exact path="/bills">
             <BillsPage />
+          </PrivateRoute>
+          <PrivateRoute exact path="/categories">
+            <CategoriesPage />
           </PrivateRoute>
           <PrivateRoute exact path="/credit_cards">
             <CreditCardsPage />
