@@ -14,6 +14,7 @@ import BillsPage from "./pages/Bills";
 import CategoriesPage from "./pages/Categories";
 import CreditCardsPage from "./pages/CreditCards";
 import PlacesPage from "./pages/Places";
+import ReceiptsPage from "./pages/Receipts";
 import HomePage from "./pages/Home";
 import LoginPage from "./pages/Login";
 
@@ -83,6 +84,9 @@ function App() {
           </PrivateRoute>
           <PrivateRoute exact path="/places">
             <PlacesPage />
+          </PrivateRoute>
+          <PrivateRoute exact path="/receipts">
+            <ReceiptsPage />
           </PrivateRoute>
           <Route path="*">
             <NoMatch />
