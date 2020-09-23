@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { AxiosInstance } from "axios";
+import Switch from "@material-ui/core/Switch";
 import IconButton from "@material-ui/core/IconButton";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
@@ -16,6 +17,7 @@ interface ReceiptRowProps {
   axios: AxiosInstance;
   accountsAsync: State<Array<Account>>;
   onReceiptSaved: () => void;
+  onReceiptUpdated: (receipt: Receipt) => void;
   deleteReceipt: (id: string) => void;
 }
 
@@ -24,6 +26,7 @@ function ReceiptRow({
   axios,
   accountsAsync,
   onReceiptSaved,
+  onReceiptUpdated,
   deleteReceipt,
 }: ReceiptRowProps) {
   const [edit, setEdit] = useState(false);
@@ -36,6 +39,18 @@ function ReceiptRow({
     if (!accountData) return "Account not found";
 
     return accountData.name;
+  }
+
+  function toggleConfirm() {
+    const path = `/receipts/${receipt.id}/${
+      receipt.confirmed ? "unconfirm" : "confirm"
+    }`;
+
+    axios
+      .post(path)
+      .then(() =>
+        onReceiptUpdated({ ...receipt, confirmed: !receipt.confirmed })
+      );
   }
 
   if (edit) {
@@ -70,6 +85,9 @@ function ReceiptRow({
       </TableCell>
       <TableCell component="th" scope="row">
         {Currency.format(receipt.value)}
+      </TableCell>
+      <TableCell component="th" scope="row">
+        <Switch checked={receipt.confirmed} onChange={toggleConfirm} />
       </TableCell>
       <TableCell align="right">
         <IconButton component="button" onClick={() => setEdit(!edit)}>

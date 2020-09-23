@@ -19,7 +19,7 @@ import { Receipt } from "./model";
 
 const useStyles = makeStyles({
   container: {
-    gridTemplateColumns: "550px 350px",
+    gridTemplateColumns: "650px 350px",
     display: "grid",
     gridGap: "2rem",
   },
@@ -49,10 +49,24 @@ function ReceiptList() {
   if (dataAsync.error) return <Alert severity="error">{dataAsync.error}</Alert>;
 
   const onReceiptSaved = () => dataAsync.execute();
+  const onReceiptUpdated = (receipt: Receipt) => {
+    dataAsync.setResult(
+      dataAsync.result.map((cache: Receipt) => {
+        if (cache.id === receipt.id) {
+          return receipt;
+        } else {
+          return cache;
+        }
+      })
+    );
+  };
 
   function deleteReceipt(id: string) {
     if (window.confirm("Delete?")) {
-      axios.delete(`receipts/${id}`).then(() => dataAsync.execute());
+      axios
+        .delete(`receipts/${id}`)
+        .then(() => dataAsync.execute())
+        .catch(console.error);
     }
   }
 
@@ -66,6 +80,7 @@ function ReceiptList() {
               <TableCell>Account</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Value</TableCell>
+              <TableCell>Confirmed</TableCell>
               <TableCell />
             </TableRow>
           </TableHead>
@@ -77,6 +92,7 @@ function ReceiptList() {
                 accountsAsync={accountsAsync}
                 axios={axios}
                 onReceiptSaved={onReceiptSaved}
+                onReceiptUpdated={onReceiptUpdated}
                 deleteReceipt={deleteReceipt}
               />
             ))}

@@ -46,6 +46,9 @@ function useAsync<T extends (...args: any) => Promise<any>>(
     [asyncFunction]
   ) as T;
 
+  const setResult = (result: any) =>
+    setState({ error: undefined, result, standby: false, pending: false });
+
   useEffect(() => {
     if (immediate) {
       execute();
@@ -54,9 +57,9 @@ function useAsync<T extends (...args: any) => Promise<any>>(
     return () => {
       mountedRef.current = false;
     };
-  }, []);
+  }, [immediate]); //eslint-disable-line react-hooks/exhaustive-deps
 
-  return useMemo(() => ({ ...state, execute }), [state, execute]);
+  return useMemo(() => ({ ...state, execute, setResult }), [state, execute]);
 }
 
 export default useAsync;
