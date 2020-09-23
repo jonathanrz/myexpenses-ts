@@ -31,6 +31,7 @@ const useStyles = makeStyles({
   buttonContainer: {
     display: "flex",
     justifyContent: "space-between",
+    marginTop: "1rem",
   },
 });
 

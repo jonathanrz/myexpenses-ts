@@ -19,12 +19,16 @@ import { Receipt } from "./model";
 
 const useStyles = makeStyles({
   container: {
-    gridTemplateColumns: "650px 350px",
+    gridTemplateColumns: "800px 350px",
     display: "grid",
     gridGap: "2rem",
   },
   formContainer: {
-    padding: "1rem",
+    padding: "1rem 2rem 2rem",
+  },
+  table: {
+    padding: "1rem 2rem 2rem",
+    width: "unset",
   },
 });
 
@@ -72,7 +76,7 @@ function ReceiptList() {
 
   return (
     <div className={classes.container}>
-      <TableContainer component={Paper}>
+      <TableContainer className={classes.table} component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
