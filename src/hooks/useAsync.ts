@@ -54,7 +54,7 @@ function useAsync<T extends (...args: any) => Promise<any>>(
     return () => {
       mountedRef.current = false;
     };
-  }, []);
+  }, [immediate]); //eslint-disable-line react-hooks/exhaustive-deps
 
   return useMemo(() => ({ ...state, execute }), [state, execute]);
 }
