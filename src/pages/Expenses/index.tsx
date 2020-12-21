@@ -2,12 +2,12 @@ import React from "react";
 import PrivatePage from "../../components/PrivatePage";
 import List from "./List";
 
-function ReceiptsPage() {
+function ExpensePage() {
   return (
-    <PrivatePage title="Receipts">
+    <PrivatePage title="Expenses">
       <List />
     </PrivatePage>
   );
 }
 
-export default ReceiptsPage;
+export default ExpensePage;
