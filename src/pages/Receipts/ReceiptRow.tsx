@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { AxiosInstance } from "axios";
+import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Switch from "@material-ui/core/Switch";
 import IconButton from "@material-ui/core/IconButton";
 import TableCell from "@material-ui/core/TableCell";
@@ -21,6 +23,12 @@ interface ReceiptRowProps {
   deleteReceipt: (id: string) => void;
 }
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    marginLeft: theme.spacing(2),
+  },
+}));
+
 function ReceiptRow({
   receipt,
   axios,
@@ -29,6 +37,9 @@ function ReceiptRow({
   onReceiptUpdated,
   deleteReceipt,
 }: ReceiptRowProps) {
+  const classes = useStyles();
+
+  const [updatingConfirm, setUpdatingConfirm] = useState(false);
   const [edit, setEdit] = useState(false);
 
   function renderAccountName(account?: Account) {
@@ -42,6 +53,7 @@ function ReceiptRow({
   }
 
   function toggleConfirm() {
+    setUpdatingConfirm(true);
     const path = `/receipts/${receipt.id}/${
       receipt.confirmed ? "unconfirm" : "confirm"
     }`;
@@ -50,7 +62,9 @@ function ReceiptRow({
       .post(path)
       .then(() =>
         onReceiptUpdated({ ...receipt, confirmed: !receipt.confirmed })
-      );
+      )
+      .catch(console.error)
+      .finally(() => setUpdatingConfirm(false));
   }
 
   if (edit) {
@@ -87,7 +101,13 @@ function ReceiptRow({
         {Currency.format(receipt.value)}
       </TableCell>
       <TableCell component="th" scope="row">
-        <Switch checked={receipt.confirmed} onChange={toggleConfirm} />
+        {updatingConfirm ? (
+          <div className={classes.root}>
+            <CircularProgress size={20} />
+          </div>
+        ) : (
+          <Switch checked={receipt.confirmed} onChange={toggleConfirm} />
+        )}
       </TableCell>
       <TableCell align="right">
         <IconButton component="button" onClick={() => setEdit(!edit)}>
