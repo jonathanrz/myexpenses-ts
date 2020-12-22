@@ -1,4 +1,4 @@
-import { Account } from "../Accounts/model";
+import { Account } from "../../models/Account";
 
 export interface CreditCard {
   id: string;

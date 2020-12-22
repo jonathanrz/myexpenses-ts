@@ -7,7 +7,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import FormikTextField from "../../components/formik/FormikTextField";
 import FormikSelectField from "../../components/formik/FormikSelectField";
 import { State } from "../../hooks/model";
-import { Account } from "../Accounts/model";
+import { Account } from "../../models/Account";
 import { CreditCard } from "./model";
 
 interface CreditCardFormProps {

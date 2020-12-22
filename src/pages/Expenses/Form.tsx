@@ -10,7 +10,7 @@ import FormikDateField from "../../components/formik/FormikDateField";
 import FormikTextField from "../../components/formik/FormikTextField";
 import FormikSelectField from "../../components/formik/FormikSelectField";
 import { State } from "../../hooks/model";
-import { Account } from "../Accounts/model";
+import { Account } from "../../models/Account";
 import { Expense } from "./model";
 
 interface ExpenseFormProps {

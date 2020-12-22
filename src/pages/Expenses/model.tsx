@@ -1,5 +1,5 @@
 import { Moment } from "moment";
-import { Account } from "../Accounts/model";
+import { Account } from "../../models/Account";
 
 export interface Expense {
   id: string;

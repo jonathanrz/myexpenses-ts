@@ -10,11 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import useAxios from "../../hooks/useAxios";
-import useAsync from "../../hooks/useAsync";
 import Form from "./Form";
 import AccountRow from "./AccountRow";
-import { Account } from "./model";
+import { Account } from "../../models/Account";
+import AccountsQuery from "../../queries/accounts";
 
 const useStyles = makeStyles({
   container: {
@@ -25,30 +24,29 @@ const useStyles = makeStyles({
   formContainer: {
     padding: "1rem",
   },
+  table: {
+    padding: "1rem 2rem 2rem",
+    width: "unset",
+  },
 });
 
 function Accounts() {
   const classes = useStyles();
+  const { query, deleteMutation } = AccountsQuery();
 
-  const axios = useAxios();
-  const dataAsync = useAsync(() => {
-    return axios.get("accounts").then(({ data }) => data.data);
-  });
-
-  if (dataAsync.pending) return <CircularProgress />;
-  if (dataAsync.error) return <Alert severity="error">{dataAsync.error}</Alert>;
-
-  const onAccountSaved = () => dataAsync.execute();
+  if (query.isLoading) return <CircularProgress />;
+  if (query.isError)
+    return <Alert severity="error">{query.error.message}</Alert>;
 
   function deleteAccount(id: string) {
     if (window.confirm("Delete?")) {
-      axios.delete(`accounts/${id}`).then(() => dataAsync.execute());
+      deleteMutation.mutate(id);
     }
   }
 
   return (
     <div className={classes.container}>
-      <TableContainer component={Paper}>
+      <TableContainer className={classes.table} component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -58,15 +56,14 @@ function Accounts() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dataAsync.result.map((account: Account) => (
-              <AccountRow
-                key={account.id}
-                account={account}
-                axios={axios}
-                onAccountSaved={onAccountSaved}
-                deleteAccount={deleteAccount}
-              />
-            ))}
+            {query.data &&
+              query.data.map((account: Account) => (
+                <AccountRow
+                  key={account.id}
+                  account={account}
+                  deleteAccount={deleteAccount}
+                />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -74,7 +71,7 @@ function Accounts() {
         <Typography component="h1" variant="h5">
           New Account
         </Typography>
-        <Form axios={axios} onAccountSaved={onAccountSaved} />
+        <Form />
       </Paper>
     </div>
   );
