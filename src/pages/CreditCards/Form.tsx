@@ -1,20 +1,18 @@
 import React from "react";
-import { AxiosInstance } from "axios";
 import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormikTextField from "../../components/formik/FormikTextField";
 import FormikSelectField from "../../components/formik/FormikSelectField";
-import { State } from "../../hooks/model";
 import { Account } from "../../models/Account";
-import { CreditCard } from "./model";
+import { CreditCard } from "../../models/CreditCard";
+import useAccountsQuery from "../../queries/accounts";
+import useCreditCardsQuery from "../../queries/creditCards";
 
 interface CreditCardFormProps {
-  axios: AxiosInstance;
   creditCard?: CreditCard;
-  accountsAsync: State<Array<Account>>;
-  onCreditCardSaved: () => void;
+  onCreditCardSaved?: () => void;
   onCancel?: () => void;
 }
 
@@ -33,28 +31,22 @@ const useStyles = makeStyles({
 
 function CreditCardForm({
   creditCard = { id: "", name: "" },
-  axios,
-  accountsAsync,
   onCreditCardSaved,
   onCancel,
 }: CreditCardFormProps) {
   const classes = useStyles();
+  const { query: accountsQuery } = useAccountsQuery();
+  const { mutation } = useCreditCardsQuery();
 
   const formik = useFormik({
     initialValues: {
       name: creditCard.name,
       account_id: creditCard.account ? creditCard.account.id : "",
     },
-    onSubmit: (values) => {
-      if (creditCard.id) {
-        return axios
-          .patch(`/credit_cards/${creditCard.id}`, { credit_card: values })
-          .then(() => onCreditCardSaved());
-      }
-      return axios
-        .post("/credit_cards", { credit_card: values })
-        .then(() => onCreditCardSaved());
-    },
+    onSubmit: (values) =>
+      mutation
+        .mutateAsync({ ...values, id: creditCard.id })
+        .then(() => onCreditCardSaved && onCreditCardSaved()),
   });
 
   const submitButton = creditCard.id ? "Save" : "Create";
@@ -72,8 +64,8 @@ function CreditCardForm({
         name="account_id"
         label="Account"
         options={
-          accountsAsync.result
-            ? accountsAsync.result.map((account: Account) => ({
+          accountsQuery.data
+            ? accountsQuery.data.map((account: Account) => ({
                 label: account.name,
                 value: account.id,
               }))
