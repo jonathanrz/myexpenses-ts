@@ -1,16 +1,15 @@
 import React from "react";
-import { AxiosInstance } from "axios";
 import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormikTextField from "../../components/formik/FormikTextField";
-import { Place } from "./model";
+import { Place } from "../../models/Place";
+import usePlacesQuery from "../../queries/places";
 
 interface PlaceFormProps {
-  axios: AxiosInstance;
   place?: Place;
-  onPlaceSaved: () => void;
+  onPlaceSaved?: () => void;
   onCancel?: () => void;
 }
 
@@ -29,26 +28,20 @@ const useStyles = makeStyles({
 
 function PlaceForm({
   place = { id: "", name: "" },
-  axios,
   onPlaceSaved,
   onCancel,
 }: PlaceFormProps) {
   const classes = useStyles();
+  const { mutation } = usePlacesQuery();
 
   const formik = useFormik({
     initialValues: {
       name: place.name,
     },
-    onSubmit: (values) => {
-      if (place.id) {
-        return axios
-          .patch(`/places/${place.id}`, { place: values })
-          .then(() => onPlaceSaved());
-      }
-      return axios
-        .post("/places", { place: values })
-        .then(() => onPlaceSaved());
-    },
+    onSubmit: (values) =>
+      mutation
+        .mutateAsync({ ...values, id: place.id })
+        .then(() => onPlaceSaved && onPlaceSaved()),
   });
 
   const submitButton = place.id ? "Save" : "Create";

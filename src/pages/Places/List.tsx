@@ -10,11 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import useAxios from "../../hooks/useAxios";
-import useAsync from "../../hooks/useAsync";
 import Form from "./Form";
 import PlaceRow from "./PlaceRow";
-import { Place } from "./model";
+import { Place } from "../../models/Place";
+import usePlacesQuery from "../../queries/places";
 
 const useStyles = makeStyles({
   container: {
@@ -25,30 +24,29 @@ const useStyles = makeStyles({
   formContainer: {
     padding: "1rem",
   },
+  table: {
+    padding: "1rem 2rem 2rem",
+    width: "unset",
+  },
 });
 
 function PlacesList() {
   const classes = useStyles();
+  const { query, deleteMutation } = usePlacesQuery();
 
-  const axios = useAxios();
-  const dataAsync = useAsync(() => {
-    return axios.get("places").then(({ data }) => data.data);
-  });
-
-  if (dataAsync.pending) return <CircularProgress />;
-  if (dataAsync.error) return <Alert severity="error">{dataAsync.error}</Alert>;
-
-  const onPlaceSaved = () => dataAsync.execute();
+  if (query.isLoading) return <CircularProgress />;
+  if (query.isError)
+    return <Alert severity="error">{query.error.message}</Alert>;
 
   function deletePlace(id: string) {
     if (window.confirm("Delete?")) {
-      axios.delete(`places/${id}`).then(() => dataAsync.execute());
+      deleteMutation.mutate(id);
     }
   }
 
   return (
     <div className={classes.container}>
-      <TableContainer component={Paper}>
+      <TableContainer className={classes.table} component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -57,15 +55,14 @@ function PlacesList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dataAsync.result.map((place: Place) => (
-              <PlaceRow
-                key={place.id}
-                place={place}
-                axios={axios}
-                onPlaceSaved={onPlaceSaved}
-                deletePlace={deletePlace}
-              />
-            ))}
+            {query.data &&
+              query.data.map((place: Place) => (
+                <PlaceRow
+                  key={place.id}
+                  place={place}
+                  deletePlace={deletePlace}
+                />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -73,7 +70,7 @@ function PlacesList() {
         <Typography component="h1" variant="h5">
           New Place
         </Typography>
-        <Form axios={axios} onPlaceSaved={onPlaceSaved} />
+        <Form />
       </Paper>
     </div>
   );

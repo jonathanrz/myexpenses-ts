@@ -24,6 +24,10 @@ const useStyles = makeStyles({
   formContainer: {
     padding: "1rem",
   },
+  table: {
+    padding: "1rem 2rem 2rem",
+    width: "unset",
+  },
 });
 
 function CategoriesList() {
@@ -42,7 +46,7 @@ function CategoriesList() {
 
   return (
     <div className={classes.container}>
-      <TableContainer component={Paper}>
+      <TableContainer className={classes.table} component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
