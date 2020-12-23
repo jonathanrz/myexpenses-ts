@@ -1,5 +1,4 @@
 import React from "react";
-import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
@@ -11,11 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import useAxios from "../../hooks/useAxios";
-import useAsync from "../../hooks/useAsync";
 import Form from "./Form";
 import BillRow from "./BillRow";
-import { Bill } from "./model";
+import { Bill } from "../../models/Bill";
+import BillsQuery from "../../queries/bills";
 
 const useStyles = makeStyles({
   container: {
@@ -26,36 +24,29 @@ const useStyles = makeStyles({
   formContainer: {
     padding: "1rem",
   },
+  table: {
+    padding: "1rem 2rem 2rem",
+    width: "unset",
+  },
 });
 
 function BillsList() {
   const classes = useStyles();
+  const { query, deleteMutation } = BillsQuery();
 
-  const axios = useAxios();
-  const dataAsync = useAsync(() => {
-    return axios.get("bills").then(({ data }) =>
-      data.data.map((bill: Bill) => ({
-        ...bill,
-        init_date: moment(bill.init_date),
-        end_date: moment(bill.end_date),
-      }))
-    );
-  });
-
-  if (dataAsync.pending) return <CircularProgress />;
-  if (dataAsync.error) return <Alert severity="error">{dataAsync.error}</Alert>;
-
-  const onBillSaved = () => dataAsync.execute();
+  if (query.isLoading) return <CircularProgress />;
+  if (query.isError)
+    return <Alert severity="error">{query.error.message}</Alert>;
 
   function deleteBill(id: string) {
     if (window.confirm("Delete?")) {
-      axios.delete(`bills/${id}`).then(() => dataAsync.execute());
+      deleteMutation.mutate(id);
     }
   }
 
   return (
     <div className={classes.container}>
-      <TableContainer component={Paper}>
+      <TableContainer className={classes.table} component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -68,15 +59,10 @@ function BillsList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dataAsync.result.map((bill: Bill) => (
-              <BillRow
-                key={bill.id}
-                bill={bill}
-                axios={axios}
-                onBillSaved={onBillSaved}
-                deleteBill={deleteBill}
-              />
-            ))}
+            {query.data &&
+              query.data.map((bill: Bill) => (
+                <BillRow key={bill.id} bill={bill} deleteBill={deleteBill} />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -84,7 +70,7 @@ function BillsList() {
         <Typography component="h1" variant="h5">
           New Bill
         </Typography>
-        <Form axios={axios} onBillSaved={onBillSaved} />
+        <Form />
       </Paper>
     </div>
   );

@@ -1,5 +1,4 @@
 import React from "react";
-import { AxiosInstance } from "axios";
 import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
@@ -8,12 +7,12 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import FormikCurrencyField from "../../components/formik/FormikCurrencyField";
 import FormikDateField from "../../components/formik/FormikDateField";
 import FormikTextField from "../../components/formik/FormikTextField";
-import { Bill } from "./model";
+import { Bill } from "../../models/Bill";
+import BillsQuery from "../../queries/bills";
 
 interface BillFormProps {
-  axios: AxiosInstance;
   bill?: Bill;
-  onBillSaved: () => void;
+  onBillSaved?: () => void;
   onCancel?: () => void;
 }
 
@@ -39,11 +38,11 @@ function BillForm({
     end_date: moment(),
     value: 0,
   },
-  axios,
   onBillSaved,
   onCancel,
 }: BillFormProps) {
   const classes = useStyles();
+  const { mutation } = BillsQuery();
 
   const formik = useFormik({
     initialValues: {
@@ -53,20 +52,13 @@ function BillForm({
       end_date: bill.end_date,
       value: bill.value,
     },
-    onSubmit: (values) => {
-      if (bill.id) {
-        return axios
-          .patch(`/bills/${bill.id}`, {
-            bill: {
-              ...values,
-              init_date: values.init_date.toISOString(),
-              end_date: values.end_date.toISOString(),
-            },
-          })
-          .then(() => onBillSaved());
-      }
-      return axios.post("/bills", { bill: values }).then(() => onBillSaved());
-    },
+    onSubmit: (values) =>
+      mutation
+        .mutateAsync({
+          ...values,
+          id: bill.id,
+        })
+        .then(() => onBillSaved && onBillSaved()),
   });
 
   const submitButton = bill.id ? "Save" : "Create";
