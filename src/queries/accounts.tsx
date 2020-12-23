@@ -5,7 +5,7 @@ import { Account } from "../models/Account";
 const MODEL_NAME = "account";
 const PATH = "accounts";
 
-function AccountsQueries() {
+function useAccountsQuery() {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
@@ -43,4 +43,4 @@ function AccountsQueries() {
   return { query, mutation, deleteMutation };
 }
 
-export default AccountsQueries;
+export default useAccountsQuery;

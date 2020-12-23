@@ -13,7 +13,7 @@ import Paper from "@material-ui/core/Paper";
 import Form from "./Form";
 import BillRow from "./BillRow";
 import { Bill } from "../../models/Bill";
-import BillsQuery from "../../queries/bills";
+import useBillsQuery from "../../queries/bills";
 
 const useStyles = makeStyles({
   container: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles({
 
 function BillsList() {
   const classes = useStyles();
-  const { query, deleteMutation } = BillsQuery();
+  const { query, deleteMutation } = useBillsQuery();
 
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)

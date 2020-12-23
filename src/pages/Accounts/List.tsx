@@ -13,7 +13,7 @@ import Paper from "@material-ui/core/Paper";
 import Form from "./Form";
 import AccountRow from "./AccountRow";
 import { Account } from "../../models/Account";
-import AccountsQuery from "../../queries/accounts";
+import useAccountsQuery from "../../queries/accounts";
 
 const useStyles = makeStyles({
   container: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles({
 
 function Accounts() {
   const classes = useStyles();
-  const { query, deleteMutation } = AccountsQuery();
+  const { query, deleteMutation } = useAccountsQuery();
 
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)

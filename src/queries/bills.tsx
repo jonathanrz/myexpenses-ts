@@ -6,7 +6,7 @@ import { Bill } from "../models/Bill";
 const MODEL_NAME = "bill";
 const PATH = "bills";
 
-function BillsQueries() {
+function useBillsQuery() {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
@@ -56,4 +56,4 @@ function BillsQueries() {
   return { query, mutation, deleteMutation };
 }
 
-export default BillsQueries;
+export default useBillsQuery;

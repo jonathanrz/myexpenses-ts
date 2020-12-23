@@ -6,7 +6,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import FormikCurrencyField from "../../components/formik/FormikCurrencyField";
 import FormikTextField from "../../components/formik/FormikTextField";
 import { Account } from "../../models/Account";
-import AccountsQuery from "../../queries/accounts";
+import useAccountsQuery from "../../queries/accounts";
 
 interface AccountFormProps {
   account?: Account;
@@ -33,7 +33,7 @@ function AccountForm({
   onCancel,
 }: AccountFormProps) {
   const classes = useStyles();
-  const { mutation } = AccountsQuery();
+  const { mutation } = useAccountsQuery();
 
   const formik = useFormik({
     initialValues: {

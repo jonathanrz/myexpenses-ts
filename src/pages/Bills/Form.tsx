@@ -8,7 +8,7 @@ import FormikCurrencyField from "../../components/formik/FormikCurrencyField";
 import FormikDateField from "../../components/formik/FormikDateField";
 import FormikTextField from "../../components/formik/FormikTextField";
 import { Bill } from "../../models/Bill";
-import BillsQuery from "../../queries/bills";
+import useBillsQuery from "../../queries/bills";
 
 interface BillFormProps {
   bill?: Bill;
@@ -42,7 +42,7 @@ function BillForm({
   onCancel,
 }: BillFormProps) {
   const classes = useStyles();
-  const { mutation } = BillsQuery();
+  const { mutation } = useBillsQuery();
 
   const formik = useFormik({
     initialValues: {
