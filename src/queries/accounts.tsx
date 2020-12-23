@@ -2,37 +2,40 @@ import useAxios from "../hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Account } from "../models/Account";
 
+const MODEL_NAME = "account";
+const PATH = "accounts";
+
 function AccountsQueries() {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<Account>, Error>("accounts", () =>
-    axios.get("accounts").then(({ data }) => data.data)
+  const query = useQuery<Array<Account>, Error>(PATH, () =>
+    axios.get(PATH).then(({ data }) => data.data)
   );
 
   const mutation = useMutation<Account, Error, Account>(
     (values) => {
       if (values.id) {
         return axios
-          .patch(`/accounts/${values.id}`, { account: values })
+          .patch(`/${PATH}/${values.id}`, { [MODEL_NAME]: values })
           .then(({ data }) => data.data);
       }
       return axios
-        .post("/accounts", { account: values })
+        .post(`/{PATH}`, { [MODEL_NAME]: values })
         .then(({ data }) => data.data);
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("accounts");
+        queryClient.invalidateQueries(PATH);
       },
     }
   );
 
   const deleteMutation = useMutation<void, Error, String>(
-    (id) => axios.delete(`accounts/${id}`),
+    (id) => axios.delete(`${PATH}/${id}`),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("accounts");
+        queryClient.invalidateQueries(PATH);
       },
     }
   );

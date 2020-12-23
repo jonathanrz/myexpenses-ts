@@ -3,12 +3,15 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import useAxios from "../hooks/useAxios";
 import { Bill } from "../models/Bill";
 
+const MODEL_NAME = "bill";
+const PATH = "bills";
+
 function BillsQueries() {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<Bill>, Error>("bills", () =>
-    axios.get("bills").then(({ data }) =>
+  const query = useQuery<Array<Bill>, Error>(PATH, () =>
+    axios.get(PATH).then(({ data }) =>
       data.data.map((bill: Bill) => ({
         ...bill,
         init_date: moment(bill.init_date),
@@ -21,8 +24,8 @@ function BillsQueries() {
     (values) => {
       if (values.id) {
         return axios
-          .patch(`/bills/${values.id}`, {
-            bill: {
+          .patch(`/${PATH}/${values.id}`, {
+            [MODEL_NAME]: {
               ...values,
               init_date: values.init_date.toISOString(),
               end_date: values.end_date.toISOString(),
@@ -31,21 +34,21 @@ function BillsQueries() {
           .then(({ data }) => data.data);
       }
       return axios
-        .post("/bills", { bill: values })
+        .post(`/${PATH}`, { [MODEL_NAME]: values })
         .then(({ data }) => data.data);
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("bills");
+        queryClient.invalidateQueries(PATH);
       },
     }
   );
 
   const deleteMutation = useMutation<void, Error, String>(
-    (id) => axios.delete(`bills/${id}`),
+    (id) => axios.delete(`${PATH}/${id}`),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("bills");
+        queryClient.invalidateQueries(PATH);
       },
     }
   );
