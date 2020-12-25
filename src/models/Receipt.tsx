@@ -1,5 +1,5 @@
 import { Moment } from "moment";
-import { Account } from "../../models/Account";
+import { Account } from "./Account";
 
 export interface Receipt {
   id: string;

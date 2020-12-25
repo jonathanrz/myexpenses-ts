@@ -1,5 +1,4 @@
 import React from "react";
-import { AxiosInstance } from "axios";
 import { useFormik } from "formik";
 import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,15 +8,14 @@ import FormikCurrencyField from "../../components/formik/FormikCurrencyField";
 import FormikDateField from "../../components/formik/FormikDateField";
 import FormikTextField from "../../components/formik/FormikTextField";
 import FormikSelectField from "../../components/formik/FormikSelectField";
-import { State } from "../../hooks/model";
 import { Account } from "../../models/Account";
-import { Receipt } from "./model";
+import { Receipt } from "../../models/Receipt";
+import useAccountsQuery from "../../queries/accounts";
+import useReceiptsQuery from "../../queries/receipts";
 
 interface ReceiptFormProps {
-  axios: AxiosInstance;
   receipt?: Receipt;
-  accountsAsync: State<Array<Account>>;
-  onReceiptSaved: () => void;
+  onReceiptSaved?: () => void;
   onCancel?: () => void;
 }
 
@@ -37,12 +35,12 @@ const useStyles = makeStyles({
 
 function ReceiptForm({
   receipt = { id: "", name: "", confirmed: false, value: 0, date: moment() },
-  axios,
-  accountsAsync,
   onReceiptSaved,
   onCancel,
 }: ReceiptFormProps) {
   const classes = useStyles();
+  const { query: accountsQuery } = useAccountsQuery();
+  const { mutation } = useReceiptsQuery();
 
   const formik = useFormik({
     initialValues: {
@@ -52,16 +50,10 @@ function ReceiptForm({
       value: receipt.value,
       date: receipt.date,
     },
-    onSubmit: (values) => {
-      if (receipt.id) {
-        return axios
-          .patch(`/receipts/${receipt.id}`, { receipt: values })
-          .then(() => onReceiptSaved());
-      }
-      return axios
-        .post("/receipts", { receipt: values })
-        .then(() => onReceiptSaved());
-    },
+    onSubmit: (values) =>
+      mutation
+        .mutateAsync({ ...values, id: receipt.id })
+        .then(() => onReceiptSaved && onReceiptSaved()),
   });
 
   const submitButton = receipt.id ? "Save" : "Create";
@@ -79,8 +71,8 @@ function ReceiptForm({
         name="account_id"
         label="Account"
         options={
-          accountsAsync.result
-            ? accountsAsync.result.map((account: Account) => ({
+          accountsQuery.data
+            ? accountsQuery.data.map((account: Account) => ({
                 label: account.name,
                 value: account.id,
               }))
