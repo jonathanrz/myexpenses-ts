@@ -10,11 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import useAxios from "../../hooks/useAxios";
-import useAsync from "../../hooks/useAsync";
 import Form from "./Form";
 import CategoryRow from "./CategoryRow";
-import { Category } from "./model";
+import { Category } from "../../models/Category";
+import useCategoriesQuery from "../../queries/categories";
 
 const useStyles = makeStyles({
   container: {
@@ -25,30 +24,29 @@ const useStyles = makeStyles({
   formContainer: {
     padding: "1rem",
   },
+  table: {
+    padding: "1rem 2rem 2rem",
+    width: "unset",
+  },
 });
 
 function CategoriesList() {
   const classes = useStyles();
+  const { query, deleteMutation } = useCategoriesQuery();
 
-  const axios = useAxios();
-  const dataAsync = useAsync(() => {
-    return axios.get("categories").then(({ data }) => data.data);
-  });
-
-  if (dataAsync.pending) return <CircularProgress />;
-  if (dataAsync.error) return <Alert severity="error">{dataAsync.error}</Alert>;
-
-  const onCategorySaved = () => dataAsync.execute();
+  if (query.isLoading) return <CircularProgress />;
+  if (query.isError)
+    return <Alert severity="error">{query.error.message}</Alert>;
 
   function deleteCategory(id: string) {
     if (window.confirm("Delete?")) {
-      axios.delete(`categories/${id}`).then(() => dataAsync.execute());
+      deleteMutation.mutate(id);
     }
   }
 
   return (
     <div className={classes.container}>
-      <TableContainer component={Paper}>
+      <TableContainer className={classes.table} component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -57,15 +55,14 @@ function CategoriesList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dataAsync.result.map((category: Category) => (
-              <CategoryRow
-                key={category.id}
-                category={category}
-                axios={axios}
-                onCategorySaved={onCategorySaved}
-                deleteCategory={deleteCategory}
-              />
-            ))}
+            {query.data &&
+              query.data.map((category: Category) => (
+                <CategoryRow
+                  key={category.id}
+                  category={category}
+                  deleteCategory={deleteCategory}
+                />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -73,7 +70,7 @@ function CategoriesList() {
         <Typography component="h1" variant="h5">
           New Category
         </Typography>
-        <Form axios={axios} onCategorySaved={onCategorySaved} />
+        <Form />
       </Paper>
     </div>
   );

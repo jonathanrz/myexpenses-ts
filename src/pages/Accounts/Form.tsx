@@ -1,17 +1,16 @@
 import React from "react";
-import { AxiosInstance } from "axios";
 import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormikCurrencyField from "../../components/formik/FormikCurrencyField";
 import FormikTextField from "../../components/formik/FormikTextField";
-import { Account } from "./model";
+import { Account } from "../../models/Account";
+import useAccountsQuery from "../../queries/accounts";
 
 interface AccountFormProps {
-  axios: AxiosInstance;
   account?: Account;
-  onAccountSaved: () => void;
+  onAccountSaved?: () => void;
   onCancel?: () => void;
 }
 
@@ -30,27 +29,21 @@ const useStyles = makeStyles({
 
 function AccountForm({
   account = { id: "", name: "", balance: 0 },
-  axios,
   onAccountSaved,
   onCancel,
 }: AccountFormProps) {
   const classes = useStyles();
+  const { mutation } = useAccountsQuery();
 
   const formik = useFormik({
     initialValues: {
       name: account.name,
       balance: account.balance,
     },
-    onSubmit: (values) => {
-      if (account.id) {
-        return axios
-          .patch(`/accounts/${account.id}`, { account: values })
-          .then(() => onAccountSaved());
-      }
-      return axios
-        .post("/accounts", { account: values })
-        .then(() => onAccountSaved());
-    },
+    onSubmit: (values) =>
+      mutation
+        .mutateAsync({ ...values, id: account.id })
+        .then(() => onAccountSaved && onAccountSaved()),
   });
 
   const submitButton = account.id ? "Save" : "Create";
@@ -84,7 +77,7 @@ function AccountForm({
           variant="contained"
           disabled={formik.isSubmitting}
         >
-          {formik.isSubmitting ? <CircularProgress /> : submitButton}
+          {formik.isSubmitting ? <CircularProgress size={20} /> : submitButton}
         </Button>
       </div>
     </form>

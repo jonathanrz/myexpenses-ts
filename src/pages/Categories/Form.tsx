@@ -1,16 +1,15 @@
 import React from "react";
-import { AxiosInstance } from "axios";
 import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormikTextField from "../../components/formik/FormikTextField";
-import { Category } from "./model";
+import { Category } from "../../models/Category";
+import useCategoriesQuery from "../../queries/categories";
 
 interface CategoryFormProps {
-  axios: AxiosInstance;
   category?: Category;
-  onCategorySaved: () => void;
+  onCategorySaved?: () => void;
   onCancel?: () => void;
 }
 
@@ -29,26 +28,20 @@ const useStyles = makeStyles({
 
 function CategoryForm({
   category = { id: "", name: "" },
-  axios,
   onCategorySaved,
   onCancel,
 }: CategoryFormProps) {
   const classes = useStyles();
+  const { mutation } = useCategoriesQuery();
 
   const formik = useFormik({
     initialValues: {
       name: category.name,
     },
-    onSubmit: (values) => {
-      if (category.id) {
-        return axios
-          .patch(`/categories/${category.id}`, { category: values })
-          .then(() => onCategorySaved());
-      }
-      return axios
-        .post("/categories", { category: values })
-        .then(() => onCategorySaved());
-    },
+    onSubmit: (values) =>
+      mutation
+        .mutateAsync({ ...values, id: category.id })
+        .then(() => onCategorySaved && onCategorySaved()),
   });
 
   const submitButton = category.id ? "Save" : "Create";

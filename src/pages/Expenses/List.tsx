@@ -1,5 +1,4 @@
 import React from "react";
-import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
@@ -11,11 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import useAxios from "../../hooks/useAxios";
-import useAsync from "../../hooks/useAsync";
 import Form from "./Form";
 import ExpenseRow from "./ExpenseRow";
-import { Expense } from "./model";
+import { Expense } from "../../models/Expense";
+import useExpensesQuery from "../../queries/expenses";
 
 const useStyles = makeStyles({
   container: {
@@ -34,43 +32,15 @@ const useStyles = makeStyles({
 
 function ExpenseList() {
   const classes = useStyles();
+  const { query, deleteMutation } = useExpensesQuery();
 
-  const axios = useAxios();
-  const dataAsync = useAsync(() => {
-    return axios.get("expenses").then(({ data }) =>
-      data.data.map((expense: Expense) => ({
-        ...expense,
-        date: moment(expense.date),
-      }))
-    );
-  });
-
-  const accountsAsync = useAsync(() => {
-    return axios.get("accounts").then(({ data }) => data.data);
-  });
-
-  if (dataAsync.pending) return <CircularProgress />;
-  if (dataAsync.error) return <Alert severity="error">{dataAsync.error}</Alert>;
-
-  const onExpenseSaved = () => dataAsync.execute();
-  const onExpenseUpdated = (expense: Expense) => {
-    dataAsync.setResult(
-      dataAsync.result.map((cache: Expense) => {
-        if (cache.id === expense.id) {
-          return expense;
-        } else {
-          return cache;
-        }
-      })
-    );
-  };
+  if (query.isLoading) return <CircularProgress />;
+  if (query.isError)
+    return <Alert severity="error">{query.error.message}</Alert>;
 
   function deleteExpense(id: string) {
     if (window.confirm("Delete?")) {
-      axios
-        .delete(`expenses/${id}`)
-        .then(() => dataAsync.execute())
-        .catch(console.error);
+      deleteMutation.mutate(id);
     }
   }
 
@@ -89,14 +59,10 @@ function ExpenseList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dataAsync.result.map((expense: Expense) => (
+            {query.data?.map((expense: Expense) => (
               <ExpenseRow
                 key={expense.id}
                 expense={expense}
-                accountsAsync={accountsAsync}
-                axios={axios}
-                onExpenseSaved={onExpenseSaved}
-                onExpenseUpdated={onExpenseUpdated}
                 deleteExpense={deleteExpense}
               />
             ))}
@@ -107,11 +73,7 @@ function ExpenseList() {
         <Typography component="h1" variant="h5">
           New Expense
         </Typography>
-        <Form
-          axios={axios}
-          accountsAsync={accountsAsync}
-          onExpenseSaved={onExpenseSaved}
-        />
+        <Form />
       </Paper>
     </div>
   );

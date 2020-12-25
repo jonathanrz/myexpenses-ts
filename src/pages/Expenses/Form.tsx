@@ -1,5 +1,4 @@
 import React from "react";
-import { AxiosInstance } from "axios";
 import { useFormik } from "formik";
 import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,15 +8,14 @@ import FormikCurrencyField from "../../components/formik/FormikCurrencyField";
 import FormikDateField from "../../components/formik/FormikDateField";
 import FormikTextField from "../../components/formik/FormikTextField";
 import FormikSelectField from "../../components/formik/FormikSelectField";
-import { State } from "../../hooks/model";
-import { Account } from "../Accounts/model";
-import { Expense } from "./model";
+import { Account } from "../../models/Account";
+import { Expense } from "../../models/Expense";
+import useAccountsQuery from "../../queries/accounts";
+import useExpensesQuery from "../../queries/expenses";
 
 interface ExpenseFormProps {
-  axios: AxiosInstance;
   expense?: Expense;
-  accountsAsync: State<Array<Account>>;
-  onExpenseSaved: () => void;
+  onExpenseSaved?: () => void;
   onCancel?: () => void;
 }
 
@@ -37,12 +35,12 @@ const useStyles = makeStyles({
 
 function ExpenseForm({
   expense = { id: "", name: "", confirmed: false, value: 0, date: moment() },
-  axios,
-  accountsAsync,
   onExpenseSaved,
   onCancel,
 }: ExpenseFormProps) {
   const classes = useStyles();
+  const { query: accountsQuery } = useAccountsQuery();
+  const { mutation } = useExpensesQuery();
 
   const formik = useFormik({
     initialValues: {
@@ -52,20 +50,10 @@ function ExpenseForm({
       value: expense.value,
       date: expense.date,
     },
-    onSubmit: (values) => {
-      if (expense.id) {
-        return axios
-          .patch(`/expenses/${expense.id}`, {
-            expense: { installmentNumber: null, ...values },
-          })
-          .then(() => onExpenseSaved());
-      }
-      return axios
-        .post("/expenses", {
-          expense: { installmentNumber: null, ...values },
-        })
-        .then(() => onExpenseSaved());
-    },
+    onSubmit: (values) =>
+      mutation
+        .mutateAsync({ ...values, id: expense.id })
+        .then(() => onExpenseSaved && onExpenseSaved()),
   });
 
   const submitButton = expense.id ? "Save" : "Create";
@@ -83,12 +71,10 @@ function ExpenseForm({
         name="account_id"
         label="Account"
         options={
-          accountsAsync.result
-            ? accountsAsync.result.map((account: Account) => ({
-                label: account.name,
-                value: account.id,
-              }))
-            : []
+          accountsQuery.data?.map((account: Account) => ({
+            label: account.name,
+            value: account.id,
+          })) || []
         }
         formik={formik}
         fullWidth

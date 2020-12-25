@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { AxiosInstance } from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Switch from "@material-ui/core/Switch";
@@ -8,18 +7,15 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import { State } from "../../hooks/model";
-import { Account } from "../Accounts/model";
+import { Account } from "../../models/Account";
 import Currency from "../../helpers/currency";
 import Form from "./Form";
-import { Expense } from "./model";
+import { Expense } from "../../models/Expense";
+import useAccountsQuery from "../../queries/accounts";
+import useExpensesQuery from "../../queries/expenses";
 
 interface ExpenseRowProps {
   expense: Expense;
-  axios: AxiosInstance;
-  accountsAsync: State<Array<Account>>;
-  onExpenseSaved: () => void;
-  onExpenseUpdated: (expense: Expense) => void;
   deleteExpense: (id: string) => void;
 }
 
@@ -29,24 +25,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ExpenseRow({
-  expense,
-  axios,
-  accountsAsync,
-  onExpenseSaved,
-  onExpenseUpdated,
-  deleteExpense,
-}: ExpenseRowProps) {
+function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
   const classes = useStyles();
 
   const [updatingConfirm, setUpdatingConfirm] = useState(false);
   const [edit, setEdit] = useState(false);
+  const { query: accountsQuery } = useAccountsQuery();
+  const { confirmMutation } = useExpensesQuery();
 
   function renderAccountName(account?: Account) {
     if (!account) return "No account";
-    if (accountsAsync.pending) return "Loading...";
+    if (accountsQuery.isLoading) return "Loading...";
 
-    const accountData = accountsAsync.result?.find((a) => a.id === account.id);
+    const accountData = accountsQuery.data?.find((a) => a.id === account.id);
     if (!accountData) return "Account not found";
 
     return accountData.name;
@@ -54,16 +45,8 @@ function ExpenseRow({
 
   function toggleConfirm() {
     setUpdatingConfirm(true);
-    const path = `/expenses/${expense.id}/${
-      expense.confirmed ? "unconfirm" : "confirm"
-    }`;
-
-    axios
-      .post(path)
-      .then(() =>
-        onExpenseUpdated({ ...expense, confirmed: !expense.confirmed })
-      )
-      .catch(console.error)
+    confirmMutation
+      .mutateAsync(expense)
       .finally(() => setUpdatingConfirm(false));
   }
 
@@ -72,13 +55,8 @@ function ExpenseRow({
       <TableRow>
         <TableCell colSpan={2}>
           <Form
-            axios={axios}
-            accountsAsync={accountsAsync}
             expense={expense}
-            onExpenseSaved={() => {
-              setEdit(false);
-              onExpenseSaved();
-            }}
+            onExpenseSaved={() => setEdit(false)}
             onCancel={() => setEdit(false)}
           />
         </TableCell>

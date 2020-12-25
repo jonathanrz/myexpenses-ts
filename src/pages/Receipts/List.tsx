@@ -1,5 +1,4 @@
 import React from "react";
-import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
@@ -11,11 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import useAxios from "../../hooks/useAxios";
-import useAsync from "../../hooks/useAsync";
 import Form from "./Form";
 import ReceiptRow from "./ReceiptRow";
-import { Receipt } from "./model";
+import { Receipt } from "../../models/Receipt";
+import useReceiptsQuery from "../../queries/receipts";
 
 const useStyles = makeStyles({
   container: {
@@ -34,43 +32,15 @@ const useStyles = makeStyles({
 
 function ReceiptList() {
   const classes = useStyles();
+  const { query, deleteMutation } = useReceiptsQuery();
 
-  const axios = useAxios();
-  const dataAsync = useAsync(() => {
-    return axios.get("receipts").then(({ data }) =>
-      data.data.map((receipt: Receipt) => ({
-        ...receipt,
-        date: moment(receipt.date),
-      }))
-    );
-  });
-
-  const accountsAsync = useAsync(() => {
-    return axios.get("accounts").then(({ data }) => data.data);
-  });
-
-  if (dataAsync.pending) return <CircularProgress />;
-  if (dataAsync.error) return <Alert severity="error">{dataAsync.error}</Alert>;
-
-  const onReceiptSaved = () => dataAsync.execute();
-  const onReceiptUpdated = (receipt: Receipt) => {
-    dataAsync.setResult(
-      dataAsync.result.map((cache: Receipt) => {
-        if (cache.id === receipt.id) {
-          return receipt;
-        } else {
-          return cache;
-        }
-      })
-    );
-  };
+  if (query.isLoading) return <CircularProgress />;
+  if (query.isError)
+    return <Alert severity="error">{query.error.message}</Alert>;
 
   function deleteReceipt(id: string) {
     if (window.confirm("Delete?")) {
-      axios
-        .delete(`receipts/${id}`)
-        .then(() => dataAsync.execute())
-        .catch(console.error);
+      deleteMutation.mutate(id);
     }
   }
 
@@ -89,17 +59,14 @@ function ReceiptList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dataAsync.result.map((receipt: Receipt) => (
-              <ReceiptRow
-                key={receipt.id}
-                receipt={receipt}
-                accountsAsync={accountsAsync}
-                axios={axios}
-                onReceiptSaved={onReceiptSaved}
-                onReceiptUpdated={onReceiptUpdated}
-                deleteReceipt={deleteReceipt}
-              />
-            ))}
+            {query.data &&
+              query.data.map((receipt: Receipt) => (
+                <ReceiptRow
+                  key={receipt.id}
+                  receipt={receipt}
+                  deleteReceipt={deleteReceipt}
+                />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -107,11 +74,7 @@ function ReceiptList() {
         <Typography component="h1" variant="h5">
           New Receipt
         </Typography>
-        <Form
-          axios={axios}
-          accountsAsync={accountsAsync}
-          onReceiptSaved={onReceiptSaved}
-        />
+        <Form />
       </Paper>
     </div>
   );

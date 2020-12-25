@@ -10,11 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import useAxios from "../../hooks/useAxios";
-import useAsync from "../../hooks/useAsync";
 import Form from "./Form";
 import CreditCardRow from "./CreditCardRow";
-import { CreditCard } from "./model";
+import { CreditCard } from "../../models/CreditCard";
+import useCreditCardsQuery from "../../queries/creditCards";
 
 const useStyles = makeStyles({
   container: {
@@ -25,34 +24,29 @@ const useStyles = makeStyles({
   formContainer: {
     padding: "1rem",
   },
+  table: {
+    padding: "1rem 2rem 2rem",
+    width: "unset",
+  },
 });
 
 function CreditCardList() {
   const classes = useStyles();
+  const { query, deleteMutation } = useCreditCardsQuery();
 
-  const axios = useAxios();
-  const dataAsync = useAsync(() => {
-    return axios.get("credit_cards").then(({ data }) => data.data);
-  });
-
-  const accountsAsync = useAsync(() => {
-    return axios.get("accounts").then(({ data }) => data.data);
-  });
-
-  if (dataAsync.pending) return <CircularProgress />;
-  if (dataAsync.error) return <Alert severity="error">{dataAsync.error}</Alert>;
-
-  const onCreditCardSaved = () => dataAsync.execute();
+  if (query.isLoading) return <CircularProgress />;
+  if (query.isError)
+    return <Alert severity="error">{query.error.message}</Alert>;
 
   function deleteCreditCard(id: string) {
     if (window.confirm("Delete?")) {
-      axios.delete(`credit_cards/${id}`).then(() => dataAsync.execute());
+      deleteMutation.mutate(id);
     }
   }
 
   return (
     <div className={classes.container}>
-      <TableContainer component={Paper}>
+      <TableContainer className={classes.table} component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -62,16 +56,14 @@ function CreditCardList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dataAsync.result.map((creditCard: CreditCard) => (
-              <CreditCardRow
-                key={creditCard.id}
-                creditCard={creditCard}
-                accountsAsync={accountsAsync}
-                axios={axios}
-                onCreditCardSaved={onCreditCardSaved}
-                deleteCreditCard={deleteCreditCard}
-              />
-            ))}
+            {query.data &&
+              query.data.map((creditCard: CreditCard) => (
+                <CreditCardRow
+                  key={creditCard.id}
+                  creditCard={creditCard}
+                  deleteCreditCard={deleteCreditCard}
+                />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -79,11 +71,7 @@ function CreditCardList() {
         <Typography component="h1" variant="h5">
           New Credit Card
         </Typography>
-        <Form
-          axios={axios}
-          accountsAsync={accountsAsync}
-          onCreditCardSaved={onCreditCardSaved}
-        />
+        <Form />
       </Paper>
     </div>
   );

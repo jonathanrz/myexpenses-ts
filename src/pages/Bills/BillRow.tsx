@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { AxiosInstance } from "axios";
 import IconButton from "@material-ui/core/IconButton";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
@@ -7,16 +6,14 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Currency from "../../helpers/currency";
 import Form from "./Form";
-import { Bill } from "./model";
+import { Bill } from "../../models/Bill";
 
 interface BillRowProps {
   bill: Bill;
-  axios: AxiosInstance;
-  onBillSaved: () => void;
   deleteBill: (id: string) => void;
 }
 
-function BillRow({ bill, axios, onBillSaved, deleteBill }: BillRowProps) {
+function BillRow({ bill, deleteBill }: BillRowProps) {
   const [edit, setEdit] = useState(false);
 
   if (edit) {
@@ -24,12 +21,8 @@ function BillRow({ bill, axios, onBillSaved, deleteBill }: BillRowProps) {
       <TableRow>
         <TableCell colSpan={3}>
           <Form
-            axios={axios}
             bill={bill}
-            onBillSaved={() => {
-              setEdit(false);
-              onBillSaved();
-            }}
+            onBillSaved={() => setEdit(false)}
             onCancel={() => setEdit(false)}
           />
         </TableCell>

@@ -7,6 +7,8 @@ import {
   Redirect,
 } from "react-router-dom";
 import Cookie from "js-cookie";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import AccountsPage from "./pages/Accounts";
@@ -60,43 +62,48 @@ function PrivateRoute({ children, exact, path }: PrivateRouteProps) {
   );
 }
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
     <MuiPickersUtilsProvider utils={MomentUtils}>
-      <Router>
-        <Switch>
-          <Route path="/login">
-            <LoginPage />
-          </Route>
-          <PrivateRoute exact path="/">
-            <HomePage />
-          </PrivateRoute>
-          <PrivateRoute exact path="/accounts">
-            <AccountsPage />
-          </PrivateRoute>
-          <PrivateRoute exact path="/bills">
-            <BillsPage />
-          </PrivateRoute>
-          <PrivateRoute exact path="/categories">
-            <CategoriesPage />
-          </PrivateRoute>
-          <PrivateRoute exact path="/credit_cards">
-            <CreditCardsPage />
-          </PrivateRoute>
-          <PrivateRoute exact path="/expenses">
-            <ExpensesPage />
-          </PrivateRoute>
-          <PrivateRoute exact path="/places">
-            <PlacesPage />
-          </PrivateRoute>
-          <PrivateRoute exact path="/receipts">
-            <ReceiptsPage />
-          </PrivateRoute>
-          <Route path="*">
-            <NoMatch />
-          </Route>
-        </Switch>
-      </Router>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Switch>
+            <Route path="/login">
+              <LoginPage />
+            </Route>
+            <PrivateRoute exact path="/">
+              <HomePage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/accounts">
+              <AccountsPage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/bills">
+              <BillsPage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/categories">
+              <CategoriesPage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/credit_cards">
+              <CreditCardsPage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/expenses">
+              <ExpensesPage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/places">
+              <PlacesPage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/receipts">
+              <ReceiptsPage />
+            </PrivateRoute>
+            <Route path="*">
+              <NoMatch />
+            </Route>
+          </Switch>
+        </Router>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </MuiPickersUtilsProvider>
   );
 }

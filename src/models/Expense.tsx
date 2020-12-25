@@ -1,7 +1,7 @@
 import { Moment } from "moment";
-import { Account } from "../Accounts/model";
+import { Account } from "./Account";
 
-export interface Receipt {
+export interface Expense {
   id: string;
   name: string;
   confirmed: boolean;

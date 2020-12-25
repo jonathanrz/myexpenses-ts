@@ -121,31 +121,31 @@ function PrivatePage({ children, title }: PrivatePageProps) {
             text="Accounts"
             Icon={<AccountBalanceIcon />}
           />
-          <DrawerLink
-            pathname="/credit_cards"
-            text="Credit Card"
-            Icon={<CreditCardIcon />}
-          />
           <DrawerLink pathname="/bills" text="Bills" Icon={<DateRangeIcon />} />
-          <DrawerLink
-            pathname="/places"
-            text="Places"
-            Icon={<StorefrontIcon />}
-          />
           <DrawerLink
             pathname="/categories"
             text="Categories"
             Icon={<CategoryIcon />}
           />
           <DrawerLink
-            pathname="/receipts"
-            text="Receipts"
-            Icon={<AttachMoneyIcon />}
+            pathname="/credit_cards"
+            text="Credit Card"
+            Icon={<CreditCardIcon />}
           />
           <DrawerLink
             pathname="/expenses"
             text="Expenses"
             Icon={<ShoppingCartIcon />}
+          />
+          <DrawerLink
+            pathname="/places"
+            text="Places"
+            Icon={<StorefrontIcon />}
+          />
+          <DrawerLink
+            pathname="/receipts"
+            text="Receipts"
+            Icon={<AttachMoneyIcon />}
           />
         </List>
       </Drawer>
