@@ -3,12 +3,12 @@ import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import FormikTextField from "../../components/formik/FormikTextField";
-import FormikSelectField from "../../components/formik/FormikSelectField";
-import { Account } from "../../models/Account";
-import { CreditCard } from "../../models/CreditCard";
-import useAccountsQuery from "../../queries/accounts";
-import useCreditCardsQuery from "../../queries/creditCards";
+import FormikTextField from "components/formik/FormikTextField";
+import FormikSelectField from "components/formik/FormikSelectField";
+import { Account } from "models/Account";
+import { CreditCard } from "models/CreditCard";
+import useAccountsQuery from "queries/accounts";
+import useCreditCardsQuery from "queries/creditCards";
 
 interface CreditCardFormProps {
   creditCard?: CreditCard;

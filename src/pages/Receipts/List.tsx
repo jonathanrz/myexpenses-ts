@@ -10,10 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { Receipt } from "models/Receipt";
+import useReceiptsQuery from "queries/receipts";
 import Form from "./Form";
 import ReceiptRow from "./ReceiptRow";
-import { Receipt } from "../../models/Receipt";
-import useReceiptsQuery from "../../queries/receipts";
 
 const useStyles = makeStyles({
   container: {

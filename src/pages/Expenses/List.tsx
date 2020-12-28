@@ -10,10 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { Expense } from "models/Expense";
+import useExpensesQuery from "queries/expenses";
 import Form from "./Form";
 import ExpenseRow from "./ExpenseRow";
-import { Expense } from "../../models/Expense";
-import useExpensesQuery from "../../queries/expenses";
 
 const useStyles = makeStyles({
   container: {

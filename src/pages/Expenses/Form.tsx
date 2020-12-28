@@ -4,14 +4,14 @@ import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import FormikCurrencyField from "../../components/formik/FormikCurrencyField";
-import FormikDateField from "../../components/formik/FormikDateField";
-import FormikTextField from "../../components/formik/FormikTextField";
-import FormikSelectField from "../../components/formik/FormikSelectField";
-import { Account } from "../../models/Account";
-import { Expense } from "../../models/Expense";
-import useAccountsQuery from "../../queries/accounts";
-import useExpensesQuery from "../../queries/expenses";
+import FormikCurrencyField from "components/formik/FormikCurrencyField";
+import FormikDateField from "components/formik/FormikDateField";
+import FormikTextField from "components/formik/FormikTextField";
+import FormikSelectField from "components/formik/FormikSelectField";
+import { Account } from "models/Account";
+import { Expense } from "models/Expense";
+import useAccountsQuery from "queries/accounts";
+import useExpensesQuery from "queries/expenses";
 
 interface ExpenseFormProps {
   expense?: Expense;

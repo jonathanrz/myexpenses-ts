@@ -1,14 +1,14 @@
 import React from "react";
 import { useFormik } from "formik";
-import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
+import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import FormikCurrencyField from "../../components/formik/FormikCurrencyField";
-import FormikDateField from "../../components/formik/FormikDateField";
-import FormikTextField from "../../components/formik/FormikTextField";
-import { Bill } from "../../models/Bill";
-import useBillsQuery from "../../queries/bills";
+import FormikCurrencyField from "components/formik/FormikCurrencyField";
+import FormikDateField from "components/formik/FormikDateField";
+import FormikTextField from "components/formik/FormikTextField";
+import { Bill } from "models/Bill";
+import useBillsQuery from "queries/bills";
 
 interface BillFormProps {
   bill?: Bill;

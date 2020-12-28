@@ -1,7 +1,7 @@
 import moment from "moment";
-import useAxios from "../hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { Receipt } from "../models/Receipt";
+import useAxios from "hooks/useAxios";
+import { Receipt } from "models/Receipt";
 
 const MODEL_NAME = "receipt";
 const PATH = "receipts";

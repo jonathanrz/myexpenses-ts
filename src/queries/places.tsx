@@ -1,6 +1,6 @@
-import useAxios from "../hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { Place } from "../models/Place";
+import useAxios from "hooks/useAxios";
+import { Place } from "models/Place";
 
 const MODEL_NAME = "place";
 const PATH = "places";

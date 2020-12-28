@@ -1,6 +1,6 @@
-import useAxios from "../hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { CreditCard } from "../models/CreditCard";
+import useAxios from "hooks/useAxios";
+import { CreditCard } from "models/CreditCard";
 
 const MODEL_NAME = "credit_card";
 const PATH = "credit_cards";

@@ -4,8 +4,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import { Place } from "models/Place";
 import Form from "./Form";
-import { Place } from "../../models/Place";
 
 interface PlaceRowProps {
   place: Place;

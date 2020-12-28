@@ -10,10 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { CreditCard } from "models/CreditCard";
+import useCreditCardsQuery from "queries/creditCards";
 import Form from "./Form";
 import CreditCardRow from "./CreditCardRow";
-import { CreditCard } from "../../models/CreditCard";
-import useCreditCardsQuery from "../../queries/creditCards";
 
 const useStyles = makeStyles({
   container: {

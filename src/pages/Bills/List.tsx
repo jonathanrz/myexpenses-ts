@@ -10,10 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { Bill } from "models/Bill";
+import useBillsQuery from "queries/bills";
 import Form from "./Form";
 import BillRow from "./BillRow";
-import { Bill } from "../../models/Bill";
-import useBillsQuery from "../../queries/bills";
 
 const useStyles = makeStyles({
   container: {

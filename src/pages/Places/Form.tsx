@@ -3,9 +3,9 @@ import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import FormikTextField from "../../components/formik/FormikTextField";
-import { Place } from "../../models/Place";
-import usePlacesQuery from "../../queries/places";
+import FormikTextField from "components/formik/FormikTextField";
+import { Place } from "models/Place";
+import usePlacesQuery from "queries/places";
 
 interface PlaceFormProps {
   place?: Place;

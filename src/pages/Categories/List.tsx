@@ -10,10 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { Category } from "models/Category";
+import useCategoriesQuery from "queries/categories";
 import Form from "./Form";
 import CategoryRow from "./CategoryRow";
-import { Category } from "../../models/Category";
-import useCategoriesQuery from "../../queries/categories";
 
 const useStyles = makeStyles({
   container: {

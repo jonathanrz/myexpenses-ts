@@ -1,6 +1,6 @@
 import useAxios from "../hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { Account } from "../models/Account";
+import { Account } from "models/Account";
 
 const MODEL_NAME = "account";
 const PATH = "accounts";

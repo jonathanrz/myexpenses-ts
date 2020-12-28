@@ -1,6 +1,6 @@
 import useAxios from "../hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { Category } from "../models/Category";
+import { Category } from "models/Category";
 
 const MODEL_NAME = "category";
 const PATH = "categories";

@@ -7,12 +7,12 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import { Account } from "../../models/Account";
-import Currency from "../../helpers/currency";
+import Currency from "helpers/currency";
+import { Account } from "models/Account";
+import { Receipt } from "models/Receipt";
+import useAccountsQuery from "queries/accounts";
+import useReceiptsQuery from "queries/receipts";
 import Form from "./Form";
-import { Receipt } from "../../models/Receipt";
-import useAccountsQuery from "../../queries/accounts";
-import useReceiptsQuery from "../../queries/receipts";
 
 interface ReceiptRowProps {
   receipt: Receipt;

@@ -4,9 +4,9 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import Currency from "../../helpers/currency";
+import Currency from "helpers/currency";
+import { Account } from "models/Account";
 import Form from "./Form";
-import { Account } from "../../models/Account";
 
 interface AccountRowProps {
   account: Account;

@@ -10,10 +10,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { Place } from "models/Place";
+import usePlacesQuery from "queries/places";
 import Form from "./Form";
 import PlaceRow from "./PlaceRow";
-import { Place } from "../../models/Place";
-import usePlacesQuery from "../../queries/places";
 
 const useStyles = makeStyles({
   container: {

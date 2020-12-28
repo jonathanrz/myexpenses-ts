@@ -4,10 +4,10 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import { Account } from "../../models/Account";
+import { Account } from "models/Account";
+import { CreditCard } from "models/CreditCard";
+import useAccountsQuery from "queries/accounts";
 import Form from "./Form";
-import { CreditCard } from "../../models/CreditCard";
-import useAccountsQuery from "../../queries/accounts";
 
 interface CreditCardRowProps {
   creditCard: CreditCard;
