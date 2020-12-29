@@ -40,7 +40,18 @@ function usePlacesQuery() {
     }
   );
 
-  return { query, mutation, deleteMutation };
+  function renderPlaceName(place?: Place) {
+    if (!place) return "No place";
+    if (query.isLoading) return "Loading...";
+    if (query.isError) return query.error.message;
+
+    const data = query.data?.find((a) => a.id === place.id);
+    if (!data) return "Place not found";
+
+    return data.name;
+  }
+
+  return { query, mutation, deleteMutation, renderPlaceName };
 }
 
 export default usePlacesQuery;

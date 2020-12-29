@@ -10,7 +10,9 @@ import FormikTextField from "components/formik/FormikTextField";
 import FormikSelectField from "components/formik/FormikSelectField";
 import { Account } from "models/Account";
 import { Expense } from "models/Expense";
+import { Place } from "models/Place";
 import useAccountsQuery from "queries/accounts";
+import usePlacesQuery from "queries/places";
 import useExpensesQuery from "queries/expenses";
 
 interface ExpenseFormProps {
@@ -40,20 +42,23 @@ function ExpenseForm({
 }: ExpenseFormProps) {
   const classes = useStyles();
   const { query: accountsQuery } = useAccountsQuery();
+  const { query: placesQuery } = usePlacesQuery();
   const { mutation } = useExpensesQuery();
 
   const formik = useFormik({
     initialValues: {
       name: expense.name,
-      account_id: expense.account ? expense.account.id : "",
+      account_id: expense.account?.id || "",
+      place_id: expense.place?.id || "",
       confirmed: expense.confirmed,
       value: expense.value,
       date: expense.date,
     },
-    onSubmit: (values) =>
-      mutation
-        .mutateAsync({ ...values, id: expense.id })
-        .then(() => onExpenseSaved && onExpenseSaved()),
+    onSubmit: (values, { resetForm }) =>
+      mutation.mutateAsync({ ...values, id: expense.id }).then(() => {
+        onExpenseSaved && onExpenseSaved();
+        resetForm();
+      }),
   });
 
   const submitButton = expense.id ? "Save" : "Create";
@@ -74,6 +79,19 @@ function ExpenseForm({
           accountsQuery.data?.map((account: Account) => ({
             label: account.name,
             value: account.id,
+          })) || []
+        }
+        formik={formik}
+        fullWidth
+        required
+      />
+      <FormikSelectField
+        name="place_id"
+        label="Place"
+        options={
+          placesQuery.data?.map((place: Place) => ({
+            label: place.name,
+            value: place.id,
           })) || []
         }
         formik={formik}

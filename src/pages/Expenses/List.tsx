@@ -52,6 +52,7 @@ function ExpenseList() {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Account</TableCell>
+              <TableCell>Place</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Value</TableCell>
               <TableCell>Confirmed</TableCell>
