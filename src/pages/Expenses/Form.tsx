@@ -9,8 +9,14 @@ import FormikDateField from "components/formik/FormikDateField";
 import FormikTextField from "components/formik/FormikTextField";
 import FormikSelectField from "components/formik/FormikSelectField";
 import { Account } from "models/Account";
+import { Bill } from "models/Bill";
+import { Category } from "models/Category";
 import { Expense } from "models/Expense";
+import { Place } from "models/Place";
 import useAccountsQuery from "queries/accounts";
+import useBillsQuery from "queries/bills";
+import useCategoriesQuery from "queries/categories";
+import usePlacesQuery from "queries/places";
 import useExpensesQuery from "queries/expenses";
 
 interface ExpenseFormProps {
@@ -24,7 +30,7 @@ const useStyles = makeStyles({
     display: "grid",
     gridGap: "1rem",
     margin: "0 auto 1rem",
-    maxWidth: "350px",
+    maxWidth: "450px",
   },
   buttonContainer: {
     display: "flex",
@@ -40,21 +46,37 @@ function ExpenseForm({
 }: ExpenseFormProps) {
   const classes = useStyles();
   const { query: accountsQuery } = useAccountsQuery();
+  const { query: billsQuery } = useBillsQuery();
+  const { query: categoriesQuery } = useCategoriesQuery();
+  const { query: placesQuery } = usePlacesQuery();
   const { mutation } = useExpensesQuery();
 
   const formik = useFormik({
     initialValues: {
       name: expense.name,
-      account_id: expense.account ? expense.account.id : "",
+      account_id: expense.account?.id || "",
+      bill_id: expense.bill?.id || "",
+      category_id: expense.category?.id || "",
+      place_id: expense.place?.id || "",
       confirmed: expense.confirmed,
       value: expense.value,
       date: expense.date,
     },
-    onSubmit: (values) =>
-      mutation
-        .mutateAsync({ ...values, id: expense.id })
-        .then(() => onExpenseSaved && onExpenseSaved()),
+    onSubmit: (values, { resetForm }) =>
+      mutation.mutateAsync({ ...values, id: expense.id }).then(() => {
+        onExpenseSaved && onExpenseSaved();
+        resetForm();
+      }),
   });
+
+  function handleBillSelected(selectedFieldId: number) {
+    const bill = billsQuery.data?.find((bill) => bill.id === selectedFieldId);
+
+    if (bill != null) {
+      formik.setFieldValue("name", bill.name);
+      formik.setFieldValue("value", bill.value);
+    }
+  }
 
   const submitButton = expense.id ? "Save" : "Create";
 
@@ -80,12 +102,52 @@ function ExpenseForm({
         fullWidth
         required
       />
+      <FormikSelectField
+        name="category_id"
+        label="Category"
+        options={
+          categoriesQuery.data?.map((category: Category) => ({
+            label: category.name,
+            value: category.id,
+          })) || []
+        }
+        formik={formik}
+        fullWidth
+        required
+      />
+      <FormikSelectField
+        name="place_id"
+        label="Place"
+        options={
+          placesQuery.data?.map((place: Place) => ({
+            label: place.name,
+            value: place.id,
+          })) || []
+        }
+        formik={formik}
+        fullWidth
+        required
+      />
       <FormikDateField name="date" label="Date" formik={formik} required />
       <FormikCurrencyField
         name="value"
         label="Value"
         formik={formik}
         required
+      />
+      <FormikSelectField
+        name="bill_id"
+        label="Bill"
+        options={
+          billsQuery.data?.map((bill: Bill) => ({
+            label: bill.name,
+            value: bill.id,
+          })) || []
+        }
+        formik={formik}
+        fullWidth
+        required
+        handleChange={handleBillSelected}
       />
       <div className={classes.buttonContainer}>
         {expense.id ? (

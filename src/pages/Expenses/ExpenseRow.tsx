@@ -8,9 +8,11 @@ import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Currency from "helpers/currency";
-import { Account } from "models/Account";
+import AccountCell from "components/shared/AccountCell";
+import BillCell from "components/shared/BillCell";
+import CategoryCell from "components/shared/CategoryCell";
+import PlaceCell from "components/shared/PlaceCell";
 import { Expense } from "models/Expense";
-import useAccountsQuery from "queries/accounts";
 import useExpensesQuery from "queries/expenses";
 import Form from "./Form";
 
@@ -30,18 +32,7 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
 
   const [updatingConfirm, setUpdatingConfirm] = useState(false);
   const [edit, setEdit] = useState(false);
-  const { query: accountsQuery } = useAccountsQuery();
   const { confirmMutation } = useExpensesQuery();
-
-  function renderAccountName(account?: Account) {
-    if (!account) return "No account";
-    if (accountsQuery.isLoading) return "Loading...";
-
-    const accountData = accountsQuery.data?.find((a) => a.id === account.id);
-    if (!accountData) return "Account not found";
-
-    return accountData.name;
-  }
 
   function toggleConfirm() {
     setUpdatingConfirm(true);
@@ -53,7 +44,7 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
   if (edit) {
     return (
       <TableRow>
-        <TableCell colSpan={2}>
+        <TableCell colSpan={10}>
           <Form
             expense={expense}
             onExpenseSaved={() => setEdit(false)}
@@ -70,7 +61,16 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
         {expense.name}
       </TableCell>
       <TableCell component="th" scope="row">
-        {renderAccountName(expense.account)}
+        <AccountCell account={expense.account} />
+      </TableCell>
+      <TableCell component="th" scope="row">
+        <CategoryCell category={expense.category} />
+      </TableCell>
+      <TableCell component="th" scope="row">
+        <PlaceCell place={expense.place} />
+      </TableCell>
+      <TableCell component="th" scope="row">
+        <BillCell bill={expense.bill} />
       </TableCell>
       <TableCell component="th" scope="row">
         {expense.date.format("DD/MM/yyyy")}

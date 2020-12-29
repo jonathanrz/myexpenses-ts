@@ -15,7 +15,7 @@ interface Formik {
 
 interface FormikSelectFieldOption {
   label: string;
-  value: string;
+  value: number | string;
 }
 
 interface FormikSelectFieldProps {
@@ -28,6 +28,7 @@ interface FormikSelectFieldProps {
   required?: boolean;
   fullWidth?: boolean;
   options: Array<FormikSelectFieldOption>;
+  handleChange?: (selectedFieldId: number) => void;
 }
 
 function FormikSelectField({
@@ -35,6 +36,7 @@ function FormikSelectField({
   label,
   formik,
   options,
+  handleChange,
   ...props
 }: FormikSelectFieldProps) {
   const hasError = Boolean(formik.touched[name] && formik.errors[name]);
@@ -46,6 +48,7 @@ function FormikSelectField({
         onChange={(e) => {
           e.target.name = name;
           formik.handleChange(e);
+          handleChange && handleChange(e.target.value as number);
         }}
         value={formik.values[name]}
         error={hasError}

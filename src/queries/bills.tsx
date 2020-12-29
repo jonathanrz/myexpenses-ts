@@ -44,7 +44,7 @@ function useBillsQuery() {
     }
   );
 
-  const deleteMutation = useMutation<void, Error, String>(
+  const deleteMutation = useMutation<void, Error, number>(
     (id) => axios.delete(`${PATH}/${id}`),
     {
       onSuccess: () => {

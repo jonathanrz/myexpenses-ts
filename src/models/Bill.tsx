@@ -1,7 +1,7 @@
 import { Moment } from "moment";
 
 export interface Bill {
-  id: string;
+  id: number;
   name: string;
   due_day: number;
   init_date: Moment;
