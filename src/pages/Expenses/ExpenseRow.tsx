@@ -8,10 +8,11 @@ import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Currency from "helpers/currency";
+import AccountCell from "components/shared/AccountCell";
+import CategoryCell from "components/shared/CategoryCell";
+import PlaceCell from "components/shared/PlaceCell";
 import { Expense } from "models/Expense";
-import useAccountsQuery from "queries/accounts";
 import useExpensesQuery from "queries/expenses";
-import usePlacesQuery from "queries/places";
 import Form from "./Form";
 
 interface ExpenseRowProps {
@@ -30,8 +31,6 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
 
   const [updatingConfirm, setUpdatingConfirm] = useState(false);
   const [edit, setEdit] = useState(false);
-  const { renderAccountName } = useAccountsQuery();
-  const { renderPlaceName } = usePlacesQuery();
   const { confirmMutation } = useExpensesQuery();
 
   function toggleConfirm() {
@@ -61,10 +60,13 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
         {expense.name}
       </TableCell>
       <TableCell component="th" scope="row">
-        {renderAccountName(expense.account)}
+        <AccountCell account={expense.account} />
       </TableCell>
       <TableCell component="th" scope="row">
-        {renderPlaceName(expense.place)}
+        <CategoryCell category={expense.category} />
+      </TableCell>
+      <TableCell component="th" scope="row">
+        <PlaceCell place={expense.place} />
       </TableCell>
       <TableCell component="th" scope="row">
         {expense.date.format("DD/MM/yyyy")}

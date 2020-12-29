@@ -40,18 +40,7 @@ function useAccountsQuery() {
     }
   );
 
-  function renderAccountName(account?: Account) {
-    if (!account) return "No account";
-    if (query.isLoading) return "Loading...";
-    if (query.isError) return query.error.message;
-
-    const accountData = query.data?.find((a) => a.id === account.id);
-    if (!accountData) return "Account not found";
-
-    return accountData.name;
-  }
-
-  return { query, mutation, deleteMutation, renderAccountName };
+  return { query, mutation, deleteMutation };
 }
 
 export default useAccountsQuery;
