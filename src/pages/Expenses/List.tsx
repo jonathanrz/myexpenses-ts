@@ -17,7 +17,7 @@ import ExpenseRow from "./ExpenseRow";
 
 const useStyles = makeStyles({
   container: {
-    gridTemplateColumns: "900px 400px",
+    gridTemplateColumns: "1150px 400px",
     display: "grid",
     gridGap: "2rem",
   },
@@ -54,6 +54,7 @@ function ExpenseList() {
               <TableCell>Account</TableCell>
               <TableCell>Categories</TableCell>
               <TableCell>Place</TableCell>
+              <TableCell>Bill</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Value</TableCell>
               <TableCell>Confirmed</TableCell>

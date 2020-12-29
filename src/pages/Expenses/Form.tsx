@@ -9,10 +9,12 @@ import FormikDateField from "components/formik/FormikDateField";
 import FormikTextField from "components/formik/FormikTextField";
 import FormikSelectField from "components/formik/FormikSelectField";
 import { Account } from "models/Account";
+import { Bill } from "models/Bill";
 import { Category } from "models/Category";
 import { Expense } from "models/Expense";
 import { Place } from "models/Place";
 import useAccountsQuery from "queries/accounts";
+import useBillsQuery from "queries/bills";
 import useCategoriesQuery from "queries/categories";
 import usePlacesQuery from "queries/places";
 import useExpensesQuery from "queries/expenses";
@@ -44,6 +46,7 @@ function ExpenseForm({
 }: ExpenseFormProps) {
   const classes = useStyles();
   const { query: accountsQuery } = useAccountsQuery();
+  const { query: billsQuery } = useBillsQuery();
   const { query: categoriesQuery } = useCategoriesQuery();
   const { query: placesQuery } = usePlacesQuery();
   const { mutation } = useExpensesQuery();
@@ -52,6 +55,7 @@ function ExpenseForm({
     initialValues: {
       name: expense.name,
       account_id: expense.account?.id || "",
+      bill_id: expense.bill?.id || "",
       category_id: expense.category?.id || "",
       place_id: expense.place?.id || "",
       confirmed: expense.confirmed,
@@ -120,6 +124,19 @@ function ExpenseForm({
         name="value"
         label="Value"
         formik={formik}
+        required
+      />
+      <FormikSelectField
+        name="bill_id"
+        label="Bill"
+        options={
+          billsQuery.data?.map((bill: Bill) => ({
+            label: bill.name,
+            value: bill.id,
+          })) || []
+        }
+        formik={formik}
+        fullWidth
         required
       />
       <div className={classes.buttonContainer}>

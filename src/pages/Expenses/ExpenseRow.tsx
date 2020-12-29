@@ -9,6 +9,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Currency from "helpers/currency";
 import AccountCell from "components/shared/AccountCell";
+import BillCell from "components/shared/BillCell";
 import CategoryCell from "components/shared/CategoryCell";
 import PlaceCell from "components/shared/PlaceCell";
 import { Expense } from "models/Expense";
@@ -67,6 +68,9 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
       </TableCell>
       <TableCell component="th" scope="row">
         <PlaceCell place={expense.place} />
+      </TableCell>
+      <TableCell component="th" scope="row">
+        <BillCell bill={expense.bill} />
       </TableCell>
       <TableCell component="th" scope="row">
         {expense.date.format("DD/MM/yyyy")}
