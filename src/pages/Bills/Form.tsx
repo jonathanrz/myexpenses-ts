@@ -52,13 +52,16 @@ function BillForm({
       end_date: bill.end_date,
       value: bill.value,
     },
-    onSubmit: (values) =>
+    onSubmit: (values, { resetForm }) =>
       mutation
         .mutateAsync({
           ...values,
           id: bill.id,
         })
-        .then(() => onBillSaved && onBillSaved()),
+        .then(() => {
+          onBillSaved && onBillSaved();
+          resetForm();
+        }),
   });
 
   const submitButton = bill.id ? "Save" : "Create";
