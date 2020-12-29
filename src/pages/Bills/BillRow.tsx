@@ -10,7 +10,7 @@ import Form from "./Form";
 
 interface BillRowProps {
   bill: Bill;
-  deleteBill: (id: string) => void;
+  deleteBill: (id: number) => void;
 }
 
 function BillRow({ bill, deleteBill }: BillRowProps) {

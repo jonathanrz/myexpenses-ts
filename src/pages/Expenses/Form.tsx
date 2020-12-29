@@ -30,7 +30,7 @@ const useStyles = makeStyles({
     display: "grid",
     gridGap: "1rem",
     margin: "0 auto 1rem",
-    maxWidth: "350px",
+    maxWidth: "450px",
   },
   buttonContainer: {
     display: "flex",
@@ -68,6 +68,15 @@ function ExpenseForm({
         resetForm();
       }),
   });
+
+  function handleBillSelected(selectedFieldId: number) {
+    const bill = billsQuery.data?.find((bill) => bill.id === selectedFieldId);
+
+    if (bill != null) {
+      formik.setFieldValue("name", bill.name);
+      formik.setFieldValue("value", bill.value);
+    }
+  }
 
   const submitButton = expense.id ? "Save" : "Create";
 
@@ -138,6 +147,7 @@ function ExpenseForm({
         formik={formik}
         fullWidth
         required
+        handleChange={handleBillSelected}
       />
       <div className={classes.buttonContainer}>
         {expense.id ? (

@@ -44,7 +44,7 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
   if (edit) {
     return (
       <TableRow>
-        <TableCell colSpan={2}>
+        <TableCell colSpan={10}>
           <Form
             expense={expense}
             onExpenseSaved={() => setEdit(false)}

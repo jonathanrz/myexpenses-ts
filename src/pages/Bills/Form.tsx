@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 
 function BillForm({
   bill = {
-    id: "",
+    id: 0,
     name: "",
     due_day: 0,
     init_date: moment(),

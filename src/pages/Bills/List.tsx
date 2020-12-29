@@ -38,7 +38,7 @@ function BillsList() {
   if (query.isError)
     return <Alert severity="error">{query.error.message}</Alert>;
 
-  function deleteBill(id: string) {
+  function deleteBill(id: number) {
     if (window.confirm("Delete?")) {
       deleteMutation.mutate(id);
     }
