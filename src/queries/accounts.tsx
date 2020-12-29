@@ -21,7 +21,7 @@ function useAccountsQuery() {
           .then(({ data }) => data.data);
       }
       return axios
-        .post(`/{PATH}`, { [MODEL_NAME]: values })
+        .post(`/${PATH}`, { [MODEL_NAME]: values })
         .then(({ data }) => data.data);
     },
     {
