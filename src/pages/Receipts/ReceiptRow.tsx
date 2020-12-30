@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Switch from "@material-ui/core/Switch";
@@ -13,6 +14,8 @@ import { Receipt } from "models/Receipt";
 import useAccountsQuery from "queries/accounts";
 import useReceiptsQuery from "queries/receipts";
 import Form from "./Form";
+
+const currentMonth = moment();
 
 interface ReceiptRowProps {
   receipt: Receipt;
@@ -31,7 +34,7 @@ function ReceiptRow({ receipt, deleteReceipt }: ReceiptRowProps) {
   const [updatingConfirm, setUpdatingConfirm] = useState(false);
   const [edit, setEdit] = useState(false);
   const { query: accountsQuery } = useAccountsQuery();
-  const { confirmMutation } = useReceiptsQuery();
+  const { confirmMutation } = useReceiptsQuery(currentMonth);
 
   function renderAccountName(account?: Account) {
     if (!account) return "No account";

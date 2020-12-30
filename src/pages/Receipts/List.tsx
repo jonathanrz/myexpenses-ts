@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
@@ -30,9 +31,11 @@ const useStyles = makeStyles({
   },
 });
 
+const currentMonth = moment();
+
 function ReceiptList() {
   const classes = useStyles();
-  const { query, deleteMutation } = useReceiptsQuery();
+  const { query, deleteMutation } = useReceiptsQuery(currentMonth);
 
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)

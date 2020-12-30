@@ -13,6 +13,8 @@ import { Receipt } from "models/Receipt";
 import useAccountsQuery from "queries/accounts";
 import useReceiptsQuery from "queries/receipts";
 
+const currentMonth = moment();
+
 interface ReceiptFormProps {
   receipt?: Receipt;
   onReceiptSaved?: () => void;
@@ -40,7 +42,7 @@ function ReceiptForm({
 }: ReceiptFormProps) {
   const classes = useStyles();
   const { query: accountsQuery } = useAccountsQuery();
-  const { mutation } = useReceiptsQuery();
+  const { mutation } = useReceiptsQuery(currentMonth);
 
   const formik = useFormik({
     initialValues: {
@@ -50,10 +52,11 @@ function ReceiptForm({
       value: receipt.value,
       date: receipt.date,
     },
-    onSubmit: (values) =>
-      mutation
-        .mutateAsync({ ...values, id: receipt.id })
-        .then(() => onReceiptSaved && onReceiptSaved()),
+    onSubmit: (values, { resetForm }) =>
+      mutation.mutateAsync({ ...values, id: receipt.id }).then(() => {
+        onReceiptSaved && onReceiptSaved();
+        resetForm();
+      }),
   });
 
   const submitButton = receipt.id ? "Save" : "Create";
