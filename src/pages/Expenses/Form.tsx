@@ -19,6 +19,8 @@ import useCategoriesQuery from "queries/categories";
 import usePlacesQuery from "queries/places";
 import useExpensesQuery from "queries/expenses";
 
+const currentMonth = moment();
+
 interface ExpenseFormProps {
   expense?: Expense;
   onExpenseSaved?: () => void;
@@ -49,7 +51,7 @@ function ExpenseForm({
   const { query: billsQuery } = useBillsQuery();
   const { query: categoriesQuery } = useCategoriesQuery();
   const { query: placesQuery } = usePlacesQuery();
-  const { mutation } = useExpensesQuery();
+  const { mutation } = useExpensesQuery(currentMonth);
 
   const formik = useFormik({
     initialValues: {

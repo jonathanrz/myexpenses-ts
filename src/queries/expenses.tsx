@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment, { Moment } from "moment";
 import useAxios from "hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Expense } from "models/Expense";
@@ -6,17 +6,24 @@ import { Expense } from "models/Expense";
 const MODEL_NAME = "expense";
 const PATH = "expenses";
 
-function useExpensesQuery() {
+function useExpensesQuery(month: Moment) {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<Expense>, Error>(PATH, () =>
-    axios.get(PATH).then(({ data }) =>
-      data.data.map((expense: Expense) => ({
-        ...expense,
-        date: moment(expense.date),
-      }))
-    )
+  const query = useQuery<Array<Expense>, Error>([PATH, month], () =>
+    axios
+      .get(PATH, {
+        params: {
+          init_date: month.startOf("month").format("YYYY-MM-DD"),
+          end_date: month.endOf("month").format("YYYY-MM-DD"),
+        },
+      })
+      .then(({ data }) =>
+        data.data.map((expense: Expense) => ({
+          ...expense,
+          date: moment(expense.date),
+        }))
+      )
   );
 
   const mutation = useMutation<Expense, Error, Expense>(

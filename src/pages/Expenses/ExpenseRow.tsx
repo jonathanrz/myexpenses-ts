@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Switch from "@material-ui/core/Switch";
@@ -16,6 +17,8 @@ import { Expense } from "models/Expense";
 import useExpensesQuery from "queries/expenses";
 import Form from "./Form";
 
+const currentMonth = moment();
+
 interface ExpenseRowProps {
   expense: Expense;
   deleteExpense: (id: string) => void;
@@ -32,7 +35,7 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
 
   const [updatingConfirm, setUpdatingConfirm] = useState(false);
   const [edit, setEdit] = useState(false);
-  const { confirmMutation } = useExpensesQuery();
+  const { confirmMutation } = useExpensesQuery(currentMonth);
 
   function toggleConfirm() {
     setUpdatingConfirm(true);
