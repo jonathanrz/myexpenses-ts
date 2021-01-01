@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import useAxios from "hooks/useAxios";
 import { Bill } from "models/Bill";
@@ -6,18 +6,24 @@ import { Bill } from "models/Bill";
 const MODEL_NAME = "bill";
 const PATH = "bills";
 
-function useBillsQuery() {
+function useBillsQuery(month?: Moment) {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<Bill>, Error>(PATH, () =>
-    axios.get(PATH).then(({ data }) =>
-      data.data.map((bill: Bill) => ({
-        ...bill,
-        init_date: moment(bill.init_date),
-        end_date: moment(bill.end_date),
-      }))
-    )
+  const query = useQuery<Array<Bill>, Error>([PATH, month], () =>
+    axios
+      .get(PATH, {
+        params: {
+          month: month?.startOf("month").format("YYYY-MM-DD"),
+        },
+      })
+      .then(({ data }) =>
+        data.data.map((bill: Bill) => ({
+          ...bill,
+          init_date: moment(bill.init_date),
+          end_date: moment(bill.end_date),
+        }))
+      )
   );
 
   const mutation = useMutation<Bill, Error, Bill>(
@@ -39,7 +45,7 @@ function useBillsQuery() {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(PATH);
+        queryClient.invalidateQueries([PATH, month]);
       },
     }
   );
@@ -48,7 +54,7 @@ function useBillsQuery() {
     (id) => axios.delete(`${PATH}/${id}`),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(PATH);
+        queryClient.invalidateQueries([PATH, month]);
       },
     }
   );

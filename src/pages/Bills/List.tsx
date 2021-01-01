@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import moment, { Moment } from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
@@ -10,6 +11,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import MonthTabs from "components/MonthTabs";
 import { Bill } from "models/Bill";
 import useBillsQuery from "queries/bills";
 import Form from "./Form";
@@ -32,7 +34,12 @@ const useStyles = makeStyles({
 
 function BillsList() {
   const classes = useStyles();
-  const { query, deleteMutation } = useBillsQuery();
+  const [currentMonth, setCurrentMonth] = useState(moment());
+  const { query, deleteMutation } = useBillsQuery(currentMonth);
+
+  function handleMonthSelected(event: React.ChangeEvent<{}>, newMonth: Moment) {
+    setCurrentMonth(newMonth);
+  }
 
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)
@@ -47,6 +54,10 @@ function BillsList() {
   return (
     <div className={classes.container}>
       <TableContainer className={classes.table} component={Paper}>
+        <MonthTabs
+          currentMonth={currentMonth}
+          handleMonthSelected={handleMonthSelected}
+        />
         <Table>
           <TableHead>
             <TableRow>

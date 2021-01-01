@@ -43,7 +43,7 @@ function useExpensesQuery(month: Moment) {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(PATH);
+        queryClient.invalidateQueries([PATH, month]);
       },
     }
   );
@@ -52,7 +52,7 @@ function useExpensesQuery(month: Moment) {
     (id) => axios.delete(`${PATH}/${id}`),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(PATH);
+        queryClient.invalidateQueries([PATH, month]);
       },
     }
   );
@@ -67,7 +67,7 @@ function useExpensesQuery(month: Moment) {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(PATH);
+        queryClient.invalidateQueries([PATH, month]);
       },
     }
   );
