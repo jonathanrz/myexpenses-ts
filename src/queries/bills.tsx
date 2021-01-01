@@ -10,20 +10,25 @@ function useBillsQuery(month?: Moment) {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<Bill>, Error>([PATH, month], () =>
-    axios
-      .get(PATH, {
-        params: {
-          month: month?.startOf("month").format("YYYY-MM-DD"),
-        },
-      })
-      .then(({ data }) =>
-        data.data.map((bill: Bill) => ({
-          ...bill,
-          init_date: moment(bill.init_date),
-          end_date: moment(bill.end_date),
-        }))
-      )
+  const query = useQuery<Array<Bill>, Error>(
+    [PATH, month],
+    () =>
+      axios
+        .get(PATH, {
+          params: {
+            month: month?.startOf("month").format("YYYY-MM-DD"),
+          },
+        })
+        .then(({ data }) =>
+          data.data.map((bill: Bill) => ({
+            ...bill,
+            init_date: moment(bill.init_date),
+            end_date: moment(bill.end_date),
+          }))
+        ),
+    {
+      refetchOnMount: false,
+    }
   );
 
   const mutation = useMutation<Bill, Error, Bill>(

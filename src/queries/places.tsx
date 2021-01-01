@@ -9,8 +9,12 @@ function usePlacesQuery() {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<Place>, Error>(PATH, () =>
-    axios.get(PATH).then(({ data }) => data.data)
+  const query = useQuery<Array<Place>, Error>(
+    PATH,
+    () => axios.get(PATH).then(({ data }) => data.data),
+    {
+      refetchOnMount: false,
+    }
   );
 
   const mutation = useMutation<Place, Error, Place>(

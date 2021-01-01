@@ -10,20 +10,25 @@ function useReceiptsQuery(month: Moment) {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<Receipt>, Error>([PATH, month], () =>
-    axios
-      .get(PATH, {
-        params: {
-          init_date: month.startOf("month").format("YYYY-MM-DD"),
-          end_date: month.endOf("month").format("YYYY-MM-DD"),
-        },
-      })
-      .then(({ data }) =>
-        data.data.map((receipt: Receipt) => ({
-          ...receipt,
-          date: moment(receipt.date),
-        }))
-      )
+  const query = useQuery<Array<Receipt>, Error>(
+    [PATH, month],
+    () =>
+      axios
+        .get(PATH, {
+          params: {
+            init_date: month.startOf("month").format("YYYY-MM-DD"),
+            end_date: month.endOf("month").format("YYYY-MM-DD"),
+          },
+        })
+        .then(({ data }) =>
+          data.data.map((receipt: Receipt) => ({
+            ...receipt,
+            date: moment(receipt.date),
+          }))
+        ),
+    {
+      refetchOnMount: false,
+    }
   );
 
   const mutation = useMutation<Receipt, Error, Receipt>(

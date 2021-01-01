@@ -9,8 +9,12 @@ function useAccountsQuery() {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<Account>, Error>(PATH, () =>
-    axios.get(PATH).then(({ data }) => data.data)
+  const query = useQuery<Array<Account>, Error>(
+    PATH,
+    () => axios.get(PATH).then(({ data }) => data.data),
+    {
+      refetchOnMount: false,
+    }
   );
 
   const mutation = useMutation<Account, Error, Account>(

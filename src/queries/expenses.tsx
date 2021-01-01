@@ -7,23 +7,29 @@ const MODEL_NAME = "expense";
 const PATH = "expenses";
 
 function useExpensesQuery(month: Moment) {
+  const queryKey = [PATH, month.format("x")];
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<Expense>, Error>([PATH, month], () =>
-    axios
-      .get(PATH, {
-        params: {
-          init_date: month.startOf("month").format("YYYY-MM-DD"),
-          end_date: month.endOf("month").format("YYYY-MM-DD"),
-        },
-      })
-      .then(({ data }) =>
-        data.data.map((expense: Expense) => ({
-          ...expense,
-          date: moment(expense.date),
-        }))
-      )
+  const query = useQuery<Array<Expense>, Error>(
+    queryKey,
+    () =>
+      axios
+        .get(PATH, {
+          params: {
+            init_date: month.startOf("month").format("YYYY-MM-DD"),
+            end_date: month.endOf("month").format("YYYY-MM-DD"),
+          },
+        })
+        .then(({ data }) =>
+          data.data.map((expense: Expense) => ({
+            ...expense,
+            date: moment(expense.date),
+          }))
+        ),
+    {
+      refetchOnMount: false,
+    }
   );
 
   const mutation = useMutation<Expense, Error, Expense>(
@@ -43,7 +49,7 @@ function useExpensesQuery(month: Moment) {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([PATH, month]);
+        queryClient.invalidateQueries(queryKey);
       },
     }
   );
@@ -52,7 +58,7 @@ function useExpensesQuery(month: Moment) {
     (id) => axios.delete(`${PATH}/${id}`),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([PATH, month]);
+        queryClient.invalidateQueries(queryKey);
       },
     }
   );
@@ -67,7 +73,7 @@ function useExpensesQuery(month: Moment) {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([PATH, month]);
+        queryClient.invalidateQueries(queryKey);
       },
     }
   );
