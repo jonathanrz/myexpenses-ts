@@ -1,6 +1,7 @@
 import useAxios from "../hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Account } from "models/Account";
+import { defaultQueryProps } from "./constants";
 
 const MODEL_NAME = "account";
 const PATH = "accounts";
@@ -12,9 +13,7 @@ function useAccountsQuery() {
   const query = useQuery<Array<Account>, Error>(
     PATH,
     () => axios.get(PATH).then(({ data }) => data.data),
-    {
-      refetchOnMount: false,
-    }
+    defaultQueryProps
   );
 
   const mutation = useMutation<Account, Error, Account>(

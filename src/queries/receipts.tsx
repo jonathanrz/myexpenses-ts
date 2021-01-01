@@ -2,16 +2,18 @@ import moment, { Moment } from "moment";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import useAxios from "hooks/useAxios";
 import { Receipt } from "models/Receipt";
+import { defaultQueryProps } from "./constants";
 
 const MODEL_NAME = "receipt";
 const PATH = "receipts";
 
 function useReceiptsQuery(month: Moment) {
+  const queryKey = [PATH, month.format("YYYY-MM")];
   const queryClient = useQueryClient();
   const axios = useAxios();
 
   const query = useQuery<Array<Receipt>, Error>(
-    [PATH, month],
+    queryKey,
     () =>
       axios
         .get(PATH, {
@@ -26,9 +28,7 @@ function useReceiptsQuery(month: Moment) {
             date: moment(receipt.date),
           }))
         ),
-    {
-      refetchOnMount: false,
-    }
+    defaultQueryProps
   );
 
   const mutation = useMutation<Receipt, Error, Receipt>(
@@ -44,7 +44,7 @@ function useReceiptsQuery(month: Moment) {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([PATH, month]);
+        queryClient.invalidateQueries(queryKey);
       },
     }
   );
@@ -53,7 +53,7 @@ function useReceiptsQuery(month: Moment) {
     (id) => axios.delete(`${PATH}/${id}`),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([PATH, month]);
+        queryClient.invalidateQueries(queryKey);
       },
     }
   );
@@ -68,7 +68,7 @@ function useReceiptsQuery(month: Moment) {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([PATH, month]);
+        queryClient.invalidateQueries(queryKey);
       },
     }
   );

@@ -2,12 +2,13 @@ import moment, { Moment } from "moment";
 import useAxios from "hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Expense } from "models/Expense";
+import { defaultQueryProps } from "./constants";
 
 const MODEL_NAME = "expense";
 const PATH = "expenses";
 
 function useExpensesQuery(month: Moment) {
-  const queryKey = [PATH, month.format("x")];
+  const queryKey = [PATH, month.format("YYYY-MM")];
   const queryClient = useQueryClient();
   const axios = useAxios();
 
@@ -27,9 +28,7 @@ function useExpensesQuery(month: Moment) {
             date: moment(expense.date),
           }))
         ),
-    {
-      refetchOnMount: false,
-    }
+    defaultQueryProps
   );
 
   const mutation = useMutation<Expense, Error, Expense>(

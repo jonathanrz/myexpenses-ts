@@ -1,6 +1,7 @@
 import useAxios from "../hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Category } from "models/Category";
+import { defaultQueryProps } from "./constants";
 
 const MODEL_NAME = "category";
 const PATH = "categories";
@@ -12,9 +13,7 @@ function useCategoriesQuery() {
   const query = useQuery<Array<Category>, Error>(
     PATH,
     () => axios.get(PATH).then(({ data }) => data.data),
-    {
-      refetchOnMount: false,
-    }
+    defaultQueryProps
   );
 
   const mutation = useMutation<Category, Error, Category>(
