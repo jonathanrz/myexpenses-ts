@@ -13,6 +13,7 @@ import Container from "@material-ui/core/Container";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalanceWallet";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
 import DateRangeIcon from "@material-ui/icons/DateRange";
+import HomeIcon from "@material-ui/icons/Home";
 import StorefrontIcon from "@material-ui/icons/Storefront";
 import CategoryIcon from "@material-ui/icons/Category";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
@@ -116,6 +117,7 @@ function PrivatePage({ children, title }: PrivatePageProps) {
         open
       >
         <List>
+          <DrawerLink pathname="/" text="Home" Icon={<HomeIcon />} />
           <DrawerLink
             pathname="/accounts"
             text="Accounts"
