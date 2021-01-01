@@ -12,6 +12,7 @@ import Currency from "helpers/currency";
 import AccountCell from "components/shared/AccountCell";
 import BillCell from "components/shared/BillCell";
 import CategoryCell from "components/shared/CategoryCell";
+import CreditCardCell from "components/shared/CreditCardCell";
 import PlaceCell from "components/shared/PlaceCell";
 import { Expense } from "models/Expense";
 import useExpensesQuery from "queries/expenses";
@@ -64,7 +65,11 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
         {expense.name}
       </TableCell>
       <TableCell component="th" scope="row">
-        <AccountCell account={expense.account} />
+        {expense.account ? (
+          <AccountCell account={expense.account} />
+        ) : (
+          <CreditCardCell creditCard={expense.credit_card} />
+        )}
       </TableCell>
       <TableCell component="th" scope="row">
         <CategoryCell category={expense.category} />

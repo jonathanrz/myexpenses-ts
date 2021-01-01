@@ -11,11 +11,13 @@ import FormikSelectField from "components/formik/FormikSelectField";
 import { Account } from "models/Account";
 import { Bill } from "models/Bill";
 import { Category } from "models/Category";
+import { CreditCard } from "models/CreditCard";
 import { Expense } from "models/Expense";
 import { Place } from "models/Place";
 import useAccountsQuery from "queries/accounts";
 import useBillsQuery from "queries/bills";
 import useCategoriesQuery from "queries/categories";
+import useCreditCardsQuery from "queries/creditCards";
 import usePlacesQuery from "queries/places";
 import useExpensesQuery from "queries/expenses";
 
@@ -50,6 +52,7 @@ function ExpenseForm({
   const { query: accountsQuery } = useAccountsQuery();
   const { query: billsQuery } = useBillsQuery();
   const { query: categoriesQuery } = useCategoriesQuery();
+  const { query: creditCardsQuery } = useCreditCardsQuery();
   const { query: placesQuery } = usePlacesQuery();
   const { mutation } = useExpensesQuery(currentMonth);
 
@@ -59,6 +62,7 @@ function ExpenseForm({
       account_id: expense.account?.id || "",
       bill_id: expense.bill?.id || "",
       category_id: expense.category?.id || "",
+      credit_card_id: expense.credit_card?.id || "",
       place_id: expense.place?.id || "",
       confirmed: expense.confirmed,
       value: expense.value,
@@ -71,7 +75,7 @@ function ExpenseForm({
       }),
   });
 
-  function handleBillSelected(selectedFieldId: number) {
+  function handleBillSelected(selectedFieldId?: number) {
     const bill = billsQuery.data?.find((bill) => bill.id === selectedFieldId);
 
     if (bill != null) {
@@ -101,6 +105,21 @@ function ExpenseForm({
           })) || []
         }
         formik={formik}
+        disabled={Boolean(formik.values.credit_card_id)}
+        fullWidth
+        required
+      />
+      <FormikSelectField
+        name="credit_card_id"
+        label="Credit Card"
+        options={
+          creditCardsQuery.data?.map((creditCard: CreditCard) => ({
+            label: creditCard.name,
+            value: creditCard.id,
+          })) || []
+        }
+        formik={formik}
+        disabled={Boolean(formik.values.account_id)}
         fullWidth
         required
       />

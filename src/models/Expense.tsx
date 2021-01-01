@@ -2,6 +2,7 @@ import { Moment } from "moment";
 import { Account } from "./Account";
 import { Bill } from "./Bill";
 import { Category } from "./Category";
+import { CreditCard } from "./CreditCard";
 import { Place } from "./Place";
 
 export interface Expense {
@@ -11,6 +12,7 @@ export interface Expense {
   account?: Account;
   bill?: Bill;
   category?: Category;
+  credit_card?: CreditCard;
   place?: Place;
   date: Moment;
   value: number;

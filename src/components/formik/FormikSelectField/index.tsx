@@ -1,8 +1,15 @@
 import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
+
+const useStyles = makeStyles({
+  menuItemNoneOption: {
+    color: "#999999",
+  },
+});
 
 interface Formik {
   touched: any;
@@ -27,8 +34,9 @@ interface FormikSelectFieldProps {
   autoFocus?: boolean;
   required?: boolean;
   fullWidth?: boolean;
+  disabled?: boolean;
   options: Array<FormikSelectFieldOption>;
-  handleChange?: (selectedFieldId: number) => void;
+  handleChange?: (selectedFieldId?: number) => void;
 }
 
 function FormikSelectField({
@@ -39,7 +47,10 @@ function FormikSelectField({
   handleChange,
   ...props
 }: FormikSelectFieldProps) {
+  const classes = useStyles();
+
   const hasError = Boolean(formik.touched[name] && formik.errors[name]);
+
   return (
     <div>
       {label && <InputLabel>{label}</InputLabel>}
@@ -59,6 +70,9 @@ function FormikSelectField({
             {option.label}
           </MenuItem>
         ))}
+        <MenuItem value="" className={classes.menuItemNoneOption}>
+          None
+        </MenuItem>
       </Select>
       {hasError ? <Alert severity="error">{formik.errors[name]}</Alert> : null}
     </div>

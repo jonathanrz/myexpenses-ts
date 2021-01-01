@@ -62,7 +62,7 @@ function ExpenseList() {
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell>Account</TableCell>
+              <TableCell>Paid With</TableCell>
               <TableCell>Categories</TableCell>
               <TableCell>Place</TableCell>
               <TableCell>Bill</TableCell>
