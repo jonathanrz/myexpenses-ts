@@ -7,6 +7,7 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
+import TableFooter from "@material-ui/core/TableFooter";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
@@ -23,6 +24,11 @@ const useStyles = makeStyles({
   table: {
     height: "100%",
     width: "unset",
+  },
+  valueSum: {
+    color: "black",
+    fontWeight: "bold",
+    fontSize: "14px",
   },
 });
 
@@ -68,6 +74,20 @@ function Receipts({ month }: ReceiptsProps) {
               </TableRow>
             ))}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell align="right" className={classes.valueSum}>
+              {Currency.format(
+                query.data?.reduce((acc, receipt) => acc + receipt.value, 0) ||
+                  0
+              )}
+            </TableCell>
+            <TableCell />
+          </TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
   );

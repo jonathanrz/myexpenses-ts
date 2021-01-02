@@ -58,7 +58,7 @@ function ReceiptList() {
           currentMonth={currentMonth}
           handleMonthSelected={handleMonthSelected}
         />
-        <Table>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
