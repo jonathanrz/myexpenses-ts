@@ -1,5 +1,6 @@
 import React from "react";
 import { Moment } from "moment";
+import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
 import Table from "@material-ui/core/Table";
@@ -19,24 +20,33 @@ interface ExpensesProps {
   month: Moment;
 }
 
+const useStyles = makeStyles({
+  table: {
+    height: "100%",
+    width: "unset",
+  },
+});
+
 function Expenses({ month }: ExpensesProps) {
+  const classes = useStyles();
   const { query } = useExpensesQuery(month);
 
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)
     return <Alert severity="error">{query.error.message}</Alert>;
 
+  console.log({ query });
+
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} className={classes.table}>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell>Expense</TableCell>
             <TableCell>Paid With</TableCell>
-            <TableCell>Date</TableCell>
+            <TableCell align="center">Date</TableCell>
             <TableCell align="right">Value</TableCell>
-            <TableCell>Confirmed</TableCell>
-            <TableCell />
+            <TableCell align="center">Confirmed</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -53,11 +63,15 @@ function Expenses({ month }: ExpensesProps) {
                     <CreditCardCell creditCard={expense.credit_card} />
                   )}
                 </TableCell>
-                <TableCell>{expense.date.format("DD")}</TableCell>
+                <TableCell align="center">
+                  {expense.date.format("DD")}
+                </TableCell>
                 <TableCell align="right">
                   {Currency.format(expense.value)}
                 </TableCell>
-                <TableCell>{expense.confirmed ? "Yes" : "No"}</TableCell>
+                <TableCell align="center">
+                  {expense.confirmed ? "Yes" : "No"}
+                </TableCell>
               </TableRow>
             ))}
         </TableBody>

@@ -1,4 +1,5 @@
 import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
 import Table from "@material-ui/core/Table";
@@ -12,7 +13,15 @@ import Currency from "helpers/currency";
 import { Account } from "models/Account";
 import useAccountsQuery from "queries/accounts";
 
+const useStyles = makeStyles({
+  table: {
+    height: "100%",
+    width: "unset",
+  },
+});
+
 function Accounts() {
+  const classes = useStyles();
   const { query } = useAccountsQuery();
 
   if (query.isLoading) return <CircularProgress />;
@@ -20,13 +29,12 @@ function Accounts() {
     return <Alert severity="error">{query.error.message}</Alert>;
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} className={classes.table}>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell>Account</TableCell>
-            <TableCell align="right">Balance</TableCell>
-            <TableCell />
+            <TableCell>Balance</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -36,9 +44,7 @@ function Accounts() {
                 <TableCell component="th" scope="row">
                   {account.name}
                 </TableCell>
-                <TableCell align="right">
-                  {Currency.format(account.balance)}
-                </TableCell>
+                <TableCell>{Currency.format(account.balance)}</TableCell>
               </TableRow>
             ))}
         </TableBody>

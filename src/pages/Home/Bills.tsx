@@ -1,5 +1,6 @@
 import React from "react";
 import { Moment } from "moment";
+import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
 import Table from "@material-ui/core/Table";
@@ -17,7 +18,15 @@ interface BillsProps {
   month: Moment;
 }
 
+const useStyles = makeStyles({
+  table: {
+    height: "100%",
+    width: "unset",
+  },
+});
+
 function Bills({ month }: BillsProps) {
+  const classes = useStyles();
   const { query } = useBillsQuery(month);
 
   if (query.isLoading) return <CircularProgress />;
@@ -25,14 +34,13 @@ function Bills({ month }: BillsProps) {
     return <Alert severity="error">{query.error.message}</Alert>;
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} className={classes.table}>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell>Bill</TableCell>
             <TableCell>Due Day</TableCell>
-            <TableCell align="right">Value</TableCell>
-            <TableCell />
+            <TableCell>Value</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -43,9 +51,7 @@ function Bills({ month }: BillsProps) {
                   {bill.name}
                 </TableCell>
                 <TableCell>{bill.due_day}</TableCell>
-                <TableCell align="right">
-                  {Currency.format(bill.value)}
-                </TableCell>
+                <TableCell>{Currency.format(bill.value)}</TableCell>
               </TableRow>
             ))}
         </TableBody>

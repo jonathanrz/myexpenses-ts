@@ -1,5 +1,6 @@
 import React from "react";
 import { Moment } from "moment";
+import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
 import Table from "@material-ui/core/Table";
@@ -18,7 +19,15 @@ interface ReceiptsProps {
   month: Moment;
 }
 
+const useStyles = makeStyles({
+  table: {
+    height: "100%",
+    width: "unset",
+  },
+});
+
 function Receipts({ month }: ReceiptsProps) {
+  const classes = useStyles();
   const { query } = useReceiptsQuery(month);
 
   if (query.isLoading) return <CircularProgress />;
@@ -26,16 +35,15 @@ function Receipts({ month }: ReceiptsProps) {
     return <Alert severity="error">{query.error.message}</Alert>;
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} className={classes.table}>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell>Receipt</TableCell>
             <TableCell>Account</TableCell>
-            <TableCell>Date</TableCell>
+            <TableCell align="center">Date</TableCell>
             <TableCell align="right">Value</TableCell>
-            <TableCell>Confirmed</TableCell>
-            <TableCell />
+            <TableCell align="center">Confirmed</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -48,11 +56,15 @@ function Receipts({ month }: ReceiptsProps) {
                 <TableCell>
                   <AccountCell account={receipt.account} />
                 </TableCell>
-                <TableCell>{receipt.date.format("DD")}</TableCell>
+                <TableCell align="center">
+                  {receipt.date.format("DD")}
+                </TableCell>
                 <TableCell align="right">
                   {Currency.format(receipt.value)}
                 </TableCell>
-                <TableCell>{receipt.confirmed ? "Yes" : "No"}</TableCell>
+                <TableCell align="center">
+                  {receipt.confirmed ? "Yes" : "No"}
+                </TableCell>
               </TableRow>
             ))}
         </TableBody>
