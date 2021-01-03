@@ -31,6 +31,24 @@ function useExpensesQuery(month: Moment) {
     defaultQueryProps
   );
 
+  const monthQuery = useQuery<Array<Expense>, Error>(
+    [...queryKey, "month"],
+    () =>
+      axios
+        .get(`${PATH}/month`, {
+          params: {
+            month: month.startOf("month").format("YYYY-MM"),
+          },
+        })
+        .then(({ data }) =>
+          data.data.map((expense: Expense) => ({
+            ...expense,
+            date: moment(expense.date),
+          }))
+        ),
+    defaultQueryProps
+  );
+
   const mutation = useMutation<Expense, Error, Expense>(
     (values) => {
       if (values.id) {
@@ -77,7 +95,7 @@ function useExpensesQuery(month: Moment) {
     }
   );
 
-  return { query, mutation, deleteMutation, confirmMutation };
+  return { query, monthQuery, mutation, deleteMutation, confirmMutation };
 }
 
 export default useExpensesQuery;

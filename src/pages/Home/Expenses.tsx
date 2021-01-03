@@ -35,7 +35,7 @@ const useStyles = makeStyles({
 
 function Expenses({ month }: ExpensesProps) {
   const classes = useStyles();
-  const { query } = useExpensesQuery(month);
+  const { monthQuery: query } = useExpensesQuery(month);
 
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)
