@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Moment } from "moment";
 import cs from "classnames";
+import sortBy from "lodash/sortBy";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
@@ -44,6 +45,11 @@ function Receipts({ month }: ReceiptsProps) {
   const classes = useStyles();
   const { query } = useReceiptsQuery(month);
 
+  const receipts = useMemo(
+    () => sortBy(query.data || [], ["confirmed", "date", "name"]),
+    [query.data]
+  );
+
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)
     return <Alert severity="error">{query.error.message}</Alert>;
@@ -60,28 +66,25 @@ function Receipts({ month }: ReceiptsProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {query.data &&
-            query.data.map((receipt: Receipt) => (
-              <TableRow key={receipt.id}>
-                <TableCell component="th" scope="row">
-                  {receipt.name}
-                </TableCell>
-                <TableCell>
-                  <AccountCell account={receipt.account} />
-                </TableCell>
-                <TableCell align="center">
-                  {receipt.date.format("DD")}
-                </TableCell>
-                <TableCell
-                  align="right"
-                  className={cs(classes.value, {
-                    [classes.confirmedValue]: receipt.confirmed,
-                  })}
-                >
-                  {Currency.format(receipt.value)}
-                </TableCell>
-              </TableRow>
-            ))}
+          {receipts.map((receipt: Receipt) => (
+            <TableRow key={receipt.id}>
+              <TableCell component="th" scope="row">
+                {receipt.name}
+              </TableCell>
+              <TableCell>
+                <AccountCell account={receipt.account} />
+              </TableCell>
+              <TableCell align="center">{receipt.date.format("DD")}</TableCell>
+              <TableCell
+                align="right"
+                className={cs(classes.value, {
+                  [classes.confirmedValue]: receipt.confirmed,
+                })}
+              >
+                {Currency.format(receipt.value)}
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
         <TableFooter>
           <TableRow>

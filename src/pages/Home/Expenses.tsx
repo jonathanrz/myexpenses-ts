@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Moment } from "moment";
 import cs from "classnames";
+import sortBy from "lodash/sortBy";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
@@ -45,11 +46,14 @@ function Expenses({ month }: ExpensesProps) {
   const classes = useStyles();
   const { monthQuery: query } = useExpensesQuery(month);
 
+  const expenses = useMemo(
+    () => sortBy(query.data || [], ["confirmed", "date", "name"]),
+    [query.data]
+  );
+
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)
     return <Alert severity="error">{query.error.message}</Alert>;
-
-  console.log({ query });
 
   return (
     <TableContainer component={Paper} className={classes.table}>
@@ -63,7 +67,7 @@ function Expenses({ month }: ExpensesProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {query.data?.map((expense: Expense) => (
+          {expenses.map((expense: Expense) => (
             <TableRow key={expense.id}>
               <TableCell component="th" scope="row">
                 {expense.name}
