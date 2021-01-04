@@ -1,5 +1,6 @@
 import React from "react";
 import { Moment } from "moment";
+import cs from "classnames";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
@@ -25,6 +26,13 @@ const useStyles = makeStyles({
     height: "100%",
     width: "unset",
   },
+  value: {
+    color: "green",
+    fontWeight: "bold",
+  },
+  confirmedValue: {
+    fontWeight: "normal",
+  },
   valueSum: {
     color: "black",
     fontWeight: "bold",
@@ -49,7 +57,6 @@ function Receipts({ month }: ReceiptsProps) {
             <TableCell>Account</TableCell>
             <TableCell align="center">Date</TableCell>
             <TableCell align="right">Value</TableCell>
-            <TableCell align="center">Confirmed</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -65,11 +72,13 @@ function Receipts({ month }: ReceiptsProps) {
                 <TableCell align="center">
                   {receipt.date.format("DD")}
                 </TableCell>
-                <TableCell align="right">
+                <TableCell
+                  align="right"
+                  className={cs(classes.value, {
+                    [classes.confirmedValue]: receipt.confirmed,
+                  })}
+                >
                   {Currency.format(receipt.value)}
-                </TableCell>
-                <TableCell align="center">
-                  {receipt.confirmed ? "Yes" : "No"}
                 </TableCell>
               </TableRow>
             ))}
@@ -85,7 +94,6 @@ function Receipts({ month }: ReceiptsProps) {
                   0
               )}
             </TableCell>
-            <TableCell />
           </TableRow>
         </TableFooter>
       </Table>
