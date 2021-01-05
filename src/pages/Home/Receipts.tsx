@@ -1,10 +1,13 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Moment } from "moment";
 import cs from "classnames";
 import sortBy from "lodash/sortBy";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
+import IconButton from "@material-ui/core/IconButton";
+import ClearIcon from "@material-ui/icons/Clear";
+import DoneIcon from "@material-ui/icons/Done";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -27,6 +30,9 @@ const useStyles = makeStyles({
     height: "100%",
     width: "unset",
   },
+  actionCell: {
+    width: "15%",
+  },
   value: {
     color: "green",
     fontWeight: "bold",
@@ -43,7 +49,8 @@ const useStyles = makeStyles({
 
 function Receipts({ month }: ReceiptsProps) {
   const classes = useStyles();
-  const { query } = useReceiptsQuery(month);
+  const [confirming, setConfirming] = useState(false);
+  const { query, confirmMutation } = useReceiptsQuery(month);
 
   const receipts = useMemo(
     () => sortBy(query.data || [], ["confirmed", "date", "name"]),
@@ -54,6 +61,22 @@ function Receipts({ month }: ReceiptsProps) {
   if (query.isError)
     return <Alert severity="error">{query.error.message}</Alert>;
 
+  function confirm(receipt: Receipt) {
+    setConfirming(true);
+
+    confirmMutation.mutateAsync(receipt).finally(() => setConfirming(false));
+  }
+
+  function renderConfirmButton(receipt: Receipt) {
+    if (confirming) return <CircularProgress />;
+
+    return (
+      <IconButton color="default" size="small" onClick={() => confirm(receipt)}>
+        {receipt.confirmed ? <ClearIcon /> : <DoneIcon />}
+      </IconButton>
+    );
+  }
+
   return (
     <TableContainer component={Paper} className={classes.table}>
       <Table>
@@ -63,6 +86,7 @@ function Receipts({ month }: ReceiptsProps) {
             <TableCell>Account</TableCell>
             <TableCell align="center">Date</TableCell>
             <TableCell align="right">Value</TableCell>
+            <TableCell className={classes.actionCell} />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -83,6 +107,9 @@ function Receipts({ month }: ReceiptsProps) {
               >
                 {Currency.format(receipt.value)}
               </TableCell>
+              <TableCell align="right" className={classes.actionCell}>
+                {renderConfirmButton(receipt)}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -97,6 +124,7 @@ function Receipts({ month }: ReceiptsProps) {
                   0
               )}
             </TableCell>
+            <TableCell />
           </TableRow>
         </TableFooter>
       </Table>

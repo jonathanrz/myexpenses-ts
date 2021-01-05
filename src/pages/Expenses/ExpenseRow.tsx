@@ -22,7 +22,7 @@ const currentMonth = moment();
 
 interface ExpenseRowProps {
   expense: Expense;
-  deleteExpense: (id: string) => void;
+  deleteExpense: (expense: Expense) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -99,10 +99,7 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
         <IconButton component="button" onClick={() => setEdit(!edit)}>
           <EditIcon />
         </IconButton>
-        <IconButton
-          component="button"
-          onClick={() => deleteExpense(expense.id)}
-        >
+        <IconButton component="button" onClick={() => deleteExpense(expense)}>
           <DeleteIcon />
         </IconButton>
       </TableCell>

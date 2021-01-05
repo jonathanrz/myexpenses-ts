@@ -41,9 +41,9 @@ function ExpenseList() {
   if (query.isError)
     return <Alert severity="error">{query.error.message}</Alert>;
 
-  function deleteExpense(id: string) {
+  function deleteExpense(expense: Expense) {
     if (window.confirm("Delete?")) {
-      deleteMutation.mutate(id);
+      deleteMutation.mutate(expense);
     }
   }
 

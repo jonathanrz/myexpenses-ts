@@ -8,12 +8,13 @@ const MODEL_NAME = "expense";
 const PATH = "expenses";
 
 function useExpensesQuery(month: Moment) {
-  const queryKey = [PATH, month.format("YYYY-MM")];
+  const queryKey = (date: Moment) => [PATH, date.format("YYYY-MM")];
+  const monthQueryKey = (date: Moment) => [...queryKey(date), "month"];
   const queryClient = useQueryClient();
   const axios = useAxios();
 
   const query = useQuery<Array<Expense>, Error>(
-    queryKey,
+    queryKey(month),
     () =>
       axios
         .get(PATH, {
@@ -32,7 +33,7 @@ function useExpensesQuery(month: Moment) {
   );
 
   const monthQuery = useQuery<Array<Expense>, Error>(
-    [...queryKey, "month"],
+    monthQueryKey(month),
     () =>
       axios
         .get(`${PATH}/month`, {
@@ -65,32 +66,35 @@ function useExpensesQuery(month: Moment) {
         .then(({ data }) => data.data);
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(queryKey);
+      onSuccess: (expense) => {
+        queryClient.invalidateQueries(queryKey(expense.date));
+        queryClient.invalidateQueries(monthQueryKey(expense.date));
       },
     }
   );
 
-  const deleteMutation = useMutation<void, Error, String>(
-    (id) => axios.delete(`${PATH}/${id}`),
+  const deleteMutation = useMutation<Expense, Error, Expense>(
+    (expense) => axios.delete(`${PATH}/${expense.id}`).then(() => expense),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(queryKey);
+      onSuccess: (expense) => {
+        queryClient.invalidateQueries(queryKey(expense.date));
+        queryClient.invalidateQueries(monthQueryKey(expense.date));
       },
     }
   );
 
   const confirmMutation = useMutation<Expense, Error, Expense>(
-    (receipt) => {
-      const path = `/${PATH}/${receipt.id}/${
-        receipt.confirmed ? "unconfirm" : "confirm"
+    (expense) => {
+      const path = `/${PATH}/${expense.id}/${
+        expense.confirmed ? "unconfirm" : "confirm"
       }`;
 
-      return axios.post(path);
+      return axios.post(path).then(() => expense);
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(queryKey);
+      onSuccess: (expense) => {
+        queryClient.invalidateQueries(queryKey(expense.date));
+        queryClient.invalidateQueries(monthQueryKey(expense.date));
       },
     }
   );

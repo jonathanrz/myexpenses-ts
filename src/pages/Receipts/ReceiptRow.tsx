@@ -19,7 +19,7 @@ const currentMonth = moment();
 
 interface ReceiptRowProps {
   receipt: Receipt;
-  deleteReceipt: (id: string) => void;
+  deleteReceipt: (receipt: Receipt) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -94,10 +94,7 @@ function ReceiptRow({ receipt, deleteReceipt }: ReceiptRowProps) {
         <IconButton component="button" onClick={() => setEdit(!edit)}>
           <EditIcon />
         </IconButton>
-        <IconButton
-          component="button"
-          onClick={() => deleteReceipt(receipt.id)}
-        >
+        <IconButton component="button" onClick={() => deleteReceipt(receipt)}>
           <DeleteIcon />
         </IconButton>
       </TableCell>

@@ -8,12 +8,12 @@ const MODEL_NAME = "receipt";
 const PATH = "receipts";
 
 function useReceiptsQuery(month: Moment) {
-  const queryKey = [PATH, month.format("YYYY-MM")];
+  const queryKey = (date: Moment) => [PATH, date.format("YYYY-MM")];
   const queryClient = useQueryClient();
   const axios = useAxios();
 
   const query = useQuery<Array<Receipt>, Error>(
-    queryKey,
+    queryKey(month),
     () =>
       axios
         .get(PATH, {
@@ -43,17 +43,17 @@ function useReceiptsQuery(month: Moment) {
         .then(({ data }) => data.data);
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(queryKey);
+      onSuccess: (receipt: Receipt) => {
+        queryClient.invalidateQueries(queryKey(receipt.date));
       },
     }
   );
 
-  const deleteMutation = useMutation<void, Error, String>(
-    (id) => axios.delete(`${PATH}/${id}`),
+  const deleteMutation = useMutation<Receipt, Error, Receipt>(
+    (receipt) => axios.delete(`${PATH}/${receipt.id}`).then(() => receipt),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(queryKey);
+      onSuccess: (receipt) => {
+        queryClient.invalidateQueries(queryKey(receipt.date));
       },
     }
   );
@@ -64,11 +64,11 @@ function useReceiptsQuery(month: Moment) {
         receipt.confirmed ? "unconfirm" : "confirm"
       }`;
 
-      return axios.post(path);
+      return axios.post(path).then(() => receipt);
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(queryKey);
+      onSuccess: (receipt) => {
+        queryClient.invalidateQueries(queryKey(receipt.date));
       },
     }
   );

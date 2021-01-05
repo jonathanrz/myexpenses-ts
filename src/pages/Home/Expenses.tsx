@@ -1,10 +1,13 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Moment } from "moment";
 import cs from "classnames";
 import sortBy from "lodash/sortBy";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
+import IconButton from "@material-ui/core/IconButton";
+import ClearIcon from "@material-ui/icons/Clear";
+import DoneIcon from "@material-ui/icons/Done";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -28,6 +31,9 @@ const useStyles = makeStyles({
     height: "100%",
     width: "unset",
   },
+  actionCell: {
+    width: "15%",
+  },
   value: {
     color: "red",
     fontWeight: "bold",
@@ -44,7 +50,8 @@ const useStyles = makeStyles({
 
 function Expenses({ month }: ExpensesProps) {
   const classes = useStyles();
-  const { monthQuery: query } = useExpensesQuery(month);
+  const [confirming, setConfirming] = useState(false);
+  const { monthQuery: query, confirmMutation } = useExpensesQuery(month);
 
   const expenses = useMemo(
     () => sortBy(query.data || [], ["confirmed", "date", "name"]),
@@ -55,6 +62,22 @@ function Expenses({ month }: ExpensesProps) {
   if (query.isError)
     return <Alert severity="error">{query.error.message}</Alert>;
 
+  function confirm(expense: Expense) {
+    setConfirming(true);
+
+    confirmMutation.mutateAsync(expense).finally(() => setConfirming(false));
+  }
+
+  function renderConfirmButton(expense: Expense) {
+    if (confirming) return <CircularProgress />;
+
+    return (
+      <IconButton color="default" size="small" onClick={() => confirm(expense)}>
+        {expense.confirmed ? <ClearIcon /> : <DoneIcon />}
+      </IconButton>
+    );
+  }
+
   return (
     <TableContainer component={Paper} className={classes.table}>
       <Table>
@@ -64,6 +87,7 @@ function Expenses({ month }: ExpensesProps) {
             <TableCell>Paid With</TableCell>
             <TableCell align="center">Date</TableCell>
             <TableCell align="right">Value</TableCell>
+            <TableCell className={classes.actionCell} />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -88,6 +112,9 @@ function Expenses({ month }: ExpensesProps) {
               >
                 {Currency.format(expense.value)}
               </TableCell>
+              <TableCell align="right" className={classes.actionCell}>
+                {expense.account ? renderConfirmButton(expense) : null}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -102,6 +129,7 @@ function Expenses({ month }: ExpensesProps) {
                   0
               )}
             </TableCell>
+            <TableCell />
           </TableRow>
         </TableFooter>
       </Table>
