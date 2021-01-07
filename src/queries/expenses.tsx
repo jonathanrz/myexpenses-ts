@@ -67,8 +67,8 @@ function useExpensesQuery(month: Moment) {
     },
     {
       onSuccess: (expense) => {
-        queryClient.invalidateQueries(queryKey(expense.date));
-        queryClient.invalidateQueries(monthQueryKey(expense.date));
+        queryClient.invalidateQueries(queryKey(moment(expense.date)));
+        queryClient.invalidateQueries(monthQueryKey(moment(expense.date)));
       },
     }
   );
@@ -77,8 +77,8 @@ function useExpensesQuery(month: Moment) {
     (expense) => axios.delete(`${PATH}/${expense.id}`).then(() => expense),
     {
       onSuccess: (expense) => {
-        queryClient.invalidateQueries(queryKey(expense.date));
-        queryClient.invalidateQueries(monthQueryKey(expense.date));
+        queryClient.invalidateQueries(queryKey(moment(expense.date)));
+        queryClient.invalidateQueries(monthQueryKey(moment(expense.date)));
       },
     }
   );
@@ -93,8 +93,8 @@ function useExpensesQuery(month: Moment) {
     },
     {
       onSuccess: (expense) => {
-        queryClient.invalidateQueries(queryKey(expense.date));
-        queryClient.invalidateQueries(monthQueryKey(expense.date));
+        queryClient.invalidateQueries(queryKey(moment(expense.date)));
+        queryClient.invalidateQueries(monthQueryKey(moment(expense.date)));
       },
     }
   );

@@ -24,6 +24,7 @@ import useExpensesQuery from "queries/expenses";
 const currentMonth = moment();
 
 interface ExpenseFormProps {
+  bill?: Bill;
   expense?: Expense;
   onExpenseSaved?: () => void;
   onCancel?: () => void;
@@ -45,6 +46,7 @@ const useStyles = makeStyles({
 
 function ExpenseForm({
   expense = { id: "", name: "", confirmed: false, value: 0, date: moment() },
+  bill,
   onExpenseSaved,
   onCancel,
 }: ExpenseFormProps) {
@@ -58,14 +60,14 @@ function ExpenseForm({
 
   const formik = useFormik({
     initialValues: {
-      name: expense.name,
+      name: bill?.name || expense.name,
       account_id: expense.account?.id || "",
-      bill_id: expense.bill?.id || "",
+      bill_id: expense.bill?.id || bill?.id || "",
       category_id: expense.category?.id || "",
       credit_card_id: expense.credit_card?.id || "",
       place_id: expense.place?.id || "",
       confirmed: expense.confirmed,
-      value: expense.value,
+      value: bill?.value || expense.value,
       date: expense.date,
     },
     onSubmit: (values, { resetForm }) =>

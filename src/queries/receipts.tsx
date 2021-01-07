@@ -44,7 +44,7 @@ function useReceiptsQuery(month: Moment) {
     },
     {
       onSuccess: (receipt: Receipt) => {
-        queryClient.invalidateQueries(queryKey(receipt.date));
+        queryClient.invalidateQueries(queryKey(moment(receipt.date)));
       },
     }
   );
@@ -53,7 +53,7 @@ function useReceiptsQuery(month: Moment) {
     (receipt) => axios.delete(`${PATH}/${receipt.id}`).then(() => receipt),
     {
       onSuccess: (receipt) => {
-        queryClient.invalidateQueries(queryKey(receipt.date));
+        queryClient.invalidateQueries(queryKey(moment(receipt.date)));
       },
     }
   );
@@ -68,7 +68,7 @@ function useReceiptsQuery(month: Moment) {
     },
     {
       onSuccess: (receipt) => {
-        queryClient.invalidateQueries(queryKey(receipt.date));
+        queryClient.invalidateQueries(queryKey(moment(receipt.date)));
       },
     }
   );
