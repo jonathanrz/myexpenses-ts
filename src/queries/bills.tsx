@@ -7,8 +7,15 @@ import { defaultQueryProps } from "./constants";
 const MODEL_NAME = "bill";
 const PATH = "bills";
 
+const queryKeyFunction = (month?: Moment) => [PATH, month?.format("YYYY-MM")];
+const monthQueryKeyFunction = (month?: Moment) => [
+  ...queryKeyFunction(month),
+  "month",
+];
+
 function useBillsQuery(month?: Moment) {
-  const queryKey = [PATH, month?.format("YYYY-MM")];
+  const queryKey = queryKeyFunction(month);
+  const monthQueryKey = monthQueryKeyFunction(month);
   const queryClient = useQueryClient();
   const axios = useAxios();
 
@@ -28,6 +35,28 @@ function useBillsQuery(month?: Moment) {
             end_date: moment(bill.end_date),
           }))
         ),
+    defaultQueryProps
+  );
+
+  const monthQuery = useQuery<Array<Bill>, Error>(
+    monthQueryKey,
+    () => {
+      if (!month) return Promise.resolve([]);
+
+      return axios
+        .get(`${PATH}/month`, {
+          params: {
+            month: month?.format("YYYY-MM"),
+          },
+        })
+        .then(({ data }) =>
+          data.data.map((bill: Bill) => ({
+            ...bill,
+            init_date: moment(bill.init_date),
+            end_date: moment(bill.end_date),
+          }))
+        );
+    },
     defaultQueryProps
   );
 
@@ -51,6 +80,7 @@ function useBillsQuery(month?: Moment) {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(queryKey);
+        queryClient.invalidateQueries(monthQueryKey);
       },
     }
   );
@@ -60,11 +90,13 @@ function useBillsQuery(month?: Moment) {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(queryKey);
+        queryClient.invalidateQueries(monthQueryKey);
       },
     }
   );
 
-  return { query, mutation, deleteMutation };
+  return { query, monthQuery, mutation, deleteMutation };
 }
 
+export { queryKeyFunction, monthQueryKeyFunction };
 export default useBillsQuery;

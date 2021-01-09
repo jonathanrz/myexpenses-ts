@@ -3,6 +3,10 @@ import useAxios from "hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Expense } from "models/Expense";
 import { defaultQueryProps } from "./constants";
+import {
+  queryKeyFunction as billQueryKeyFunction,
+  monthQueryKeyFunction as billMonthQueryKeyFunction,
+} from "./bills";
 
 const MODEL_NAME = "expense";
 const PATH = "expenses";
@@ -12,6 +16,18 @@ function useExpensesQuery(month: Moment) {
   const monthQueryKey = (date: Moment) => [...queryKey(date), "month"];
   const queryClient = useQueryClient();
   const axios = useAxios();
+
+  function invalidateQueries(expense: Expense) {
+    const date = moment(expense.date);
+
+    queryClient.invalidateQueries(queryKey(date));
+    queryClient.invalidateQueries(monthQueryKey(date));
+
+    if (expense.bill) {
+      queryClient.invalidateQueries(billQueryKeyFunction(date));
+      queryClient.invalidateQueries(billMonthQueryKeyFunction(date));
+    }
+  }
 
   const query = useQuery<Array<Expense>, Error>(
     queryKey(month),
@@ -66,20 +82,14 @@ function useExpensesQuery(month: Moment) {
         .then(({ data }) => data.data);
     },
     {
-      onSuccess: (expense) => {
-        queryClient.invalidateQueries(queryKey(moment(expense.date)));
-        queryClient.invalidateQueries(monthQueryKey(moment(expense.date)));
-      },
+      onSuccess: invalidateQueries,
     }
   );
 
   const deleteMutation = useMutation<Expense, Error, Expense>(
     (expense) => axios.delete(`${PATH}/${expense.id}`).then(() => expense),
     {
-      onSuccess: (expense) => {
-        queryClient.invalidateQueries(queryKey(moment(expense.date)));
-        queryClient.invalidateQueries(monthQueryKey(moment(expense.date)));
-      },
+      onSuccess: invalidateQueries,
     }
   );
 
@@ -92,10 +102,7 @@ function useExpensesQuery(month: Moment) {
       return axios.post(path).then(() => expense);
     },
     {
-      onSuccess: (expense) => {
-        queryClient.invalidateQueries(queryKey(moment(expense.date)));
-        queryClient.invalidateQueries(monthQueryKey(moment(expense.date)));
-      },
+      onSuccess: invalidateQueries,
     }
   );
 

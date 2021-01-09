@@ -75,7 +75,7 @@ function BillRow({ bill }: BillRowProps) {
 
 function Bills({ month }: BillsProps) {
   const classes = useStyles();
-  const { query } = useBillsQuery(month);
+  const { monthQuery: query } = useBillsQuery(month);
 
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)
@@ -93,10 +93,14 @@ function Bills({ month }: BillsProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {query.data &&
-            query.data.map((bill: Bill) => (
-              <BillRow key={bill.id} bill={bill} />
-            ))}
+          {query.data?.map((bill: Bill) => (
+            <BillRow key={bill.id} bill={bill} />
+          ))}
+          {query.data?.length === 0 ? (
+            <TableRow>
+              <TableCell>No more bills for this month</TableCell>
+            </TableRow>
+          ) : null}
         </TableBody>
       </Table>
     </TableContainer>
