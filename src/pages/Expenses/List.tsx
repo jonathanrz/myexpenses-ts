@@ -41,9 +41,9 @@ function ExpenseList() {
   if (query.isError)
     return <Alert severity="error">{query.error.message}</Alert>;
 
-  function deleteExpense(id: string) {
+  function deleteExpense(expense: Expense) {
     if (window.confirm("Delete?")) {
-      deleteMutation.mutate(id);
+      deleteMutation.mutate(expense);
     }
   }
 
@@ -58,7 +58,7 @@ function ExpenseList() {
           currentMonth={currentMonth}
           handleMonthSelected={handleMonthSelected}
         />
-        <Table>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>

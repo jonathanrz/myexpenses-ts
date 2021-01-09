@@ -45,9 +45,9 @@ function ReceiptList() {
   if (query.isError)
     return <Alert severity="error">{query.error.message}</Alert>;
 
-  function deleteReceipt(id: string) {
+  function deleteReceipt(receipt: Receipt) {
     if (window.confirm("Delete?")) {
-      deleteMutation.mutate(id);
+      deleteMutation.mutate(receipt);
     }
   }
 
@@ -58,7 +58,7 @@ function ReceiptList() {
           currentMonth={currentMonth}
           handleMonthSelected={handleMonthSelected}
         />
-        <Table>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import useAxios from "hooks/useAxios";
 import { Place } from "models/Place";
+import { defaultQueryProps } from "./constants";
 
 const MODEL_NAME = "place";
 const PATH = "places";
@@ -9,8 +10,10 @@ function usePlacesQuery() {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<Place>, Error>(PATH, () =>
-    axios.get(PATH).then(({ data }) => data.data)
+  const query = useQuery<Array<Place>, Error>(
+    PATH,
+    () => axios.get(PATH).then(({ data }) => data.data),
+    defaultQueryProps
   );
 
   const mutation = useMutation<Place, Error, Place>(

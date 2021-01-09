@@ -2,28 +2,33 @@ import moment, { Moment } from "moment";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import useAxios from "hooks/useAxios";
 import { Receipt } from "models/Receipt";
+import { defaultQueryProps } from "./constants";
 
 const MODEL_NAME = "receipt";
 const PATH = "receipts";
 
 function useReceiptsQuery(month: Moment) {
+  const queryKey = (date: Moment) => [PATH, date.format("YYYY-MM")];
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<Receipt>, Error>([PATH, month], () =>
-    axios
-      .get(PATH, {
-        params: {
-          init_date: month.startOf("month").format("YYYY-MM-DD"),
-          end_date: month.endOf("month").format("YYYY-MM-DD"),
-        },
-      })
-      .then(({ data }) =>
-        data.data.map((receipt: Receipt) => ({
-          ...receipt,
-          date: moment(receipt.date),
-        }))
-      )
+  const query = useQuery<Array<Receipt>, Error>(
+    queryKey(month),
+    () =>
+      axios
+        .get(PATH, {
+          params: {
+            init_date: month.startOf("month").format("YYYY-MM-DD"),
+            end_date: month.endOf("month").format("YYYY-MM-DD"),
+          },
+        })
+        .then(({ data }) =>
+          data.data.map((receipt: Receipt) => ({
+            ...receipt,
+            date: moment(receipt.date),
+          }))
+        ),
+    defaultQueryProps
   );
 
   const mutation = useMutation<Receipt, Error, Receipt>(
@@ -38,17 +43,17 @@ function useReceiptsQuery(month: Moment) {
         .then(({ data }) => data.data);
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries([PATH, month]);
+      onSuccess: (receipt: Receipt) => {
+        queryClient.invalidateQueries(queryKey(moment(receipt.date)));
       },
     }
   );
 
-  const deleteMutation = useMutation<void, Error, String>(
-    (id) => axios.delete(`${PATH}/${id}`),
+  const deleteMutation = useMutation<Receipt, Error, Receipt>(
+    (receipt) => axios.delete(`${PATH}/${receipt.id}`).then(() => receipt),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries([PATH, month]);
+      onSuccess: (receipt) => {
+        queryClient.invalidateQueries(queryKey(moment(receipt.date)));
       },
     }
   );
@@ -59,11 +64,11 @@ function useReceiptsQuery(month: Moment) {
         receipt.confirmed ? "unconfirm" : "confirm"
       }`;
 
-      return axios.post(path);
+      return axios.post(path).then(() => receipt);
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries([PATH, month]);
+      onSuccess: (receipt) => {
+        queryClient.invalidateQueries(queryKey(moment(receipt.date)));
       },
     }
   );

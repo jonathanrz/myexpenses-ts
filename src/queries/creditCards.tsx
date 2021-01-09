@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import useAxios from "hooks/useAxios";
 import { CreditCard } from "models/CreditCard";
+import { defaultQueryProps } from "./constants";
 
 const MODEL_NAME = "credit_card";
 const PATH = "credit_cards";
@@ -9,8 +10,10 @@ function useCreditCardsQuery() {
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const query = useQuery<Array<CreditCard>, Error>(PATH, () =>
-    axios.get(PATH).then(({ data }) => data.data)
+  const query = useQuery<Array<CreditCard>, Error>(
+    PATH,
+    () => axios.get(PATH).then(({ data }) => data.data),
+    defaultQueryProps
   );
 
   const mutation = useMutation<CreditCard, Error, CreditCard>(
