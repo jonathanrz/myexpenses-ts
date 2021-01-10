@@ -7,7 +7,10 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import FormikCurrencyField from "components/formik/FormikCurrencyField";
 import FormikDateField from "components/formik/FormikDateField";
 import FormikTextField from "components/formik/FormikTextField";
+import FormikSelectField from "components/formik/FormikSelectField";
+import { Account } from "models/Account";
 import { Bill } from "models/Bill";
+import useAccountsQuery from "queries/accounts";
 import useBillsQuery from "queries/bills";
 
 interface BillFormProps {
@@ -42,6 +45,7 @@ function BillForm({
   onCancel,
 }: BillFormProps) {
   const classes = useStyles();
+  const { query: accountsQuery } = useAccountsQuery();
   const { mutation } = useBillsQuery();
 
   const formik = useFormik({
@@ -73,6 +77,21 @@ function BillForm({
         label="Name"
         formik={formik}
         autoFocus
+        required
+      />
+      <FormikSelectField
+        name="account_id"
+        label="Account"
+        options={
+          accountsQuery.data
+            ? accountsQuery.data.map((account: Account) => ({
+                label: account.name,
+                value: account.id,
+              }))
+            : []
+        }
+        formik={formik}
+        fullWidth
         required
       />
       <FormikTextField

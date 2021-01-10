@@ -61,7 +61,7 @@ function ExpenseForm({
   const formik = useFormik({
     initialValues: {
       name: bill?.name || expense.name,
-      account_id: expense.account?.id || "",
+      account_id: expense.account?.id || bill?.account?.id || "",
       bill_id: expense.bill?.id || bill?.id || "",
       category_id: expense.category?.id || "",
       credit_card_id: expense.credit_card?.id || "",
