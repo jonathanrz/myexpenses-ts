@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import moment from "moment";
 import sortBy from "lodash/sortBy";
+import { makeStyles } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Table from "@material-ui/core/Table";
@@ -19,7 +20,20 @@ import useExpensesQuery from "queries/expenses";
 import useReceiptsQuery from "queries/receipts";
 import TransactionsTable from "./TransactionsTable";
 
+const useStyles = makeStyles({
+  balance: {
+    fontWeight: "bold",
+  },
+  fullRow: {
+    textAlign: "center",
+    backgroundColor: "#DDDDDD",
+    fontWeight: "bold",
+    padding: "0.5rem",
+  },
+});
+
 function Home() {
+  const classes = useStyles();
   const month = moment();
   const { query: accountsQuery } = useAccountsQuery();
   const { query: receiptsQuery } = useReceiptsQuery(month);
@@ -68,10 +82,15 @@ function Home() {
     }));
   }, [accountsQuery.data, transactions]);
 
-  function renderEmptyRow() {
+  function renderFullRow(content?: string) {
     return (
       <TableRow>
-        <TableCell colSpan={2 + (accountsQuery.data?.length || 0)} />
+        <TableCell
+          colSpan={2 + (accountsQuery.data?.length || 0)}
+          className={classes.fullRow}
+        >
+          {content}
+        </TableCell>
       </TableRow>
     );
   }
@@ -82,7 +101,7 @@ function Home() {
         <TableCell>Balance</TableCell>
         <TableCell />
         {accounts?.map((account) => (
-          <TableCell key={account.id}>
+          <TableCell key={account.id} className={classes.balance}>
             {Currency.format(account.balance)}
           </TableCell>
         ))}
@@ -109,8 +128,9 @@ function Home() {
           </TableHead>
           <TableBody>
             {renderBalanceRow(accountsQuery.data)}
-            {renderEmptyRow()}
+            {renderFullRow(month.format("MMMM, YYYY"))}
             <TransactionsTable transactions={transactions} />
+            {renderFullRow()}
             {renderBalanceRow(accountsBalanceAtEndOfMonth)}
           </TableBody>
         </Table>

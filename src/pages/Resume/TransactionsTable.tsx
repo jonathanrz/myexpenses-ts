@@ -18,6 +18,11 @@ interface TransactionsTableProps {
 }
 
 const useStyles = makeStyles({
+  tableRow: {
+    "&:nth-of-type(even)": {
+      backgroundColor: "#EEEEEE",
+    },
+  },
   valueCell: {
     alignItems: "center",
     display: "flex",
@@ -68,7 +73,7 @@ function TransactionsTable({ transactions }: TransactionsTableProps) {
   return (
     <React.Fragment>
       {transactions.map((transaction) => (
-        <TableRow key={transaction.id}>
+        <TableRow key={transaction.id} className={classes.tableRow}>
           <TableCell>{transaction.name}</TableCell>
           <TableCell>{transaction.date.format("DD")}</TableCell>
           {accountsQuery.data?.map((account) => (
