@@ -69,6 +69,7 @@ function useReceiptsQuery(month: Moment) {
     {
       onSuccess: (receipt) => {
         queryClient.invalidateQueries(queryKey(moment(receipt.date)));
+        queryClient.invalidateQueries("accounts");
       },
     }
   );

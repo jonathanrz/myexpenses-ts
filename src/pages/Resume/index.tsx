@@ -98,7 +98,7 @@ function Home() {
   }
 
   function renderConfirmButton(transaction: Transaction) {
-    if (confirming) return <CircularProgress />;
+    if (confirming) return <CircularProgress size={26} />;
 
     return (
       <IconButton
@@ -106,7 +106,11 @@ function Home() {
         size="small"
         onClick={() => confirm(transaction)}
       >
-        {transaction.confirmed ? <ClearIcon /> : <DoneIcon />}
+        {transaction.confirmed ? (
+          <ClearIcon fontSize="small" />
+        ) : (
+          <DoneIcon fontSize="small" />
+        )}
       </IconButton>
     );
   }
@@ -140,7 +144,7 @@ function Home() {
 
     return (
       <TableContainer component={Paper}>
-        <Table>
+        <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
