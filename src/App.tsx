@@ -19,6 +19,7 @@ import ExpensesPage from "./pages/Expenses";
 import PlacesPage from "./pages/Places";
 import ReceiptsPage from "./pages/Receipts";
 import HomePage from "./pages/Home";
+import ResumePage from "./pages/Resume";
 import LoginPage from "./pages/Login";
 
 function NoMatch() {
@@ -75,6 +76,9 @@ function App() {
             </Route>
             <PrivateRoute exact path="/">
               <HomePage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/resume">
+              <ResumePage />
             </PrivateRoute>
             <PrivateRoute exact path="/accounts">
               <AccountsPage />
