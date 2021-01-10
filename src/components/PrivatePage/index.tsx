@@ -10,7 +10,8 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import AccountBalanceIcon from "@material-ui/icons/AccountBalanceWallet";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import HomeIcon from "@material-ui/icons/Home";
@@ -119,9 +120,14 @@ function PrivatePage({ children, title }: PrivatePageProps) {
         <List>
           <DrawerLink pathname="/" text="Home" Icon={<HomeIcon />} />
           <DrawerLink
+            pathname="/resume"
+            text="Resume"
+            Icon={<AccountBalanceIcon />}
+          />
+          <DrawerLink
             pathname="/accounts"
             text="Accounts"
-            Icon={<AccountBalanceIcon />}
+            Icon={<AccountBalanceWalletIcon />}
           />
           <DrawerLink pathname="/bills" text="Bills" Icon={<DateRangeIcon />} />
           <DrawerLink

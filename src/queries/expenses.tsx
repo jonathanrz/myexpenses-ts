@@ -22,6 +22,7 @@ function useExpensesQuery(month: Moment) {
 
     queryClient.invalidateQueries(queryKey(date));
     queryClient.invalidateQueries(monthQueryKey(date));
+    queryClient.invalidateQueries("accounts");
 
     if (expense.bill) {
       queryClient.invalidateQueries(billQueryKeyFunction(date));
