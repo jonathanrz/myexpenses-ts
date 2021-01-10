@@ -1,4 +1,5 @@
 import useAxios from "../hooks/useAxios";
+import sortBy from "lodash/sortBy";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Account } from "models/Account";
 import { defaultQueryProps } from "./constants";
@@ -12,7 +13,7 @@ function useAccountsQuery() {
 
   const query = useQuery<Array<Account>, Error>(
     PATH,
-    () => axios.get(PATH).then(({ data }) => data.data),
+    () => axios.get(PATH).then(({ data }) => sortBy(data.data, "name")),
     defaultQueryProps
   );
 

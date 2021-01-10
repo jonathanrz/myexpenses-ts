@@ -48,6 +48,7 @@ function TransactionsTable({ transactions }: TransactionsTableProps) {
 
   function renderConfirmButton(transaction: Transaction) {
     if (confirming) return <CircularProgress size={26} />;
+    if (transaction.expense?.credit_card) return null;
 
     return (
       <IconButton

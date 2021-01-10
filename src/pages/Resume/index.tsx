@@ -11,6 +11,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Currency from "helpers/currency";
+import { Account } from "models/Account";
 import { Transaction } from "models/Transaction";
 import PrivatePage from "components/PrivatePage";
 import useAccountsQuery from "queries/accounts";
@@ -51,6 +52,22 @@ function Home() {
     return sortBy(transactions, "date");
   }, [receiptsQuery.data, expensesQuery.data]);
 
+  const accountsBalanceAtEndOfMonth = useMemo(() => {
+    return accountsQuery.data?.map((account) => ({
+      ...account,
+      balance:
+        account.balance +
+        transactions.reduce((accum, transaction) => {
+          if (transaction.confirmed || transaction.account?.id !== account.id)
+            return accum;
+
+          if (transaction.receipt) return accum + transaction.value;
+
+          return accum - transaction.value;
+        }, 0),
+    }));
+  }, [accountsQuery.data, transactions]);
+
   function renderEmptyRow() {
     return (
       <TableRow>
@@ -59,12 +76,12 @@ function Home() {
     );
   }
 
-  function renderBalanceRow() {
+  function renderBalanceRow(accounts?: Account[]) {
     return (
       <TableRow>
         <TableCell>Balance</TableCell>
         <TableCell />
-        {accountsQuery.data?.map((account) => (
+        {accounts?.map((account) => (
           <TableCell key={account.id}>
             {Currency.format(account.balance)}
           </TableCell>
@@ -91,9 +108,10 @@ function Home() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {renderBalanceRow()}
+            {renderBalanceRow(accountsQuery.data)}
             {renderEmptyRow()}
             <TransactionsTable transactions={transactions} />
+            {renderBalanceRow(accountsBalanceAtEndOfMonth)}
           </TableBody>
         </Table>
       </TableContainer>
