@@ -13,14 +13,14 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Currency from "helpers/currency";
 import { Account } from "models/Account";
+import { Bill } from "models/Bill";
 import { Receipt } from "models/Receipt";
 import { Expense } from "models/Expense";
 import { Transaction } from "models/Transaction";
 import PrivatePage from "components/PrivatePage";
 import useAccountsQuery from "queries/accounts";
-import useExpensesQuery from "queries/expenses";
-import useReceiptsQuery from "queries/receipts";
 import TransactionsTable from "./TransactionsTable";
+import useMonthTransactionsQuery from "./useMonthTransactionsQuery";
 
 const useStyles = makeStyles({
   balance: {
@@ -44,7 +44,8 @@ const nextMonth = moment().add(1, "month");
 
 function generateTransactions(
   receipts?: Receipt[],
-  expenses?: Expense[]
+  expenses?: Expense[],
+  bills?: Bill[]
 ): Transaction[] {
   return [
     ...(receipts?.map((receipt) => ({
@@ -52,7 +53,7 @@ function generateTransactions(
       name: receipt.name,
       confirmed: receipt.confirmed,
       account: receipt.account,
-      date: receipt.date,
+      day: receipt.date.date(),
       value: receipt.value,
       receipt,
     })) || []),
@@ -63,9 +64,18 @@ function generateTransactions(
         : expense.name,
       confirmed: expense.confirmed,
       account: expense.account || expense.credit_card?.account,
-      date: expense.date,
+      day: expense.date.date(),
       value: expense.value,
       expense,
+    })) || []),
+    ...(bills?.map((bill) => ({
+      id: `bill_${bill.id}`,
+      name: bill.name,
+      confirmed: false,
+      account: bill.account,
+      day: bill.due_day,
+      value: bill.value,
+      bill,
     })) || []),
   ];
 }
@@ -92,30 +102,41 @@ function updateAccountBalances(
 function Home() {
   const classes = useStyles();
   const { query: accountsQuery } = useAccountsQuery();
-  const { query: receiptsQuery } = useReceiptsQuery(month);
-  const { monthQuery: expensesQuery } = useExpensesQuery(month);
-  const { query: nextMonthReceiptsQuery } = useReceiptsQuery(nextMonth);
-  const { monthQuery: nextMonthExpensesQuery } = useExpensesQuery(nextMonth);
+  const currentMonthTransactionsQuery = useMonthTransactionsQuery(month);
+  const nextMonthTransactionsQuery = useMonthTransactionsQuery(nextMonth);
 
   const transactions = useMemo(
     () =>
       sortBy(
-        generateTransactions(receiptsQuery.data, expensesQuery.data),
-        "date"
+        generateTransactions(
+          currentMonthTransactionsQuery.receipts,
+          currentMonthTransactionsQuery.expenses,
+          currentMonthTransactionsQuery.bills
+        ),
+        "day"
       ),
-    [receiptsQuery.data, expensesQuery.data]
+    [
+      currentMonthTransactionsQuery.receipts,
+      currentMonthTransactionsQuery.expenses,
+      currentMonthTransactionsQuery.bills,
+    ]
   );
 
   const nextMonthTransactions = useMemo(
     () =>
       sortBy(
         generateTransactions(
-          nextMonthReceiptsQuery.data,
-          nextMonthExpensesQuery.data
+          nextMonthTransactionsQuery.receipts,
+          nextMonthTransactionsQuery.expenses,
+          nextMonthTransactionsQuery.bills
         ),
-        "date"
+        "day"
       ),
-    [nextMonthReceiptsQuery.data, nextMonthExpensesQuery.data]
+    [
+      nextMonthTransactionsQuery.receipts,
+      nextMonthTransactionsQuery.expenses,
+      nextMonthTransactionsQuery.bills,
+    ]
   );
 
   const accountsBalanceAtEndOfMonth = useMemo(

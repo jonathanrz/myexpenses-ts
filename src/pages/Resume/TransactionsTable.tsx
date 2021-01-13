@@ -53,7 +53,7 @@ function TransactionsTable({ transactions }: TransactionsTableProps) {
 
   function renderConfirmButton(transaction: Transaction) {
     if (confirming) return <CircularProgress size={26} />;
-    if (transaction.expense?.credit_card) return null;
+    if (transaction.expense?.credit_card || transaction.bill) return null;
 
     return (
       <IconButton
@@ -75,7 +75,7 @@ function TransactionsTable({ transactions }: TransactionsTableProps) {
       {transactions.map((transaction) => (
         <TableRow key={transaction.id} className={classes.tableRow}>
           <TableCell>{transaction.name}</TableCell>
-          <TableCell>{transaction.date.format("DD")}</TableCell>
+          <TableCell>{("0" + transaction.day).slice(-2)}</TableCell>
           {accountsQuery.data?.map((account) => (
             <TableCell key={account.id}>
               {account.id === transaction.account?.id ? (
@@ -84,7 +84,7 @@ function TransactionsTable({ transactions }: TransactionsTableProps) {
                     value={transaction.value}
                     confirmed={transaction.confirmed}
                     receipt={Boolean(transaction.receipt)}
-                    expense={Boolean(transaction.expense)}
+                    expense={Boolean(transaction.expense || transaction.bill)}
                   />
                   {renderConfirmButton(transaction)}
                 </div>

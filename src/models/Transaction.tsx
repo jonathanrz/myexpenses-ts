@@ -1,5 +1,5 @@
-import { Moment } from "moment";
 import { Account } from "./Account";
+import { Bill } from "./Bill";
 import { Receipt } from "./Receipt";
 import { Expense } from "./Expense";
 
@@ -8,7 +8,8 @@ export interface Transaction {
   name: string;
   confirmed: boolean;
   account?: Account;
-  date: Moment;
+  bill?: Bill;
+  day: number;
   value: number;
   receipt?: Receipt;
   expense?: Expense;
