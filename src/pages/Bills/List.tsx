@@ -19,7 +19,7 @@ import BillRow from "./BillRow";
 
 const useStyles = makeStyles({
   container: {
-    gridTemplateColumns: "850px 450px",
+    gridTemplateColumns: "1100px 450px",
     display: "grid",
     gridGap: "2rem",
   },
@@ -63,6 +63,7 @@ function BillsList() {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Account</TableCell>
+              <TableCell>Category</TableCell>
               <TableCell>Due Day</TableCell>
               <TableCell>Init Date</TableCell>
               <TableCell>End Date</TableCell>

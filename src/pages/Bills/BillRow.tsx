@@ -5,6 +5,7 @@ import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import AccountCell from "components/shared/AccountCell";
+import CategoryCell from "components/shared/CategoryCell";
 import { Bill } from "models/Bill";
 import Currency from "helpers/currency";
 import Form from "./Form";
@@ -38,6 +39,9 @@ function BillRow({ bill, deleteBill }: BillRowProps) {
       </TableCell>
       <TableCell>
         <AccountCell account={bill.account} />
+      </TableCell>
+      <TableCell>
+        <CategoryCell category={bill.category} />
       </TableCell>
       <TableCell component="th" scope="row">
         {bill.due_day}
