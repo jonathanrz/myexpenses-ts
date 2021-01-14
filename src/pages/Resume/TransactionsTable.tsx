@@ -93,6 +93,7 @@ function TransactionsTable({ transactions }: TransactionsTableProps) {
               )}
             </TableCell>
           ))}
+          <TableCell />
         </TableRow>
       ))}
     </React.Fragment>

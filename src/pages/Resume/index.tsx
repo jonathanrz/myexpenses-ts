@@ -1,9 +1,12 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import moment from "moment";
 import sortBy from "lodash/sortBy";
 import { makeStyles } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -31,6 +34,10 @@ const useStyles = makeStyles({
       backgroundColor: "#EEEEEE",
     },
   },
+  filter: {
+    display: "flex",
+    justifyContent: "flex-end",
+  },
   fullRow: {
     textAlign: "center",
     backgroundColor: "#DDDDDD",
@@ -42,12 +49,20 @@ const useStyles = makeStyles({
 const month = moment();
 const nextMonth = moment().add(1, "month");
 
-function generateTransactions(
-  receipts?: Receipt[],
-  expenses?: Expense[],
-  bills?: Bill[]
-): Transaction[] {
-  return [
+interface GenerateTransactionsProps {
+  receipts?: Receipt[];
+  expenses?: Expense[];
+  bills?: Bill[];
+  displayConfirmed: boolean;
+}
+
+function generateTransactions({
+  receipts,
+  expenses,
+  bills,
+  displayConfirmed,
+}: GenerateTransactionsProps): Transaction[] {
+  let transactions = [
     ...(receipts?.map((receipt) => ({
       id: `receipt_${receipt.id}`,
       name: receipt.name,
@@ -78,6 +93,11 @@ function generateTransactions(
       bill,
     })) || []),
   ];
+
+  if (!displayConfirmed)
+    transactions = transactions.filter((t) => !t.confirmed);
+
+  return sortBy(transactions, "day");
 }
 
 function updateAccountBalances(
@@ -101,42 +121,24 @@ function updateAccountBalances(
 
 function Home() {
   const classes = useStyles();
+  const [displayConfirmed, setDisplayConfirmed] = useState(false);
   const { query: accountsQuery } = useAccountsQuery();
   const currentMonthTransactionsQuery = useMonthTransactionsQuery(month);
   const nextMonthTransactionsQuery = useMonthTransactionsQuery(nextMonth);
 
   const transactions = useMemo(
     () =>
-      sortBy(
-        generateTransactions(
-          currentMonthTransactionsQuery.receipts,
-          currentMonthTransactionsQuery.expenses,
-          currentMonthTransactionsQuery.bills
-        ),
-        "day"
-      ),
-    [
-      currentMonthTransactionsQuery.receipts,
-      currentMonthTransactionsQuery.expenses,
-      currentMonthTransactionsQuery.bills,
-    ]
+      generateTransactions({
+        ...currentMonthTransactionsQuery,
+        displayConfirmed,
+      }),
+    [currentMonthTransactionsQuery, displayConfirmed]
   );
 
   const nextMonthTransactions = useMemo(
     () =>
-      sortBy(
-        generateTransactions(
-          nextMonthTransactionsQuery.receipts,
-          nextMonthTransactionsQuery.expenses,
-          nextMonthTransactionsQuery.bills
-        ),
-        "day"
-      ),
-    [
-      nextMonthTransactionsQuery.receipts,
-      nextMonthTransactionsQuery.expenses,
-      nextMonthTransactionsQuery.bills,
-    ]
+      generateTransactions({ ...nextMonthTransactionsQuery, displayConfirmed }),
+    [nextMonthTransactionsQuery, displayConfirmed]
   );
 
   const accountsBalanceAtEndOfMonth = useMemo(
@@ -154,7 +156,7 @@ function Home() {
     return (
       <TableRow>
         <TableCell
-          colSpan={2 + (accountsQuery.data?.length || 0)}
+          colSpan={2 + (accountsQuery.data?.length || 0) + 1}
           className={classes.fullRow}
         >
           {content}
@@ -173,6 +175,11 @@ function Home() {
             {Currency.format(account.balance)}
           </TableCell>
         ))}
+        <TableCell>
+          {Currency.format(
+            accounts?.reduce((acc, current) => acc + current.balance, 0) || 0
+          )}
+        </TableCell>
       </TableRow>
     );
   }
@@ -184,6 +191,18 @@ function Home() {
 
     return (
       <TableContainer component={Paper}>
+        <FormGroup className={classes.filter} row>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={displayConfirmed}
+                onChange={(event) => setDisplayConfirmed(event.target.checked)}
+                color="secondary"
+              />
+            }
+            label="Display Confirmed"
+          />
+        </FormGroup>
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -192,6 +211,7 @@ function Home() {
               {accountsQuery.data?.map((account) => (
                 <TableCell key={account.id}>{account.name}</TableCell>
               ))}
+              <TableCell>Total</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
