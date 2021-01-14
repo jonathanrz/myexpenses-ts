@@ -63,7 +63,7 @@ function ExpenseForm({
       name: bill?.name || expense.name,
       account_id: expense.account?.id || bill?.account?.id || "",
       bill_id: expense.bill?.id || bill?.id || "",
-      category_id: expense.category?.id || "",
+      category_id: expense.category?.id || bill?.category?.id || "",
       credit_card_id: expense.credit_card?.id || "",
       place_id: expense.place?.id || "",
       confirmed: expense.confirmed,
