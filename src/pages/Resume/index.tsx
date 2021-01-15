@@ -171,11 +171,11 @@ function Home() {
         <TableCell />
         <TableCell />
         {accounts?.map((account) => (
-          <TableCell key={account.id} className={classes.balance}>
+          <TableCell key={account.id} className={classes.balance} align="right">
             {Currency.format(account.balance)}
           </TableCell>
         ))}
-        <TableCell>
+        <TableCell align="right">
           {Currency.format(
             accounts?.reduce((acc, current) => acc + current.balance, 0) || 0
           )}
@@ -209,9 +209,11 @@ function Home() {
               <TableCell>Name</TableCell>
               <TableCell>Date</TableCell>
               {accountsQuery.data?.map((account) => (
-                <TableCell key={account.id}>{account.name}</TableCell>
+                <TableCell key={account.id} align="right">
+                  {account.name}
+                </TableCell>
               ))}
-              <TableCell>Total</TableCell>
+              <TableCell align="right">Total</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

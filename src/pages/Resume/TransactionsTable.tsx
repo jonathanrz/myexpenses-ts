@@ -26,6 +26,7 @@ const useStyles = makeStyles({
   valueCell: {
     alignItems: "center",
     display: "flex",
+    justifyContent: "flex-end",
   },
 });
 
@@ -77,16 +78,16 @@ function TransactionsTable({ transactions }: TransactionsTableProps) {
           <TableCell>{transaction.name}</TableCell>
           <TableCell>{("0" + transaction.day).slice(-2)}</TableCell>
           {accountsQuery.data?.map((account) => (
-            <TableCell key={account.id}>
+            <TableCell key={account.id} align="right">
               {account.id === transaction.account?.id ? (
                 <div className={classes.valueCell}>
+                  {renderConfirmButton(transaction)}
                   <ValueCell
                     value={transaction.value}
                     confirmed={transaction.confirmed}
                     receipt={Boolean(transaction.receipt)}
                     expense={Boolean(transaction.expense || transaction.bill)}
                   />
-                  {renderConfirmButton(transaction)}
                 </div>
               ) : (
                 ""
