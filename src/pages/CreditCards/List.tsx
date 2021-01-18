@@ -17,7 +17,7 @@ import CreditCardRow from "./CreditCardRow";
 
 const useStyles = makeStyles({
   container: {
-    gridTemplateColumns: "550px 350px",
+    gridTemplateColumns: "750px 350px",
     display: "grid",
     gridGap: "2rem",
   },
@@ -52,6 +52,7 @@ function CreditCardList() {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Account</TableCell>
+              <TableCell />
               <TableCell />
             </TableRow>
           </TableHead>

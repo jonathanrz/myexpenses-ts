@@ -11,17 +11,21 @@ import {
 const MODEL_NAME = "expense";
 const PATH = "expenses";
 
+const queryKeyFunction = (date: Moment) => [PATH, date.format("YYYY-MM")];
+const monthQueryKeyFunction = (date: Moment) => [
+  ...queryKeyFunction(date),
+  "month",
+];
+
 function useExpensesQuery(month: Moment) {
-  const queryKey = (date: Moment) => [PATH, date.format("YYYY-MM")];
-  const monthQueryKey = (date: Moment) => [...queryKey(date), "month"];
   const queryClient = useQueryClient();
   const axios = useAxios();
 
   function invalidateQueries(expense: Expense) {
     const date = moment(expense.date);
 
-    queryClient.invalidateQueries(queryKey(date));
-    queryClient.invalidateQueries(monthQueryKey(date));
+    queryClient.invalidateQueries(queryKeyFunction(date));
+    queryClient.invalidateQueries(monthQueryKeyFunction(date));
     queryClient.invalidateQueries("accounts");
 
     if (expense.bill) {
@@ -31,7 +35,7 @@ function useExpensesQuery(month: Moment) {
   }
 
   const query = useQuery<Array<Expense>, Error>(
-    queryKey(month),
+    queryKeyFunction(month),
     () =>
       axios
         .get(PATH, {
@@ -50,7 +54,7 @@ function useExpensesQuery(month: Moment) {
   );
 
   const monthQuery = useQuery<Array<Expense>, Error>(
-    monthQueryKey(month),
+    monthQueryKeyFunction(month),
     () =>
       axios
         .get(`${PATH}/month`, {
@@ -110,4 +114,5 @@ function useExpensesQuery(month: Moment) {
   return { query, monthQuery, mutation, deleteMutation, confirmMutation };
 }
 
+export { queryKeyFunction, monthQueryKeyFunction };
 export default useExpensesQuery;
