@@ -11,8 +11,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import Currency from "helpers/currency";
 import { NubankEvent } from "models/NubankEvent";
+import NubankEventRow from "./NubankEventRow";
 
 const useStyles = makeStyles({
   container: {
@@ -54,7 +54,7 @@ function NubankPage() {
           events
             .filter((e: NubankEvent) => e.category === "transaction")
             .map((e: NubankEvent) => ({ ...e, time: moment(e.time) }))
-            .filter((e: NubankEvent) => today.diff(e.time, "months") < 13)
+            .filter((e: NubankEvent) => today.diff(e.time, "months") < 11)
         )
       )
       .finally(() => setImportingData(false));
@@ -100,17 +100,7 @@ function NubankPage() {
             </TableHead>
             <TableBody>
               {events.map((e) => (
-                <TableRow key={e.id}>
-                  <TableCell>{e.id}</TableCell>
-                  <TableCell>{e.time.format("lll")}</TableCell>
-                  <TableCell>{e.description}</TableCell>
-                  <TableCell align="right">
-                    {e.details?.charges?.count || 0}
-                  </TableCell>
-                  <TableCell align="right">
-                    {Currency.format(e.amount)}{" "}
-                  </TableCell>
-                </TableRow>
+                <NubankEventRow key={e.id} event={e} />
               ))}
             </TableBody>
           </Table>

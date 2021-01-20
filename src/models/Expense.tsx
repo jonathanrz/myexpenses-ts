@@ -16,4 +16,6 @@ export interface Expense {
   place?: Place;
   date: Moment;
   value: number;
+  installmentNumber: string;
+  installmentCount: number;
 }

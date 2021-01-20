@@ -76,13 +76,23 @@ function useExpensesQuery(month: Moment) {
       if (values.id) {
         return axios
           .patch(`/${PATH}/${values.id}`, {
-            [MODEL_NAME]: { installmentNumber: null, ...values },
+            [MODEL_NAME]: {
+              ...values,
+              installmentNumber: values.installmentNumber
+                ? Number.parseInt(values.installmentNumber)
+                : null,
+            },
           })
           .then(({ data }) => data.data);
       }
       return axios
         .post(`/${PATH}`, {
-          [MODEL_NAME]: { installmentNumber: null, ...values },
+          [MODEL_NAME]: {
+            ...values,
+            installmentNumber: values.installmentNumber
+              ? Number.parseInt(values.installmentNumber)
+              : null,
+          },
         })
         .then(({ data }) => data.data);
     },

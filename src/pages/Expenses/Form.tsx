@@ -13,6 +13,7 @@ import { Bill } from "models/Bill";
 import { Category } from "models/Category";
 import { CreditCard } from "models/CreditCard";
 import { Expense } from "models/Expense";
+import { NubankEvent } from "models/NubankEvent";
 import { Place } from "models/Place";
 import useAccountsQuery from "queries/accounts";
 import useBillsQuery from "queries/bills";
@@ -26,6 +27,7 @@ const currentMonth = moment();
 interface ExpenseFormProps {
   bill?: Bill;
   expense?: Expense;
+  nubankEvent?: NubankEvent;
   onExpenseSaved?: () => void;
   onCancel?: () => void;
 }
@@ -45,8 +47,17 @@ const useStyles = makeStyles({
 });
 
 function ExpenseForm({
-  expense = { id: "", name: "", confirmed: false, value: 0, date: moment() },
+  expense = {
+    id: "",
+    name: "",
+    confirmed: false,
+    value: 0,
+    date: moment(),
+    installmentNumber: "",
+    installmentCount: 0,
+  },
   bill,
+  nubankEvent,
   onExpenseSaved,
   onCancel,
 }: ExpenseFormProps) {
@@ -60,21 +71,31 @@ function ExpenseForm({
 
   const formik = useFormik({
     initialValues: {
-      name: bill?.name || expense.name,
+      name: bill?.name || nubankEvent?.description || expense.name,
       account_id: expense.account?.id || bill?.account?.id || "",
       bill_id: expense.bill?.id || bill?.id || "",
       category_id: expense.category?.id || bill?.category?.id || "",
-      credit_card_id: expense.credit_card?.id || "",
+      credit_card_id: expense.credit_card?.id || (nubankEvent && 1) || "",
       place_id: expense.place?.id || "",
       confirmed: expense.confirmed,
-      value: bill?.value || expense.value,
-      date: expense.date,
+      value: bill?.value || nubankEvent?.amount || expense.value,
+      date: nubankEvent?.time || expense.date,
+      installmentNumber:
+        nubankEvent?.details?.charges?.count?.toString() ||
+        expense.installmentNumber,
+      installmentCount: expense.installmentCount,
     },
     onSubmit: (values, { resetForm }) =>
-      mutation.mutateAsync({ ...values, id: expense.id }).then(() => {
-        onExpenseSaved && onExpenseSaved();
-        resetForm();
-      }),
+      mutation
+        .mutateAsync({
+          ...values,
+          value: Number.parseInt(values.value.toString()),
+          id: expense.id,
+        })
+        .then(() => {
+          onExpenseSaved && onExpenseSaved();
+          resetForm();
+        }),
   });
 
   function handleBillSelected(selectedFieldId?: number) {
@@ -157,6 +178,11 @@ function ExpenseForm({
         label="Value"
         formik={formik}
         required
+      />
+      <FormikTextField
+        name="installmentNumber"
+        label="Installments"
+        formik={formik}
       />
       <FormikSelectField
         name="bill_id"
