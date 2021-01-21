@@ -13,6 +13,7 @@ import Container from "@material-ui/core/Container";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
+import CardGiftcardIcon from "@material-ui/icons/CardGiftcard";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import HomeIcon from "@material-ui/icons/Home";
 import StorefrontIcon from "@material-ui/icons/Storefront";
@@ -129,26 +130,31 @@ function PrivatePage({ children, title }: PrivatePageProps) {
             text="Accounts"
             Icon={<AccountBalanceWalletIcon />}
           />
-          <DrawerLink pathname="/bills" text="Bills" Icon={<DateRangeIcon />} />
-          <DrawerLink
-            pathname="/categories"
-            text="Categories"
-            Icon={<CategoryIcon />}
-          />
           <DrawerLink
             pathname="/credit_cards"
             text="Credit Card"
             Icon={<CreditCardIcon />}
           />
           <DrawerLink
-            pathname="/expenses"
-            text="Expenses"
-            Icon={<ShoppingCartIcon />}
+            pathname="/nubank"
+            text="Nubank"
+            Icon={<CardGiftcardIcon />}
+          />
+          <DrawerLink
+            pathname="/categories"
+            text="Categories"
+            Icon={<CategoryIcon />}
           />
           <DrawerLink
             pathname="/places"
             text="Places"
             Icon={<StorefrontIcon />}
+          />
+          <DrawerLink pathname="/bills" text="Bills" Icon={<DateRangeIcon />} />
+          <DrawerLink
+            pathname="/expenses"
+            text="Expenses"
+            Icon={<ShoppingCartIcon />}
           />
           <DrawerLink
             pathname="/receipts"
