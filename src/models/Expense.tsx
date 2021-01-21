@@ -18,4 +18,5 @@ export interface Expense {
   value: number;
   installmentNumber: string;
   installmentCount: number;
+  nubank_id: string;
 }
