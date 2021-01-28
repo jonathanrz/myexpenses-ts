@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import TableCell from "@material-ui/core/TableCell";
@@ -9,7 +9,6 @@ import EditIcon from "@material-ui/icons/Edit";
 import { Account } from "models/Account";
 import { CreditCard } from "models/CreditCard";
 import useAccountsQuery from "queries/accounts";
-import useQuery from "queries/creditCards";
 import Form from "./Form";
 
 interface CreditCardRowProps {
@@ -19,10 +18,7 @@ interface CreditCardRowProps {
 
 function CreditCardRow({ creditCard, deleteCreditCard }: CreditCardRowProps) {
   const [edit, setEdit] = useState(false);
-  const [generatingInvoice, setGeneratingInvoice] = useState(false);
   const { query: accountsQuery } = useAccountsQuery();
-  const { generateInvoiceMutation } = useQuery();
-  const history = useHistory();
 
   function renderAccountName(account?: Account) {
     if (!account) return "No account";
@@ -32,15 +28,6 @@ function CreditCardRow({ creditCard, deleteCreditCard }: CreditCardRowProps) {
     if (!accountData) return "Account not found";
 
     return accountData.name;
-  }
-
-  function generateInvoice() {
-    setGeneratingInvoice(true);
-
-    generateInvoiceMutation
-      .mutateAsync(creditCard)
-      .then(() => history.push("/resume"))
-      .finally(() => setGeneratingInvoice(false));
   }
 
   if (edit) {
@@ -66,14 +53,11 @@ function CreditCardRow({ creditCard, deleteCreditCard }: CreditCardRowProps) {
         {renderAccountName(creditCard.account)}
       </TableCell>
       <TableCell>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={generateInvoice}
-          disabled={generatingInvoice}
-        >
-          {generatingInvoice ? "Generating...." : "Generate Invoice"}
-        </Button>
+        <Link to={`credit_cards/${creditCard.id}`}>
+          <Button variant="contained" color="primary">
+            View Invoice
+          </Button>
+        </Link>
       </TableCell>
       <TableCell align="right">
         <IconButton component="button" onClick={() => setEdit(!edit)}>

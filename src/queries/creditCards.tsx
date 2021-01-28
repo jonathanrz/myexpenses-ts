@@ -1,12 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import useAxios from "hooks/useAxios";
-import moment from "moment";
-import {
-  queryKeyFunction as expensesQueryKeyFunction,
-  monthQueryKeyFunction as expensesMonthQueryKeyFunction,
-} from "./expenses";
 import { CreditCard } from "models/CreditCard";
-import { Expense } from "models/Expense";
 import { defaultQueryProps } from "./constants";
 
 const MODEL_NAME = "credit_card";
@@ -49,28 +43,7 @@ function useCreditCardsQuery() {
     }
   );
 
-  const generateInvoiceMutation = useMutation<Expense, Error, CreditCard>(
-    (values) =>
-      axios
-        .post(
-          `/expenses/generate_credit_card_invoice?month=${moment().format(
-            "YYYY-MM"
-          )}&credit_card_id=${values.id}`
-        )
-        .then(({ data }) => data.data),
-    {
-      onSuccess: (expense) => {
-        queryClient.invalidateQueries(
-          expensesQueryKeyFunction(moment(expense.date))
-        );
-        queryClient.invalidateQueries(
-          expensesMonthQueryKeyFunction(moment(expense.date))
-        );
-      },
-    }
-  );
-
-  return { query, mutation, deleteMutation, generateInvoiceMutation };
+  return { query, mutation, deleteMutation };
 }
 
 export default useCreditCardsQuery;

@@ -62,7 +62,9 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
   return (
     <TableRow>
       <TableCell component="th" scope="row">
-        {expense.name}
+        {expense.installmentNumber
+          ? `${expense.name} ${expense.installmentNumber}/${expense.installmentCount}`
+          : expense.name}
       </TableCell>
       <TableCell component="th" scope="row">
         {expense.account ? (

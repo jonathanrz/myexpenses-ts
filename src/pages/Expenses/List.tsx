@@ -58,7 +58,7 @@ function ExpenseList() {
           currentMonth={currentMonth}
           handleMonthSelected={handleMonthSelected}
         />
-        <Table stickyHeader>
+        <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>

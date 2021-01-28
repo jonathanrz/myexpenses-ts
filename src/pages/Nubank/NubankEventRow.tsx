@@ -8,6 +8,7 @@ import ExpenseForm from "pages/Expenses/Form";
 
 interface NubankEventRowProps {
   event: NubankEvent;
+  onEventSaved: (event: NubankEvent) => void;
 }
 
 const useStyles = makeStyles({
@@ -25,7 +26,7 @@ const useStyles = makeStyles({
   },
 });
 
-function NubankEventRow({ event }: NubankEventRowProps) {
+function NubankEventRow({ event, onEventSaved }: NubankEventRowProps) {
   const classes = useStyles();
   const [showExpenseForm, setShowExpenseForm] = useState(false);
 
@@ -49,7 +50,10 @@ function NubankEventRow({ event }: NubankEventRowProps) {
           <TableCell colSpan={5}>
             <ExpenseForm
               nubankEvent={event}
-              onExpenseSaved={() => setShowExpenseForm(false)}
+              onExpenseSaved={() => {
+                setShowExpenseForm(false);
+                onEventSaved(event);
+              }}
               onCancel={() => setShowExpenseForm(false)}
             />
           </TableCell>

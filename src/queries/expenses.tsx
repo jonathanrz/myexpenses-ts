@@ -78,9 +78,7 @@ function useExpensesQuery(month: Moment) {
           .patch(`/${PATH}/${values.id}`, {
             [MODEL_NAME]: {
               ...values,
-              installmentNumber: values.installmentNumber
-                ? Number.parseInt(values.installmentNumber)
-                : null,
+              installmentNumber: null,
             },
           })
           .then(({ data }) => data.data);

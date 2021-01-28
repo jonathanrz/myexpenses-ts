@@ -85,7 +85,7 @@ function ExpenseForm({
         nubankEvent?.details?.charges?.count?.toString() ||
         expense.installmentNumber,
       installmentCount: expense.installmentCount,
-      nubank_id: nubankEvent?.id || "",
+      nubank_id: nubankEvent?.id || expense.nubank_id,
     },
     onSubmit: (values, { resetForm }) =>
       mutation

@@ -15,6 +15,7 @@ import AccountsPage from "./pages/Accounts";
 import BillsPage from "./pages/Bills";
 import CategoriesPage from "./pages/Categories";
 import CreditCardsPage from "./pages/CreditCards";
+import CreditCardsInvoicePage from "./pages/CreditCardsInvoice";
 import ExpensesPage from "./pages/Expenses";
 import PlacesPage from "./pages/Places";
 import ReceiptsPage from "./pages/Receipts";
@@ -89,6 +90,9 @@ function App() {
             </PrivateRoute>
             <PrivateRoute exact path="/categories">
               <CategoriesPage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/credit_cards/:id">
+              <CreditCardsInvoicePage />
             </PrivateRoute>
             <PrivateRoute exact path="/credit_cards">
               <CreditCardsPage />

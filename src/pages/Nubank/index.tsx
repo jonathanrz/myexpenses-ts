@@ -29,6 +29,14 @@ const useStyles = makeStyles({
 
 const today = moment();
 
+function filterNubankEvent(e: NubankEvent) {
+  if (e.details?.charges?.count) {
+    return today.diff(e.time, "months") < e.details?.charges?.count + 1;
+  }
+
+  return today.diff(e.time, "months") < 2;
+}
+
 function NubankPage() {
   const classes = useStyles();
   const [url, setUrl] = useState("");
@@ -48,7 +56,9 @@ function NubankPage() {
 
     const expenses = keyBy(query.data, "nubank_id");
 
-    return events.filter((e: NubankEvent) => !expenses[e.id]);
+    return events.filter(
+      (e: NubankEvent) => !expenses[e.id] && filterNubankEvent(e)
+    );
   }, [events, query.data]);
 
   function importData() {
@@ -63,15 +73,24 @@ function NubankPage() {
       },
     })
       .then((res) => res.json())
-      .then(({ events }) =>
+      .then((res) => {
+        if (res.error) {
+          console.error(res);
+          return;
+        }
+
         setEvents(
-          events
+          res.events
             .filter((e: NubankEvent) => e.category === "transaction")
             .map((e: NubankEvent) => ({ ...e, time: moment(e.time) }))
-            .filter((e: NubankEvent) => today.diff(e.time, "months") < 11)
-        )
-      )
+            .filter(filterNubankEvent)
+        );
+      })
       .finally(() => setImportingData(false));
+  }
+
+  function onEventSaved(event: NubankEvent) {
+    setEvents(events.filter((e) => e.id !== event.id));
   }
 
   function renderTable() {
@@ -97,7 +116,11 @@ function NubankPage() {
           </TableHead>
           <TableBody>
             {eventsFiltered.map((e) => (
-              <NubankEventRow key={e.id} event={e} />
+              <NubankEventRow
+                key={e.id}
+                event={e}
+                onEventSaved={onEventSaved}
+              />
             ))}
           </TableBody>
         </Table>
