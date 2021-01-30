@@ -13,7 +13,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
 import MonthTabs from "components/MonthTabs";
+import AccountSelect from "components/shared/AccountSelect";
 import { Expense } from "models/Expense";
 import useSetState from "hooks/useSetState";
 import useExpensesQuery from "queries/expenses";
@@ -36,6 +38,9 @@ const useStyles = makeStyles({
     padding: "1rem 2rem 2rem",
     width: "unset",
   },
+  tableNameHeader: {
+    display: "flex",
+  },
 });
 
 interface ExpenseListParams {
@@ -48,7 +53,7 @@ function ExpenseList() {
   const classes = useStyles();
   const [currentMonth, setCurrentMonth] = useState(today);
   const { query, deleteMutation } = useExpensesQuery(currentMonth);
-  const [filter, setFilter] = useSetState({ name: "" });
+  const [filter, setFilter] = useSetState({ name: "", accountId: "" });
 
   const { mode } = useParams<ExpenseListParams>();
   const showForm = mode === "form";
@@ -57,6 +62,7 @@ function ExpenseList() {
     return query.data?.filter((expense) => {
       let valid = true;
       if (filter.name) valid = expense.name.includes(filter.name);
+      if (filter.accountId) valid = expense.account?.id === filter.accountId;
 
       return valid;
     });
@@ -87,14 +93,21 @@ function ExpenseList() {
           <TableHead>
             <TableRow>
               <TableCell>
-                <TextField
-                  placeholder="Name"
-                  value={filter.name}
-                  onChange={(e) => setFilter({ name: e.target.value })}
-                  fullWidth
+                <FormControl fullWidth>
+                  <TextField
+                    label="Name"
+                    value={filter.name}
+                    onChange={(e) => setFilter({ name: e.target.value })}
+                    fullWidth
+                  />
+                </FormControl>
+              </TableCell>
+              <TableCell>
+                <AccountSelect
+                  value={filter.accountId}
+                  handleChange={(accountId) => setFilter({ accountId })}
                 />
               </TableCell>
-              <TableCell>Paid With</TableCell>
               <TableCell>Categories</TableCell>
               <TableCell>Place</TableCell>
               <TableCell>Bill</TableCell>
