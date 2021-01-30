@@ -16,6 +16,7 @@ import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import MonthTabs from "components/MonthTabs";
 import AccountSelect from "components/shared/AccountSelect";
+import BillSelect from "components/shared/BillSelect";
 import CategorySelect from "components/shared/CategorySelect";
 import PlaceSelect from "components/shared/PlaceSelect";
 import { Expense } from "models/Expense";
@@ -58,6 +59,7 @@ function ExpenseList() {
   const [filter, setFilter] = useSetState({
     name: "",
     accountId: "",
+    billId: "",
     categoryId: "",
     placeId: "",
   });
@@ -71,6 +73,8 @@ function ExpenseList() {
       if (valid && filter.name) valid = expense.name.includes(filter.name);
       if (valid && filter.accountId)
         valid = expense.account?.id === filter.accountId;
+      if (valid && filter.billId)
+        valid = expense.bill?.id === parseInt(filter.billId);
       if (valid && filter.categoryId)
         valid = expense.category?.id === filter.categoryId;
       if (valid && filter.placeId) valid = expense.place?.id === filter.placeId;
@@ -131,7 +135,12 @@ function ExpenseList() {
                   handleChange={(placeId) => setFilter({ placeId })}
                 />
               </TableCell>
-              <TableCell>Bill</TableCell>
+              <TableCell>
+                <BillSelect
+                  value={filter.billId}
+                  handleChange={(billId) => setFilter({ billId })}
+                />
+              </TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Value</TableCell>
               <TableCell>Confirmed</TableCell>
