@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import moment, { Moment } from "moment";
+import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
@@ -19,6 +20,9 @@ import ExpenseRow from "./ExpenseRow";
 
 const useStyles = makeStyles({
   container: {
+    display: "grid",
+  },
+  containerWithForm: {
     gridTemplateColumns: "1150px 400px",
     display: "grid",
     gridGap: "2rem",
@@ -32,10 +36,17 @@ const useStyles = makeStyles({
   },
 });
 
+interface ExpenseListParams {
+  mode: string;
+}
+
 function ExpenseList() {
   const classes = useStyles();
   const [currentMonth, setCurrentMonth] = useState(moment());
   const { query, deleteMutation } = useExpensesQuery(currentMonth);
+
+  const { mode } = useParams<ExpenseListParams>();
+  const showForm = mode === "form";
 
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)
@@ -52,7 +63,7 @@ function ExpenseList() {
   }
 
   return (
-    <div className={classes.container}>
+    <div className={showForm ? classes.containerWithForm : classes.container}>
       <TableContainer className={classes.table} component={Paper}>
         <MonthTabs
           currentMonth={currentMonth}
@@ -83,12 +94,14 @@ function ExpenseList() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Paper className={classes.formContainer}>
-        <Typography component="h1" variant="h5">
-          New Expense
-        </Typography>
-        <Form />
-      </Paper>
+      {showForm && (
+        <Paper className={classes.formContainer}>
+          <Typography component="h1" variant="h5">
+            New Expense
+          </Typography>
+          <Form />
+        </Paper>
+      )}
     </div>
   );
 }

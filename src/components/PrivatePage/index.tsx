@@ -152,7 +152,7 @@ function PrivatePage({ children, title }: PrivatePageProps) {
           />
           <DrawerLink pathname="/bills" text="Bills" Icon={<DateRangeIcon />} />
           <DrawerLink
-            pathname="/expenses"
+            pathname="/expenses/list"
             text="Expenses"
             Icon={<ShoppingCartIcon />}
           />

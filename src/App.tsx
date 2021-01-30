@@ -97,7 +97,7 @@ function App() {
             <PrivateRoute exact path="/credit_cards">
               <CreditCardsPage />
             </PrivateRoute>
-            <PrivateRoute exact path="/expenses">
+            <PrivateRoute exact path="/expenses/:mode">
               <ExpensesPage />
             </PrivateRoute>
             <PrivateRoute exact path="/nubank">
