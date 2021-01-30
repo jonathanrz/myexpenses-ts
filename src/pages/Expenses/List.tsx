@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import moment, { Moment } from "moment";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -12,8 +12,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
 import MonthTabs from "components/MonthTabs";
 import { Expense } from "models/Expense";
+import useSetState from "hooks/useSetState";
 import useExpensesQuery from "queries/expenses";
 import Form from "./Form";
 import ExpenseRow from "./ExpenseRow";
@@ -40,13 +42,25 @@ interface ExpenseListParams {
   mode: string;
 }
 
+const today = moment();
+
 function ExpenseList() {
   const classes = useStyles();
-  const [currentMonth, setCurrentMonth] = useState(moment());
+  const [currentMonth, setCurrentMonth] = useState(today);
   const { query, deleteMutation } = useExpensesQuery(currentMonth);
+  const [filter, setFilter] = useSetState({ name: "" });
 
   const { mode } = useParams<ExpenseListParams>();
   const showForm = mode === "form";
+
+  const filteredData = useMemo(() => {
+    return query.data?.filter((expense) => {
+      let valid = true;
+      if (filter.name) valid = expense.name.includes(filter.name);
+
+      return valid;
+    });
+  }, [query.data, filter]);
 
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)
@@ -72,7 +86,14 @@ function ExpenseList() {
         <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell>
+                <TextField
+                  placeholder="Name"
+                  value={filter.name}
+                  onChange={(e) => setFilter({ name: e.target.value })}
+                  fullWidth
+                />
+              </TableCell>
               <TableCell>Paid With</TableCell>
               <TableCell>Categories</TableCell>
               <TableCell>Place</TableCell>
@@ -84,7 +105,7 @@ function ExpenseList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {query.data?.map((expense: Expense) => (
+            {filteredData?.map((expense: Expense) => (
               <ExpenseRow
                 key={expense.id}
                 expense={expense}
