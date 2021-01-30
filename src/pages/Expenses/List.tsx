@@ -16,6 +16,7 @@ import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import MonthTabs from "components/MonthTabs";
 import AccountSelect from "components/shared/AccountSelect";
+import CategorySelect from "components/shared/CategorySelect";
 import { Expense } from "models/Expense";
 import useSetState from "hooks/useSetState";
 import useExpensesQuery from "queries/expenses";
@@ -53,7 +54,11 @@ function ExpenseList() {
   const classes = useStyles();
   const [currentMonth, setCurrentMonth] = useState(today);
   const { query, deleteMutation } = useExpensesQuery(currentMonth);
-  const [filter, setFilter] = useSetState({ name: "", accountId: "" });
+  const [filter, setFilter] = useSetState({
+    name: "",
+    accountId: "",
+    categoryId: "",
+  });
 
   const { mode } = useParams<ExpenseListParams>();
   const showForm = mode === "form";
@@ -63,6 +68,7 @@ function ExpenseList() {
       let valid = true;
       if (filter.name) valid = expense.name.includes(filter.name);
       if (filter.accountId) valid = expense.account?.id === filter.accountId;
+      if (filter.categoryId) valid = expense.category?.id === filter.categoryId;
 
       return valid;
     });
@@ -108,7 +114,12 @@ function ExpenseList() {
                   handleChange={(accountId) => setFilter({ accountId })}
                 />
               </TableCell>
-              <TableCell>Categories</TableCell>
+              <TableCell>
+                <CategorySelect
+                  value={filter.categoryId}
+                  handleChange={(categoryId) => setFilter({ categoryId })}
+                />
+              </TableCell>
               <TableCell>Place</TableCell>
               <TableCell>Bill</TableCell>
               <TableCell>Date</TableCell>
