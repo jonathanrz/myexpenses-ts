@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import useAxios from "hooks/useAxios";
+import sortBy from "lodash/sortBy";
 import moment, { Moment } from "moment";
 import {
   queryKeyFunction as expensesQueryKeyFunction,
@@ -23,10 +24,13 @@ function useCreditCardsInvoiceQuery(month: Moment, creditCardId: String) {
           },
         })
         .then(({ data }) =>
-          data.data.map((expense: Expense) => ({
-            ...expense,
-            date: moment(expense.date),
-          }))
+          sortBy(
+            data.data.map((expense: Expense) => ({
+              ...expense,
+              date: moment(expense.date),
+            })),
+            "date"
+          )
         ),
     defaultQueryProps
   );

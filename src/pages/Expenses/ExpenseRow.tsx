@@ -14,6 +14,7 @@ import BillCell from "components/shared/BillCell";
 import CategoryCell from "components/shared/CategoryCell";
 import CreditCardCell from "components/shared/CreditCardCell";
 import PlaceCell from "components/shared/PlaceCell";
+import { renderExpenseName } from "helpers/expense";
 import { Expense } from "models/Expense";
 import useExpensesQuery from "queries/expenses";
 import Form from "./Form";
@@ -62,9 +63,7 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
   return (
     <TableRow>
       <TableCell component="th" scope="row">
-        {expense.installmentNumber
-          ? `${expense.name} ${expense.installmentNumber}/${expense.installmentCount}`
-          : expense.name}
+        {renderExpenseName(expense)}
       </TableCell>
       <TableCell component="th" scope="row">
         {expense.account ? (

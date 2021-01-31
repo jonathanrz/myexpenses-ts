@@ -20,6 +20,7 @@ import StorefrontIcon from "@material-ui/icons/Storefront";
 import CategoryIcon from "@material-ui/icons/Category";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 
 const drawerWidth = 240;
 
@@ -155,6 +156,11 @@ function PrivatePage({ children, title }: PrivatePageProps) {
             pathname="/expenses/list"
             text="Expenses"
             Icon={<ShoppingCartIcon />}
+          />
+          <DrawerLink
+            pathname="/month_expenses"
+            text="Month Expenses"
+            Icon={<CalendarTodayIcon />}
           />
           <DrawerLink
             pathname="/receipts"

@@ -20,6 +20,7 @@ import ExpensesPage from "./pages/Expenses";
 import PlacesPage from "./pages/Places";
 import ReceiptsPage from "./pages/Receipts";
 import HomePage from "./pages/Home";
+import MonthExpensesPage from "./pages/MonthExpenses";
 import NubankPage from "./pages/Nubank";
 import ResumePage from "./pages/Resume";
 import LoginPage from "./pages/Login";
@@ -99,6 +100,9 @@ function App() {
             </PrivateRoute>
             <PrivateRoute exact path="/expenses/:mode">
               <ExpensesPage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/month_expenses">
+              <MonthExpensesPage />
             </PrivateRoute>
             <PrivateRoute exact path="/nubank">
               <NubankPage />

@@ -129,7 +129,7 @@ function NubankPage() {
   }
 
   return (
-    <PrivatePage title="Home">
+    <PrivatePage title="Nubank">
       <div className={classes.container}>
         <TextField
           label="url"

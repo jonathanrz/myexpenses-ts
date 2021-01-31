@@ -191,18 +191,6 @@ function Home() {
 
     return (
       <TableContainer component={Paper}>
-        <FormGroup className={classes.filter} row>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={displayConfirmed}
-                onChange={(event) => setDisplayConfirmed(event.target.checked)}
-                color="secondary"
-              />
-            }
-            label="Display Confirmed"
-          />
-        </FormGroup>
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -226,6 +214,18 @@ function Home() {
             {renderBalanceRow(accountsBalanceAtEndOfNextMonth)}
           </TableBody>
         </Table>
+        <FormGroup className={classes.filter} row>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={displayConfirmed}
+                onChange={(event) => setDisplayConfirmed(event.target.checked)}
+                color="secondary"
+              />
+            }
+            label="Display Confirmed"
+          />
+        </FormGroup>
       </TableContainer>
     );
   }

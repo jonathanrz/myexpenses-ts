@@ -5,6 +5,7 @@ import TableRow from "@material-ui/core/TableRow";
 import CategoryCell from "components/shared/CategoryCell";
 import PlaceCell from "components/shared/PlaceCell";
 import Currency from "helpers/currency";
+import { renderExpenseName } from "helpers/expense";
 import { Expense } from "models/Expense";
 
 interface CreditCardsInvoiceRowProps {
@@ -28,9 +29,7 @@ function CreditCardsInvoiceRow({ expense }: CreditCardsInvoiceRowProps) {
       onClick={() => setSelected(!selected)}
     >
       <TableCell component="th" scope="row">
-        {expense.installmentNumber
-          ? `${expense.name} ${expense.installmentNumber}/${expense.installmentCount}`
-          : expense.name}
+        {renderExpenseName(expense)}
       </TableCell>
       <TableCell component="th" scope="row">
         <CategoryCell category={expense.category} />

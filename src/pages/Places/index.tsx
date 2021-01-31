@@ -1,5 +1,5 @@
 import React from "react";
-import PrivatePage from "../../components/PrivatePage";
+import PrivatePage from "components/PrivatePage";
 import List from "./List";
 
 function Places() {
