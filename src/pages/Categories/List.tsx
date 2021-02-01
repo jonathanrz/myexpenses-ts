@@ -17,7 +17,7 @@ import CategoryRow from "./CategoryRow";
 
 const useStyles = makeStyles({
   container: {
-    gridTemplateColumns: "550px 350px",
+    gridTemplateColumns: "850px 350px",
     display: "grid",
     gridGap: "2rem",
   },
@@ -51,6 +51,8 @@ function CategoriesList() {
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
+              <TableCell>Forecast</TableCell>
+              <TableCell align="center">Display In Month Expenses</TableCell>
               <TableCell />
             </TableRow>
           </TableHead>
