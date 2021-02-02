@@ -8,6 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import Currency from "helpers/currency";
 import { renderExpenseName } from "helpers/expense";
 import { CategoryData } from "./models";
+import OverCell from "./OverCell";
 
 interface MonthExpensesRowProps {
   catData: CategoryData;
@@ -29,6 +30,8 @@ function MonthExpensesRow({ catData }: MonthExpensesRowProps) {
       <TableRow onClick={() => setShowExpenses(!showExpenses)}>
         <TableCell>{catData.categoryName}</TableCell>
         <TableCell align="right">{Currency.format(catData.value)}</TableCell>
+        <TableCell align="right">{Currency.format(catData.forecast)}</TableCell>
+        <OverCell over={catData.forecast - catData.value} />
       </TableRow>
       {showExpenses && (
         <div className={classes.table}>

@@ -6,4 +6,5 @@ export interface CategoryData {
   category?: Category;
   expenses: Array<Expense>;
   value: number;
+  forecast: number;
 }

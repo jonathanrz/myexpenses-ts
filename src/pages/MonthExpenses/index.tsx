@@ -20,6 +20,7 @@ import Currency from "helpers/currency";
 import useQuery from "queries/expenses";
 import MonthExpensesRow from "./MonthExpensesRow";
 import { CategoryData } from "./models";
+import OverCell from "./OverCell";
 
 const today = moment();
 
@@ -40,6 +41,7 @@ function MonthExpenses() {
       query.data
         ?.filter(
           (e) =>
+            e.category?.display_in_month_expense &&
             ![
               "Fatura Nubank",
               "Fatura C6",
@@ -59,15 +61,20 @@ function MonthExpenses() {
         category: value[0].category,
         expenses: sortBy(value, (expense) => expense.place?.name || "no place"),
         value: sumBy(value, "value"),
+        forecast: value[0].category?.forecast || 0,
       });
     });
 
     return sortBy(result, "categoryName");
   }, [query.data]);
 
-  const total = useMemo(() => sumBy(groupedByCategory, "value"), [
-    groupedByCategory,
-  ]);
+  const [totalValue, totalForecast] = useMemo(
+    () => [
+      sumBy(groupedByCategory, "value"),
+      sumBy(groupedByCategory, "forecast"),
+    ],
+    [groupedByCategory]
+  );
 
   function handleMonthSelected(event: React.ChangeEvent<{}>, newMonth: Moment) {
     setCurrentMonth(newMonth);
@@ -89,7 +96,8 @@ function MonthExpenses() {
             <TableRow>
               <TableCell>Category</TableCell>
               <TableCell align="right">Value</TableCell>
-              <TableCell />
+              <TableCell align="right">Forecast</TableCell>
+              <TableCell align="right">Over</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -103,7 +111,11 @@ function MonthExpenses() {
           <TableFooter>
             <TableRow>
               <TableCell />
-              <TableCell align="right">{Currency.format(total)}</TableCell>
+              <TableCell align="right">{Currency.format(totalValue)}</TableCell>
+              <TableCell align="right">
+                {Currency.format(totalForecast)}
+              </TableCell>
+              <OverCell over={totalForecast - totalValue} />
             </TableRow>
           </TableFooter>
         </Table>

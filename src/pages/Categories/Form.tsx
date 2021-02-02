@@ -3,7 +3,6 @@ import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
-import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormikTextField from "components/formik/FormikTextField";
@@ -31,7 +30,7 @@ const useStyles = makeStyles({
 });
 
 function CategoryForm({
-  category = { id: "", name: "", forecast: 0, display_in_month_expense: false },
+  category = { id: "", name: "", forecast: 0, display_in_month_expense: true },
   onCategorySaved,
   onCancel,
 }: CategoryFormProps) {
