@@ -1,0 +1,45 @@
+import { useMemo } from "react";
+import { Moment } from "moment";
+import useExpensesQuery from "queries/expenses";
+import useBillsQuery from "queries/bills";
+import { CategoryDataItem } from "./models";
+
+function useMonthExpenseQuery(month: Moment) {
+  const { query: expensesQuery } = useExpensesQuery(month);
+  const { monthQuery: billsQuery } = useBillsQuery(month);
+
+  const expensesMappedData = useMemo(() => {
+    if (!expensesQuery.data) return [];
+
+    return expensesQuery.data.map((expense) => ({
+      id: `expense_${expense.id}`,
+      name: expense.name,
+      categoryName: expense.category?.name,
+      category: expense.category,
+      expense: expense,
+      place: expense.place,
+      value: expense.value,
+    })) as Array<CategoryDataItem>;
+  }, [expensesQuery.data]);
+
+  const billsMappedData = useMemo(() => {
+    if (!billsQuery.data) return [];
+
+    return billsQuery.data.map((bill) => ({
+      id: `bill_${bill.id}`,
+      name: `${bill.name} (bill)`,
+      categoryName: bill.category?.name,
+      category: bill.category,
+      value: bill.value,
+    })) as Array<CategoryDataItem>;
+  }, [billsQuery.data]);
+
+  return {
+    isLoading: expensesQuery.isLoading,
+    isError: expensesQuery.isError,
+    error: expensesQuery.error,
+    data: [...expensesMappedData, ...billsMappedData],
+  };
+}
+
+export default useMonthExpenseQuery;

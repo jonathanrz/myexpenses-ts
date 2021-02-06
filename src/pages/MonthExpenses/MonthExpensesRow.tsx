@@ -44,12 +44,14 @@ function MonthExpensesRow({ catData }: MonthExpensesRowProps) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {catData.expenses.map((expense) => (
-                <TableRow key={expense.id}>
-                  <TableCell>{renderExpenseName(expense)}</TableCell>
-                  <TableCell>{expense.place?.name}</TableCell>
+              {catData.items.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    {item.expense ? renderExpenseName(item.expense) : item.name}
+                  </TableCell>
+                  <TableCell>{item.place?.name}</TableCell>
                   <TableCell align="right">
-                    {Currency.format(expense.value)}
+                    {Currency.format(item.value)}
                   </TableCell>
                 </TableRow>
               ))}
