@@ -1,3 +1,5 @@
+[![GitHub Super-Linter](https://github.com/jonathanrz/myexpenses-ts/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
