@@ -11,7 +11,8 @@ import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
-import FormikTextField from "../../components/formik/FormikTextField";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import FormikTextField from "components/formik/FormikTextField";
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_MYEXPENSES_TS_API,
@@ -47,7 +48,7 @@ function Login() {
     onSubmit: (values) => {
       setError(undefined);
 
-      instance
+      return instance
         .post("users/signin", values)
         .then(({ data }) => {
           Cookie.set("user", JSON.stringify(data));
@@ -99,9 +100,10 @@ function Login() {
             className={classes.submit}
             type="submit"
             variant="contained"
+            disabled={formik.isSubmitting}
             fullWidth
           >
-            Sign in
+            {formik.isSubmitting ? <CircularProgress size={20} /> : "Sign in"}
           </Button>
         </form>
         {error && <Alert severity="error">{error}</Alert>}
