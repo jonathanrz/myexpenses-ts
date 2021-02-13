@@ -8,8 +8,10 @@ import { Account } from "models/Account";
 import useAccountsQuery from "queries/accounts";
 
 interface AccountSelectProps {
+  name?: string;
+  label?: string;
   value: string;
-  handleChange: (selectedFieldId?: string) => void;
+  handleChange: (event: React.ChangeEvent<any>) => void;
 }
 
 const useStyles = makeStyles({
@@ -18,7 +20,12 @@ const useStyles = makeStyles({
   },
 });
 
-function AccountSelect({ handleChange, value }: AccountSelectProps) {
+function AccountSelect({
+  name,
+  label = "Account",
+  handleChange,
+  value,
+}: AccountSelectProps) {
   const classes = useStyles();
 
   const { query } = useAccountsQuery();
@@ -36,11 +43,12 @@ function AccountSelect({ handleChange, value }: AccountSelectProps) {
 
   return (
     <FormControl fullWidth>
-      <InputLabel>Account</InputLabel>
+      <InputLabel>{label}</InputLabel>
       <Select
-        onChange={(e) => handleChange(e.target.value as string)}
+        name={name}
+        onChange={handleChange}
         value={value}
-        placeholder="Account"
+        placeholder={label}
         fullWidth
       >
         {options.map((option) => (

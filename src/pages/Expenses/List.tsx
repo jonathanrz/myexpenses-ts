@@ -120,7 +120,9 @@ function ExpenseList() {
               <TableCell>
                 <AccountSelect
                   value={filter.accountId}
-                  handleChange={(accountId) => setFilter({ accountId })}
+                  handleChange={(e) =>
+                    setFilter({ accountId: e.target.value as string })
+                  }
                 />
               </TableCell>
               <TableCell>

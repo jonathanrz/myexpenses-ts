@@ -2,6 +2,7 @@ import moment, { Moment } from "moment";
 import useAxios from "hooks/useAxios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Expense } from "models/Expense";
+import { ExpenseParams } from "models/ExpenseParams";
 import { defaultQueryProps } from "./constants";
 import {
   queryKeyFunction as billQueryKeyFunction,
@@ -71,7 +72,7 @@ function useExpensesQuery(month: Moment) {
     defaultQueryProps
   );
 
-  const mutation = useMutation<Expense, Error, Expense>(
+  const mutation = useMutation<Expense, Error, ExpenseParams>(
     (values) => {
       if (values.id) {
         return axios

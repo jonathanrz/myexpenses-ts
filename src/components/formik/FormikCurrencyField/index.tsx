@@ -10,7 +10,7 @@ interface Formik {
   errors: any;
   values: any;
   handleChange: (
-    eventOrPath: string | React.ChangeEvent<any>
+    event: string | React.ChangeEvent<any>
   ) => void | ((eventOrTextValue: string | React.ChangeEvent<any>) => void);
 }
 

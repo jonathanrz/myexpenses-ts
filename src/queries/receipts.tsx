@@ -2,6 +2,7 @@ import moment, { Moment } from "moment";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import useAxios from "hooks/useAxios";
 import { Receipt } from "models/Receipt";
+import { ReceiptParams } from "models/ReceiptParams";
 import { defaultQueryProps } from "./constants";
 
 const MODEL_NAME = "receipt";
@@ -31,7 +32,7 @@ function useReceiptsQuery(month: Moment) {
     defaultQueryProps
   );
 
-  const mutation = useMutation<Receipt, Error, Receipt>(
+  const mutation = useMutation<Receipt, Error, ReceiptParams>(
     (values) => {
       if (values.id) {
         return axios
