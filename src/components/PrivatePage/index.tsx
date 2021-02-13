@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import Cookie from "js-cookie";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Drawer from "@material-ui/core/Drawer";
@@ -21,6 +22,7 @@ import CategoryIcon from "@material-ui/icons/Category";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+import PowerOffIcon from "@material-ui/icons/PowerOff";
 
 const drawerWidth = 240;
 
@@ -79,21 +81,32 @@ interface PrivatePageProps {
 
 interface DrawerLinkProps {
   Icon: ReactNode;
-  pathname: string;
+  pathname?: string;
   text: string;
+  onClick?: () => void;
 }
 
 function PrivatePage({ children, title }: PrivatePageProps) {
+  const history = useHistory();
   const classes = useStyles();
 
-  function DrawerLink({ pathname, Icon, text }: DrawerLinkProps) {
+  function DrawerLink({ pathname, Icon, text, onClick }: DrawerLinkProps) {
+    if (pathname) {
+      return (
+        <Link to={{ pathname }} className={classes.drawerLink}>
+          <ListItem button>
+            <ListItemIcon>{Icon}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        </Link>
+      );
+    }
+
     return (
-      <Link to={{ pathname }} className={classes.drawerLink}>
-        <ListItem>
-          <ListItemIcon>{Icon}</ListItemIcon>
-          <ListItemText primary={text} />
-        </ListItem>
-      </Link>
+      <ListItem onClick={onClick} button>
+        <ListItemIcon>{Icon}</ListItemIcon>
+        <ListItemText primary={text} />
+      </ListItem>
     );
   }
 
@@ -166,6 +179,14 @@ function PrivatePage({ children, title }: PrivatePageProps) {
             pathname="/receipts"
             text="Receipts"
             Icon={<AttachMoneyIcon />}
+          />
+          <DrawerLink
+            onClick={() => {
+              Cookie.remove("user");
+              history.push("/login");
+            }}
+            text="Logout"
+            Icon={<PowerOffIcon />}
           />
         </List>
       </Drawer>
