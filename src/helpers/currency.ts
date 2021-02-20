@@ -10,7 +10,7 @@ function format(value: number) {
 function parse(value: string) {
   if (!value) return "0";
 
-  return value.replace(/\D/g, "");
+  return value.replace(/[^0-9-]/g, "");
 }
 
 const Currency = { format, parse };
