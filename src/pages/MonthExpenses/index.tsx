@@ -3,6 +3,7 @@ import moment, { Moment } from "moment";
 import findIndex from "lodash/findIndex";
 import groupBy from "lodash/groupBy";
 import sortBy from "lodash/sortBy";
+import orderBy from "lodash/orderBy";
 import sumBy from "lodash/sumBy";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -60,7 +61,7 @@ function MonthExpenses() {
       result.push({
         categoryName: value[0].category?.name || "Unnamed",
         category: value[0].category,
-        items: sortBy(value, (item) => item.place?.name || "no place"),
+        items: orderBy(value, ["placeName", "date"]),
         value: sumBy(value, "value"),
         forecast: value[0].category?.forecast || 0,
       });

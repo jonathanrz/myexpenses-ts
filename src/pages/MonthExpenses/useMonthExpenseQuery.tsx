@@ -13,10 +13,12 @@ function useMonthExpenseQuery(month: Moment) {
 
     return expensesQuery.data.map((expense) => ({
       id: `expense_${expense.id}`,
+      date: expense.date,
       name: expense.name,
       categoryName: expense.category?.name,
       category: expense.category,
       expense: expense,
+      placeName: expense.place?.name,
       place: expense.place,
       value: expense.value,
     })) as Array<CategoryDataItem>;
@@ -30,6 +32,7 @@ function useMonthExpenseQuery(month: Moment) {
       name: `${bill.name} (bill)`,
       categoryName: bill.category?.name,
       category: bill.category,
+      placeName: "No Place",
       value: bill.value,
     })) as Array<CategoryDataItem>;
   }, [billsQuery.data]);

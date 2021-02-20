@@ -38,6 +38,7 @@ function MonthExpensesRow({ catData }: MonthExpensesRowProps) {
           <Table size="small">
             <TableHead>
               <TableRow>
+                <TableCell>Day</TableCell>
                 <TableCell>Expense</TableCell>
                 <TableCell>Place</TableCell>
                 <TableCell align="right">Value</TableCell>
@@ -46,6 +47,7 @@ function MonthExpensesRow({ catData }: MonthExpensesRowProps) {
             <TableBody>
               {catData.items.map((item) => (
                 <TableRow key={item.id}>
+                  <TableCell>{item.date?.format("DD") || "00"}</TableCell>
                   <TableCell>
                     {item.expense ? renderExpenseName(item.expense) : item.name}
                   </TableCell>
