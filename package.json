@@ -2,6 +2,10 @@
   "name": "myexpenses-ts",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=12 <13",
+    "yarn": ">= 1.0.0"
+  },
   "dependencies": {
     "@date-io/moment": "1.x",
     "@material-ui/core": "^4.10.1",
