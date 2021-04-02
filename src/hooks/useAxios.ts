@@ -6,7 +6,7 @@ function useAxios() {
   const user = Cookie.get("user");
 
   return useMemo(() => {
-    const userData = JSON.parse(user || "");
+    const userData = user && JSON.parse(user);
 
     return axios.create({
       baseURL: process.env.REACT_APP_MYEXPENSES_TS_API,

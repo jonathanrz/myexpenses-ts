@@ -79,7 +79,7 @@ function useExpensesQuery(month: Moment) {
           .patch(`/${PATH}/${values.id}`, {
             [MODEL_NAME]: {
               ...values,
-              installmentNumber: null,
+              installmentNumber: values.installmentNumber || null,
             },
           })
           .then(({ data }) => data.data);

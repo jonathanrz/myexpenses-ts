@@ -1,4 +1,5 @@
 import React from "react";
+import { QueryObserverResult, UseMutationResult } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
@@ -30,9 +31,16 @@ const useStyles = makeStyles({
   },
 });
 
-function Accounts() {
+interface AccountsListProps {
+  accountQuery: {
+    query: QueryObserverResult<Account[], Error>;
+    deleteMutation: UseMutationResult<void, Error, String>;
+  };
+}
+
+export function AccountsList({ accountQuery }: AccountsListProps) {
   const classes = useStyles();
-  const { query, deleteMutation } = useAccountsQuery();
+  const { query, deleteMutation } = accountQuery;
 
   if (query.isLoading) return <CircularProgress />;
   if (query.isError)
@@ -77,4 +85,10 @@ function Accounts() {
   );
 }
 
-export default Accounts;
+function AccountsListQueried() {
+  const query = useAccountsQuery();
+
+  return <AccountsList accountQuery={query} />;
+}
+
+export default AccountsListQueried;
