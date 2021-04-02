@@ -32,8 +32,10 @@ function AccountRow({ account, deleteAccount }: AccountRowProps) {
 
   return (
     <TableRow data-testid={`account-row-${account.id}`}>
-      <TableCell>{account.name}</TableCell>
-      <TableCell align="right">{Currency.format(account.balance)}</TableCell>
+      <TableCell data-testid="account-name">{account.name}</TableCell>
+      <TableCell data-testid="account-balance" align="right">
+        {Currency.format(account.balance)}
+      </TableCell>
       <TableCell align="right">
         <IconButton component="button" onClick={() => setEdit(!edit)}>
           <EditIcon />

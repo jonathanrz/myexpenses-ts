@@ -1,36 +1,39 @@
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
-import nock from "nock";
 import { QueryClient, QueryClientProvider } from "react-query";
-import List from "../List";
-
-console.log({ waitFor });
+import useAccountsQuery from "queriesMocked/accounts";
+import { AccountsList } from "../List";
 
 const queryClient = new QueryClient();
 
-describe("AccountList", () => {
-  process.env.REACT_APP_MYEXPENSES_TS_API = "mocked.server.org";
-
-  // not working
-  nock("mocked.server.org")
-    .get("/accounts")
-    .reply(200, {
-      data: {
-        id: 1,
+function MockedAccountsLists() {
+  const accountsQuery = useAccountsQuery({
+    accounts: [
+      {
+        id: "1",
         name: "account name",
         balance: 1000,
       },
-    });
+    ],
+  });
 
+  return <AccountsList accountQuery={accountsQuery} />;
+}
+
+describe("AccountList", () => {
   test("renders list", async () => {
-    const { queryByTestId } = render(
+    const { getByTestId } = render(
       <QueryClientProvider client={queryClient}>
-        <List />
+        <MockedAccountsLists />
       </QueryClientProvider>
     );
+
     await waitFor(() => {
-      const accountRow = queryByTestId("account-row-1");
+      const accountRow = getByTestId("account-row-1");
       expect(accountRow).toBeInTheDocument();
+
+      expect(getByTestId("account-name")).toHaveTextContent("account name");
+      expect(getByTestId("account-balance")).toHaveTextContent("$10.00");
     });
   });
 });
