@@ -31,10 +31,8 @@ function AccountRow({ account, deleteAccount }: AccountRowProps) {
   }
 
   return (
-    <TableRow>
-      <TableCell component="th" scope="row">
-        {account.name}
-      </TableCell>
+    <TableRow data-testid={`account-row-${account.id}`}>
+      <TableCell>{account.name}</TableCell>
       <TableCell align="right">{Currency.format(account.balance)}</TableCell>
       <TableCell align="right">
         <IconButton component="button" onClick={() => setEdit(!edit)}>
