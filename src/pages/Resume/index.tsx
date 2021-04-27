@@ -7,11 +7,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Currency from "helpers/currency";
@@ -21,6 +18,7 @@ import { Receipt } from "models/Receipt";
 import { Expense } from "models/Expense";
 import { Transaction } from "models/Transaction";
 import PrivatePage from "components/PrivatePage";
+import TableSticky, { Header } from "components/shared/TableSticky";
 import useAccountsQuery from "queries/accounts";
 import TransactionsTable from "./TransactionsTable";
 import useMonthTransactionsQuery from "./useMonthTransactionsQuery";
@@ -189,31 +187,48 @@ function Home() {
     if (accountsQuery.isError)
       return <Alert severity="error">{accountsQuery.error.message}</Alert>;
 
+    const headers: Header[] = [
+      {
+        id: "name",
+        name: "Name",
+      },
+      {
+        id: "date",
+        name: "Date",
+      },
+      ...(accountsQuery.data?.map((account) => ({
+        id: account.id,
+        name: account.name,
+        number: true,
+      })) || []),
+      {
+        id: "total",
+        name: "Total",
+        number: true,
+      },
+    ];
+
+    function renderTableBody() {
+      return (
+        <React.Fragment>
+          {renderBalanceRow(accountsQuery.data)}
+          {renderFullRow(month.format("MMMM, YYYY"))}
+          <TransactionsTable transactions={transactions} />
+          {renderBalanceRow(accountsBalanceAtEndOfMonth)}
+          {renderFullRow(nextMonth.format("MMMM, YYYY"))}
+          <TransactionsTable transactions={nextMonthTransactions} />
+          {renderBalanceRow(accountsBalanceAtEndOfNextMonth)}
+        </React.Fragment>
+      );
+    }
+
     return (
       <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Date</TableCell>
-              {accountsQuery.data?.map((account) => (
-                <TableCell key={account.id} align="right">
-                  {account.name}
-                </TableCell>
-              ))}
-              <TableCell align="right">Total</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {renderBalanceRow(accountsQuery.data)}
-            {renderFullRow(month.format("MMMM, YYYY"))}
-            <TransactionsTable transactions={transactions} />
-            {renderBalanceRow(accountsBalanceAtEndOfMonth)}
-            {renderFullRow(nextMonth.format("MMMM, YYYY"))}
-            <TransactionsTable transactions={nextMonthTransactions} />
-            {renderBalanceRow(accountsBalanceAtEndOfNextMonth)}
-          </TableBody>
-        </Table>
+        <TableSticky
+          size="small"
+          headers={headers}
+          renderBody={renderTableBody}
+        />
         <FormGroup className={classes.filter} row>
           <FormControlLabel
             control={

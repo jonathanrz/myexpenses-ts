@@ -6,6 +6,7 @@ function useStickyHeader(defaultSticky = false) {
 
   const handleScroll = useCallback(
     (top, bottom) => {
+      console.log({ top, bottom });
       if (top <= 0 && bottom > 2 * 68) {
         !isSticky && setIsSticky(true);
       } else {
@@ -16,15 +17,17 @@ function useStickyHeader(defaultSticky = false) {
   );
 
   useEffect(() => {
+    // TODO: need to rerender the useEffect when the ref changes
+    const tableRefElement = tableRef.current as any;
     const handleScrollInTable = () => {
-      const tableRefElement = tableRef.current as any;
+      console.log("handleScrollInTable");
       const { top, bottom } = tableRefElement?.getBoundingClientRect();
       handleScroll(top, bottom);
     };
-    window.addEventListener("scroll", handleScrollInTable);
+    tableRefElement?.addEventListener("scroll", handleScrollInTable);
 
     return () => {
-      window.removeEventListener("scroll", handleScrollInTable);
+      tableRefElement?.removeEventListener("scroll", handleScrollInTable);
     };
   }, [handleScroll]);
 
