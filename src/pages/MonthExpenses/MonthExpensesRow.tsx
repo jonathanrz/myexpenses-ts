@@ -7,7 +7,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableHead from "@material-ui/core/TableHead";
 import Currency from "helpers/currency";
 import { renderExpenseName } from "helpers/expense";
-import { CategoryData } from "./models";
+import { CategoryData } from "models/CategoryData";
 import OverCell from "./OverCell";
 
 interface MonthExpensesRowProps {
