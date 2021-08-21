@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import PrivatePage from "components/PrivatePage";
 import useCategoriesQuery from "queries/categories";
 import useMonthExpenseQuery from "hooks/useMonthExpenseQuery";
+import currency from "helpers/currency";
 
 const lastMonth = moment().subtract(1, "month");
 const currentMonth = moment();
@@ -69,15 +70,10 @@ function YearExpenses() {
             }}
           >
             <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
+            <YAxis tickFormatter={currency.format} />
+            <Tooltip formatter={currency.format} />
             <Legend />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke="#8884d8"
-              activeDot={{ r: 8 }}
-            />
+            <Line type="monotone" dataKey="value" stroke="#8884d8" />
             <Line type="monotone" dataKey="forecast" stroke="#82ca9d" />
           </LineChart>
         </div>
