@@ -21,6 +21,7 @@ import PlacesPage from "./pages/Places";
 import ReceiptsPage from "./pages/Receipts";
 import HomePage from "./pages/Home";
 import MonthExpensesPage from "./pages/MonthExpenses";
+import YearExpensesPage from "./pages/YearExpenses";
 import NubankPage from "./pages/Nubank";
 import ResumePage from "./pages/Resume";
 import LoginPage from "./pages/Login";
@@ -103,6 +104,9 @@ function App() {
             </PrivateRoute>
             <PrivateRoute exact path="/month_expenses">
               <MonthExpensesPage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/year_expenses">
+              <YearExpensesPage />
             </PrivateRoute>
             <PrivateRoute exact path="/nubank">
               <NubankPage />

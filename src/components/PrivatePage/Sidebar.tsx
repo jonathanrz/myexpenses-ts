@@ -19,6 +19,7 @@ import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import PowerOffIcon from "@material-ui/icons/PowerOff";
+import ShowChartIcon from "@material-ui/icons/ShowChart";
 
 const drawerWidth = 240;
 
@@ -119,6 +120,11 @@ function Sidebar() {
           pathname="/month_expenses"
           text="Month Expenses"
           Icon={<CalendarTodayIcon />}
+        />
+        <DrawerLink
+          pathname="/year_expenses"
+          text="Year Expenses"
+          Icon={<ShowChartIcon />}
         />
         <DrawerLink
           pathname="/receipts"

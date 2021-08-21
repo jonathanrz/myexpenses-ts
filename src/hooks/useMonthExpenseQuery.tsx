@@ -90,10 +90,15 @@ function useMonthExpenseQuery(month: Moment) {
   }, [expensesMappedData, billsMappedData, categoriesQuery.data]);
 
   return {
-    isLoading: expensesQuery.isLoading,
-    isError: expensesQuery.isError,
-    error: expensesQuery.error,
+    isLoading:
+      expensesQuery.isLoading ||
+      billsQuery.isLoading ||
+      categoriesQuery.isLoading,
+    isError:
+      expensesQuery.isError || billsQuery.isError || categoriesQuery.isError,
+    error: expensesQuery.error || billsQuery.error || categoriesQuery.error,
     data: groupedByCategory,
+    month,
   };
 }
 
