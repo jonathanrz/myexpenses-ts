@@ -18,6 +18,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const last11Month = moment().subtract(11, "month");
+const last10Month = moment().subtract(10, "month");
+const last9Month = moment().subtract(9, "month");
+const last8Month = moment().subtract(8, "month");
+const last7Month = moment().subtract(7, "month");
+const last6Month = moment().subtract(6, "month");
 const last5Month = moment().subtract(5, "month");
 const last4Month = moment().subtract(4, "month");
 const last3Month = moment().subtract(3, "month");
@@ -40,6 +46,12 @@ function YearExpenses() {
   const { query: categoriesQuery } = useCategoriesQuery();
 
   // TODO: need to find a better implementation
+  const last11MonthData = useMonthCategoryQuery(last11Month);
+  const last10MonthData = useMonthCategoryQuery(last10Month);
+  const last9MonthData = useMonthCategoryQuery(last9Month);
+  const last8MonthData = useMonthCategoryQuery(last8Month);
+  const last7MonthData = useMonthCategoryQuery(last7Month);
+  const last6MonthData = useMonthCategoryQuery(last6Month);
   const last5MonthData = useMonthCategoryQuery(last5Month);
   const last4MonthData = useMonthCategoryQuery(last4Month);
   const last3MonthData = useMonthCategoryQuery(last3Month);
@@ -49,6 +61,12 @@ function YearExpenses() {
 
   const monthData = useMemo(
     () => [
+      last11MonthData,
+      last10MonthData,
+      last9MonthData,
+      last8MonthData,
+      last7MonthData,
+      last6MonthData,
       last5MonthData,
       last4MonthData,
       last3MonthData,
@@ -57,6 +75,12 @@ function YearExpenses() {
       currentMonthData,
     ],
     [
+      last11MonthData,
+      last10MonthData,
+      last9MonthData,
+      last8MonthData,
+      last7MonthData,
+      last6MonthData,
       last5MonthData,
       last4MonthData,
       last3MonthData,

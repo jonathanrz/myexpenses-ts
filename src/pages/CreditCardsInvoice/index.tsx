@@ -54,7 +54,6 @@ function CreditCardsInvoicePage() {
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell>Category</TableCell>
-            <TableCell>Place</TableCell>
             <TableCell>Date</TableCell>
             <TableCell>Value</TableCell>
           </TableRow>
@@ -64,7 +63,7 @@ function CreditCardsInvoicePage() {
             <CreditCardsInvoiceRow key={expense.id} expense={expense} />
           ))}
           <TableRow>
-            <TableCell colSpan={4} />
+            <TableCell colSpan={3} />
             <TableCell>
               {Currency.format(
                 query.data?.reduce((acc, expense) => acc + expense.value, 0) ||

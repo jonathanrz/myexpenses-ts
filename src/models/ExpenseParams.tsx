@@ -8,7 +8,6 @@ export interface ExpenseParams {
   bill_id?: string | number;
   category_id?: string;
   credit_card_id?: string | number;
-  place_id?: string;
   date: Moment;
   value: number;
   installmentNumber?: string;

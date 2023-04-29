@@ -14,12 +14,10 @@ import { Category } from "models/Category";
 import { CreditCard } from "models/CreditCard";
 import { Expense } from "models/Expense";
 import { NubankEvent } from "models/NubankEvent";
-import { Place } from "models/Place";
 import useAccountsQuery from "queries/accounts";
 import useBillsQuery from "queries/bills";
 import useCategoriesQuery from "queries/categories";
 import useCreditCardsQuery from "queries/creditCards";
-import usePlacesQuery from "queries/places";
 import useExpensesQuery from "queries/expenses";
 
 const currentMonth = moment();
@@ -67,7 +65,6 @@ function ExpenseForm({
   const { query: billsQuery } = useBillsQuery();
   const { query: categoriesQuery } = useCategoriesQuery();
   const { query: creditCardsQuery } = useCreditCardsQuery();
-  const { query: placesQuery } = usePlacesQuery();
   const { mutation } = useExpensesQuery(currentMonth);
 
   const formik = useFormik({
@@ -77,7 +74,6 @@ function ExpenseForm({
       bill_id: expense.bill?.id || bill?.id || "",
       category_id: expense.category?.id || bill?.category?.id || "",
       credit_card_id: expense.credit_card?.id || (nubankEvent && 1) || "",
-      place_id: expense.place?.id || "",
       confirmed: expense.confirmed,
       value: bill?.value || nubankEvent?.amount || expense.value,
       date: nubankEvent?.time || expense.date,
@@ -97,6 +93,9 @@ function ExpenseForm({
         .then(() => {
           onExpenseSaved && onExpenseSaved();
           resetForm();
+          formik.setFieldValue("account_id", values.account_id);
+          formik.setFieldValue("credit_card_id", values.credit_card_id);
+          formik.setFieldValue("date", values.date);
         }),
   });
 
@@ -155,19 +154,6 @@ function ExpenseForm({
           categoriesQuery.data?.map((category: Category) => ({
             label: category.name,
             value: category.id,
-          })) || []
-        }
-        formik={formik}
-        fullWidth
-        required
-      />
-      <FormikSelectField
-        name="place_id"
-        label="Place"
-        options={
-          placesQuery.data?.map((place: Place) => ({
-            label: place.name,
-            value: place.id,
           })) || []
         }
         formik={formik}

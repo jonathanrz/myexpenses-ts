@@ -105,11 +105,6 @@ function Sidebar() {
           text="Categories"
           Icon={<CategoryIcon />}
         />
-        <DrawerLink
-          pathname="/places"
-          text="Places"
-          Icon={<StorefrontIcon />}
-        />
         <DrawerLink pathname="/bills" text="Bills" Icon={<DateRangeIcon />} />
         <DrawerLink
           pathname="/expenses/list"

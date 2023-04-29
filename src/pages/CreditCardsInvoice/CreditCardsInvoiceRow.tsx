@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import CategoryCell from "components/shared/CategoryCell";
-import PlaceCell from "components/shared/PlaceCell";
 import Currency from "helpers/currency";
 import { renderExpenseName } from "helpers/expense";
 import { Expense } from "models/Expense";
@@ -33,9 +32,6 @@ function CreditCardsInvoiceRow({ expense }: CreditCardsInvoiceRowProps) {
       </TableCell>
       <TableCell component="th" scope="row">
         <CategoryCell category={expense.category} />
-      </TableCell>
-      <TableCell component="th" scope="row">
-        <PlaceCell place={expense.place} />
       </TableCell>
       <TableCell component="th" scope="row">
         {expense.date.format("DD/MM/yyyy")}
