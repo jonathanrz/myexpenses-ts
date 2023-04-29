@@ -13,7 +13,6 @@ import AccountCell from "components/shared/AccountCell";
 import BillCell from "components/shared/BillCell";
 import CategoryCell from "components/shared/CategoryCell";
 import CreditCardCell from "components/shared/CreditCardCell";
-import PlaceCell from "components/shared/PlaceCell";
 import { renderExpenseName } from "helpers/expense";
 import { Expense } from "models/Expense";
 import useExpensesQuery from "queries/expenses";
@@ -49,7 +48,7 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
   if (edit) {
     return (
       <TableRow>
-        <TableCell colSpan={10}>
+        <TableCell colSpan={9}>
           <Form
             expense={expense}
             onExpenseSaved={() => setEdit(false)}
@@ -74,9 +73,6 @@ function ExpenseRow({ expense, deleteExpense }: ExpenseRowProps) {
       </TableCell>
       <TableCell component="th" scope="row">
         <CategoryCell category={expense.category} />
-      </TableCell>
-      <TableCell component="th" scope="row">
-        <PlaceCell place={expense.place} />
       </TableCell>
       <TableCell component="th" scope="row">
         <BillCell bill={expense.bill} />

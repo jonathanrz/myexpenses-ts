@@ -17,7 +17,6 @@ import CategoriesPage from "./pages/Categories";
 import CreditCardsPage from "./pages/CreditCards";
 import CreditCardsInvoicePage from "./pages/CreditCardsInvoice";
 import ExpensesPage from "./pages/Expenses";
-import PlacesPage from "./pages/Places";
 import ReceiptsPage from "./pages/Receipts";
 import HomePage from "./pages/Home";
 import MonthExpensesPage from "./pages/MonthExpenses";
@@ -110,9 +109,6 @@ function App() {
             </PrivateRoute>
             <PrivateRoute exact path="/nubank">
               <NubankPage />
-            </PrivateRoute>
-            <PrivateRoute exact path="/places">
-              <PlacesPage />
             </PrivateRoute>
             <PrivateRoute exact path="/receipts">
               <ReceiptsPage />

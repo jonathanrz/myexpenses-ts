@@ -26,8 +26,6 @@ function useMonthExpenseQuery(month: Moment) {
       categoryName: expense.category?.name,
       category: expense.category,
       expense: expense,
-      placeName: expense.place?.name,
-      place: expense.place,
       value: expense.value,
     })) as Array<CategoryDataItem>;
   }, [expensesQuery.data]);

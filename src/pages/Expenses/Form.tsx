@@ -74,7 +74,6 @@ function ExpenseForm({
       bill_id: expense.bill?.id || bill?.id || "",
       category_id: expense.category?.id || bill?.category?.id || "",
       credit_card_id: expense.credit_card?.id || (nubankEvent && 1) || "",
-      place_id: expense.place?.id || "",
       confirmed: expense.confirmed,
       value: bill?.value || nubankEvent?.amount || expense.value,
       date: nubankEvent?.time || expense.date,

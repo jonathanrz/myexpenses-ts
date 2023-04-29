@@ -40,7 +40,6 @@ function MonthExpensesRow({ catData }: MonthExpensesRowProps) {
               <TableRow>
                 <TableCell>Day</TableCell>
                 <TableCell>Expense</TableCell>
-                <TableCell>Place</TableCell>
                 <TableCell align="right">Value</TableCell>
               </TableRow>
             </TableHead>
@@ -51,7 +50,6 @@ function MonthExpensesRow({ catData }: MonthExpensesRowProps) {
                   <TableCell>
                     {item.expense ? renderExpenseName(item.expense) : item.name}
                   </TableCell>
-                  <TableCell>{item.place?.name}</TableCell>
                   <TableCell align="right">
                     {Currency.format(item.value)}
                   </TableCell>

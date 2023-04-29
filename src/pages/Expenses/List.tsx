@@ -18,7 +18,6 @@ import MonthTabs from "components/MonthTabs";
 import AccountSelect from "components/shared/AccountSelect";
 import BillSelect from "components/shared/BillSelect";
 import CategorySelect from "components/shared/CategorySelect";
-import PlaceSelect from "components/shared/PlaceSelect";
 import { Expense } from "models/Expense";
 import useSetState from "hooks/useSetState";
 import useExpensesQuery from "queries/expenses";
@@ -61,7 +60,6 @@ function ExpenseList() {
     accountId: "",
     billId: "",
     categoryId: "",
-    placeId: "",
   });
 
   const { mode } = useParams<ExpenseListParams>();
@@ -77,7 +75,6 @@ function ExpenseList() {
         valid = expense.bill?.id === parseInt(filter.billId);
       if (valid && filter.categoryId)
         valid = expense.category?.id === filter.categoryId;
-      if (valid && filter.placeId) valid = expense.place?.id === filter.placeId;
 
       return valid;
     });
@@ -129,12 +126,6 @@ function ExpenseList() {
                 <CategorySelect
                   value={filter.categoryId}
                   handleChange={(categoryId) => setFilter({ categoryId })}
-                />
-              </TableCell>
-              <TableCell>
-                <PlaceSelect
-                  value={filter.placeId}
-                  handleChange={(placeId) => setFilter({ placeId })}
                 />
               </TableCell>
               <TableCell>
