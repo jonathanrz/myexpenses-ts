@@ -20,6 +20,17 @@ import useCategoriesQuery from "queries/categories";
 import useCreditCardsQuery from "queries/creditCards";
 import useExpensesQuery from "queries/expenses";
 
+const categories = {
+  assinaturas: "4",
+  mercado: "5",
+  bebidas: "12",
+  hqs: "14",
+  jogos: "15",
+  uber: "22",
+  saude: "36",
+  pedircomida: "37",
+};
+
 const currentMonth = moment();
 
 interface ExpenseFormProps {
@@ -43,6 +54,38 @@ const useStyles = makeStyles({
     marginTop: "1rem",
   },
 });
+
+function getCategoryForNubankEvent(nubankEvent?: NubankEvent) {
+  if (nubankEvent) {
+    if (nubankEvent.description === "Bistek") return categories.mercado;
+    if (nubankEvent.description === "Supermercados Angeloni")
+      return categories.mercado;
+    if (nubankEvent.description === "Payu *Directvgo")
+      return categories.assinaturas;
+    if (nubankEvent.description === "Lnc Comunicoes")
+      return categories.assinaturas;
+    if (nubankEvent.description === "Iugu*Padrim")
+      return categories.assinaturas;
+    if (nubankEvent.description.startsWith("Heroku"))
+      return categories.assinaturas;
+    if (nubankEvent.description === "Uber *Uber *Trip") return categories.uber;
+    if (nubankEvent.description === "Ebn *Sonyplaystatn")
+      return categories.jogos;
+    if (nubankEvent.description === "Ebn *Sonyplaystatn")
+      return categories.jogos;
+    if (nubankEvent.description.startsWith("Ifd*"))
+      return categories.pedircomida;
+    if (nubankEvent.description === "Farmacia Sao Joao")
+      return categories.saude;
+    if (nubankEvent.description === "Pague Menos") return categories.saude;
+    if (nubankEvent.description.startsWith("C Malte*"))
+      return categories.bebidas;
+    if (nubankEvent.description === "Panini Brasil Ltda")
+      return categories.bebidas;
+  }
+
+  return null;
+}
 
 function ExpenseForm({
   expense = {
@@ -72,7 +115,11 @@ function ExpenseForm({
       name: bill?.name || nubankEvent?.description || expense.name,
       account_id: expense.account?.id || bill?.account?.id || "",
       bill_id: expense.bill?.id || bill?.id || "",
-      category_id: expense.category?.id || bill?.category?.id || "",
+      category_id:
+        expense.category?.id ||
+        bill?.category?.id ||
+        getCategoryForNubankEvent(nubankEvent) ||
+        "",
       credit_card_id: expense.credit_card?.id || (nubankEvent && 1) || "",
       confirmed: expense.confirmed,
       value: bill?.value || nubankEvent?.amount || expense.value,
@@ -119,34 +166,38 @@ function ExpenseForm({
         autoFocus
         required
       />
-      <FormikSelectField
-        name="account_id"
-        label="Account"
-        options={
-          accountsQuery.data?.map((account: Account) => ({
-            label: account.name,
-            value: account.id,
-          })) || []
-        }
-        formik={formik}
-        disabled={Boolean(formik.values.credit_card_id)}
-        fullWidth
-        required
-      />
-      <FormikSelectField
-        name="credit_card_id"
-        label="Credit Card"
-        options={
-          creditCardsQuery.data?.map((creditCard: CreditCard) => ({
-            label: creditCard.name,
-            value: creditCard.id,
-          })) || []
-        }
-        formik={formik}
-        disabled={Boolean(formik.values.account_id)}
-        fullWidth
-        required
-      />
+      {nubankEvent === undefined && (
+        <>
+          <FormikSelectField
+            name="account_id"
+            label="Account"
+            options={
+              accountsQuery.data?.map((account: Account) => ({
+                label: account.name,
+                value: account.id,
+              })) || []
+            }
+            formik={formik}
+            disabled={Boolean(formik.values.credit_card_id)}
+            fullWidth
+            required
+          />
+          <FormikSelectField
+            name="credit_card_id"
+            label="Credit Card"
+            options={
+              creditCardsQuery.data?.map((creditCard: CreditCard) => ({
+                label: creditCard.name,
+                value: creditCard.id,
+              })) || []
+            }
+            formik={formik}
+            disabled={Boolean(formik.values.account_id)}
+            fullWidth
+            required
+          />
+        </>
+      )}
       <FormikSelectField
         name="category_id"
         label="Category"

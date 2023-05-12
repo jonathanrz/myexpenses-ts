@@ -170,7 +170,6 @@ function YearExpenses() {
                 dataKey="average"
                 stroke="#F44336"
                 dot={false}
-                strokeWidth={0}
               />
               <Line
                 type="monotone"
